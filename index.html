@@ -3,568 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>薛绍祎个人网站</title>
-<style>
-  :root{
-    --ink:#1a1a1e;
-    --ink-2:#55565c;
-    --ink-3:#8a8b92;
-    --line:#e6e6ea;
-    --bg:#ffffff;
-    --bg-soft:#f7f7f9;
-    --accent:#3f5ef0;
-    --accent-soft:#eef1fe;
-    --radius:14px;
-    --wrap:1080px;
-  }
-  *{margin:0;padding:0;box-sizing:border-box}
-  html{scroll-behavior:smooth}
-  body{
-    font-family:"PingFang SC","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;
-    color:var(--ink);background:var(--bg);line-height:1.7;
-    -webkit-font-smoothing:antialiased;overflow-x:hidden;
-  }
-  img{display:block;max-width:100%}
-  a{color:inherit;text-decoration:none}
-  .wrap{max-width:var(--wrap);margin:0 auto;padding:0 28px}
-
-  /* ---------- 原型标注（评审用，定稿后删除） ---------- */
-  .module-tag{
-    display:inline-flex;align-items:center;gap:6px;
-    font-size:12px;color:var(--accent);background:var(--accent-soft);
-    border:1px dashed #b9c6fb;border-radius:999px;padding:3px 12px;
-    margin-bottom:14px;font-weight:500;
-  }
-  .todo{
-    color:#b45309;background:#fef3c7;border-radius:4px;
-    padding:0 4px;font-size:.92em;
-  }
-
-  /* ---------- 导航 ---------- */
-  header{
-    position:sticky;top:0;z-index:50;background:rgba(255,255,255,.88);
-    backdrop-filter:blur(10px);border-bottom:1px solid var(--line);
-  }
-  .nav{display:flex;align-items:center;justify-content:space-between;height:64px}
-  .logo{font-weight:700;font-size:18px;letter-spacing:.5px}
-  .logo span{color:var(--accent)}
-  .nav-links{display:flex;gap:30px;font-size:15px;color:var(--ink-2)}
-  .nav-links a{position:relative;padding-bottom:7px}
-  .nav-links a:hover{color:var(--accent)}
-  /* 当前栏目：下划线按该栏目滚动进度填充 */
-  .nav-links a::after{
-    content:"";position:absolute;left:0;bottom:0;height:2px;border-radius:2px;
-    width:calc(var(--p,0) * 100%);background:var(--accent);
-    opacity:0;transition:width .12s linear,opacity .25s;
-  }
-  .nav-links a.active{color:var(--accent)}
-  .nav-links a.active::after{opacity:1}
-  /* 顶部整体滚动进度条 */
-  .scroll-bar{
-    position:absolute;left:0;bottom:-1px;height:3px;width:0;
-    background:linear-gradient(90deg,var(--accent),#8aa2ff);
-    border-radius:0 3px 3px 0;transition:width .12s linear;
-  }
-  .nav-cta{
-    font-size:14px;border:1px solid var(--ink);border-radius:999px;
-    padding:7px 18px;transition:.2s;
-  }
-  .nav-cta:hover{background:var(--ink);color:#fff}
-  @media(max-width:860px){.nav-links{display:none}}
-
-  /* ---------- 01 首屏封面 ---------- */
-  .hero{padding:88px 0 72px}
-  .hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:64px;align-items:center}
-  @media(max-width:860px){.hero-grid{grid-template-columns:1fr;gap:40px}}
-  .hero-status{
-    display:inline-flex;align-items:center;gap:8px;font-size:13px;
-    color:#047857;background:#ecfdf5;border:1px solid #a7f3d0;
-    border-radius:999px;padding:4px 14px;margin-bottom:22px;
-  }
-  .hero-status i{width:8px;height:8px;border-radius:50%;background:#10b981;display:inline-block}
-  .hero h1{font-size:52px;line-height:1.2;letter-spacing:1px}
-  .hero h1 small{display:block;font-size:16px;font-weight:400;color:var(--ink-3);letter-spacing:3px;margin-top:6px}
-  .hero-def{font-size:21px;color:var(--ink-2);margin:20px 0 6px;font-weight:500}
-  .hero-school{font-size:15px;color:var(--ink-3)}
-  .hero-keys{display:flex;flex-wrap:wrap;gap:10px;margin:26px 0 34px}
-  .hero-keys span{
-    font-size:14px;color:var(--ink-2);border:1px solid var(--line);
-    border-radius:999px;padding:6px 16px;background:var(--bg-soft);
-  }
-  .hero-cta{display:flex;gap:14px;flex-wrap:wrap}
-  .btn{
-    display:inline-block;border-radius:10px;padding:13px 30px;font-size:15px;
-    transition:.2s;cursor:pointer;border:1px solid transparent;
-  }
-  .btn-primary{background:var(--accent);color:#fff}
-  .btn-primary:hover{background:#2f4bd0}
-  .btn-ghost{border-color:var(--ink);color:var(--ink)}
-  .btn-ghost:hover{background:var(--ink);color:#fff}
-  .hero-photo{position:relative}
-  .hero-photo img{
-    width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:20px;
-  }
-  .hero-photo::after{
-    content:"";position:absolute;inset:14px -14px -14px 14px;
-    border:1.5px solid var(--line);border-radius:20px;z-index:-1;
-  }
-
-  /* ---------- 通用区块 ---------- */
-  section{padding:76px 0;border-top:1px solid var(--line)}
-  .sec-head{margin-bottom:44px;max-width:640px;position:relative}
-  .sec-head h2{font-size:34px;letter-spacing:.5px;position:relative;z-index:1}
-  .sec-head p{color:var(--ink-3);margin-top:10px;font-size:15px;position:relative;z-index:1}
-  .sec-num{font-size:13px;color:var(--accent);font-weight:600;letter-spacing:2px}
-  /* 英文水印副标题：大号浅色衬线，压在中文标题左上后方 */
-  .sec-en{
-    position:absolute;left:-3px;top:-22px;z-index:0;pointer-events:none;user-select:none;
-    font-family:Georgia,"Times New Roman",serif;font-size:54px;font-weight:800;
-    letter-spacing:1px;line-height:1;color:var(--ink);opacity:.075;white-space:nowrap;
-  }
-  .sec-head.sub .sec-en{font-size:34px;top:-14px;opacity:.07}
-  @media(max-width:640px){.sec-en{font-size:34px;top:-14px}}
-
-  /* ---------- 02 我的故事 ---------- */
-  .story-grid{display:grid;grid-template-columns:.82fr 1.18fr;gap:64px;align-items:center}
-  @media(max-width:860px){
-    .story-grid{grid-template-columns:1fr;gap:40px}
-    .story-photo{max-width:400px;margin:0 auto;width:100%}
-  }
-  .story-photo{margin:0;position:relative}
-  .story-photo::before{
-    content:"";position:absolute;left:-16px;bottom:-16px;width:56%;height:52%;
-    background:var(--accent-soft);border-radius:var(--radius);
-  }
-  .story-photo img{
-    position:relative;z-index:1;border-radius:var(--radius);aspect-ratio:3/4;
-    object-fit:cover;width:100%;display:block;box-shadow:0 18px 44px rgba(20,20,40,.12);
-  }
-  .story-text .story-block{margin-top:24px}
-  .story-text .story-block:first-child{margin-top:0}
-  .story-label{
-    font-size:13px;color:var(--ink-3);letter-spacing:2px;font-weight:600;
-    display:flex;align-items:center;gap:9px;margin-bottom:9px;
-  }
-  .story-label::before{content:"";width:16px;height:2px;background:var(--accent);border-radius:1px}
-  .story-text p{color:var(--ink-2);font-size:15.5px;line-height:1.9}
-  .story-tags{margin-top:24px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-  .story-tags .story-label{width:100%;margin-bottom:1px}
-  .story-tags span{
-    font-size:13px;border:1px solid var(--line);border-radius:999px;
-    padding:5px 14px;color:var(--ink-2);background:var(--bg-soft);transition:.2s;
-  }
-  .story-tags span:hover{border-color:var(--accent);color:var(--accent);background:#fff;transform:translateY(-2px)}
-  .story-tags span.on{border-color:rgba(63,94,240,.4);color:var(--accent);background:#fff}
-  .story-cta{margin-top:30px}
-  .turning{
-    margin-top:26px;padding:22px 24px;background:var(--bg-soft);
-    border-left:3px solid var(--accent);border-radius:0 10px 10px 0;
-    font-size:15px;color:var(--ink-2);
-  }
-
-  /* ---------- 03 项目与作品：详情板块（详情页已并入首页） ---------- */
-  .work-block{padding:64px 0;border-top:1px solid var(--line)}
-  #clients{border-top:none;padding-top:8px}
-  /* 分区主色：01 客户 02 网站IA 03 线下 04 小红书 */
-  .tone1{--tone:#3f5ef0}
-  .tone2{--tone:#0ea5a5}
-  .tone3{--tone:#7c5cf0}
-  .tone4{--tone:#f0724f}
-  .tone5{--tone:#e05c8a}
-  .work-head{display:flex;gap:16px;align-items:flex-start;margin-bottom:34px}
-  .work-idx{
-    font-family:Georgia,"Times New Roman",serif;font-size:32px;font-weight:800;
-    color:var(--tone);opacity:.4;line-height:1.1;padding-top:5px;letter-spacing:1px;
-  }
-  .work-head-main{flex:1;min-width:0;position:relative}
-  .work-head h2{font-size:30px;letter-spacing:.5px;position:relative;z-index:1}
-  /* 板块英文水印 */
-  .work-en{
-    position:absolute;left:-2px;top:-20px;z-index:0;pointer-events:none;user-select:none;
-    font-family:Georgia,"Times New Roman",serif;font-size:40px;font-weight:800;
-    letter-spacing:1px;line-height:1;color:var(--tone);opacity:.1;white-space:nowrap;
-  }
-  @media(max-width:640px){.work-en{font-size:28px;top:-13px}}
-  .work-lines{display:flex;gap:6px;align-items:center;margin-top:13px}
-  .work-lines i{height:3px;border-radius:2px;background:var(--tone)}
-  .work-lines i:nth-child(1){width:74px;opacity:.75}
-  .work-lines i:nth-child(2){width:26px;opacity:.5}
-  .work-lines i:nth-child(3){width:12px;opacity:.3}
-  @media(max-width:640px){.work-head h2{font-size:24px}.work-idx{font-size:26px}}
-  .proj-table{border:1px solid var(--line);border-top:2px solid var(--tone);border-radius:var(--radius);overflow:hidden;background:#fff}
-  .pt-head,.pt-row{display:grid;grid-template-columns:.8fr .7fr 1.5fr;gap:14px;padding:14px 22px}
-  .pt-head{
-    background:var(--bg-soft);font-size:12.5px;color:var(--ink-3);
-    letter-spacing:1px;border-bottom:1px solid var(--line);
-  }
-  .pt-row{border-bottom:1px solid var(--line);font-size:14.5px;color:var(--ink-2);transition:.15s}
-  .pt-row:last-child{border-bottom:none}
-  .pt-row:hover{background:var(--bg-soft)}
-  .pt-row span:first-child{color:var(--ink);font-weight:500}
-  @media(max-width:640px){
-    .pt-head{display:none}
-    .pt-head,.pt-row{grid-template-columns:1fr;gap:4px}
-  }
-  .work-grid{display:grid;grid-template-columns:1.3fr .7fr;gap:52px;align-items:start}
-  @media(max-width:880px){.work-grid{grid-template-columns:1fr;gap:32px}}
-  .work-text p{color:var(--ink-2);margin-bottom:16px;font-size:15.5px}
-  .work-points{list-style:none;margin:22px 0 0}
-  .work-points li{position:relative;padding-left:20px;margin-bottom:12px;color:var(--ink-2);font-size:15px}
-  .work-points li::before{
-    content:"";position:absolute;left:0;top:9px;width:7px;height:7px;border-radius:50%;background:var(--tone);
-  }
-  .work-points b{color:var(--ink);font-weight:600}
-  .work-clients{
-    margin-top:24px;padding-top:18px;border-top:1px dashed var(--line);
-    font-size:13.5px;color:var(--ink-3);line-height:1.9;
-  }
-  .work-side{
-    background:var(--bg-soft);border:1px solid var(--line);border-top:2px solid var(--tone);
-    border-radius:var(--radius);padding:24px 26px;
-  }
-  .work-side h3{font-size:14px;color:var(--ink-3);margin-bottom:12px;letter-spacing:1px}
-  .work-steps{list-style:none;counter-reset:s}
-  .work-steps li{
-    counter-increment:s;position:relative;padding:9px 0 9px 34px;font-size:14.5px;
-    color:var(--ink-2);border-bottom:1px dashed var(--line);
-  }
-  .work-steps li:last-child{border-bottom:none;padding-bottom:0}
-  .work-steps li::before{
-    content:counter(s,decimal-leading-zero);position:absolute;left:0;top:10px;
-    font-size:12px;color:var(--tone);font-weight:700;letter-spacing:1px;
-  }
-  .work-note{
-    margin-top:18px;font-size:13px;color:var(--ink-3);line-height:1.8;
-    padding-top:16px;border-top:1px dashed var(--line);
-  }
-  /* 客户表 logo */
-  .pt-name{display:flex;align-items:center;gap:9px;min-width:0}
-  .pt-ico{width:44px;height:22px;object-fit:contain;flex:0 0 auto}
-  .pt-mono{
-    width:22px;height:22px;flex:0 0 22px;border:1px solid var(--line);border-radius:6px;
-    display:flex;align-items:center;justify-content:center;
-    font-size:11px;color:var(--ink-3);background:var(--bg-soft);
-  }
-
-  /* ---------- 04 实习时间线 ---------- */
-  .timeline{position:relative;margin-left:8px;padding-left:34px}
-  .timeline::before{content:"";position:absolute;left:6px;top:6px;bottom:6px;width:2px;background:var(--line)}
-  .tl-item{position:relative;padding-bottom:38px}
-  .tl-item:last-child{padding-bottom:0}
-  .tl-item::before{
-    content:"";position:absolute;left:-34px;top:8px;width:12px;height:12px;
-    border-radius:50%;background:#fff;border:3px solid var(--accent);
-  }
-  .tl-date{font-size:13px;color:var(--accent);font-weight:600;letter-spacing:1px}
-  .tl-item h3{font-size:18px;margin:4px 0 2px}
-  .tl-item h4{font-size:14px;color:var(--ink-3);font-weight:400;margin-bottom:8px}
-  .tl-item p{font-size:14.5px;color:var(--ink-2)}
-
-  /* ---------- 05 能力关键词 ---------- */
-  .skill-groups{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
-  @media(max-width:860px){.skill-groups{grid-template-columns:1fr}}
-  .skill-group h3{font-size:15px;color:var(--ink-3);margin-bottom:14px;letter-spacing:1px;display:flex;align-items:baseline;gap:9px}
-  .h3-en{font-size:10.5px;letter-spacing:1.6px;font-weight:400;opacity:.6;text-transform:uppercase}
-  .skill-tags{display:flex;flex-wrap:wrap;gap:9px}
-  .skill-tags span{
-    font-size:14px;background:var(--bg-soft);border:1px solid var(--line);
-    padding:6px 15px;border-radius:8px;color:var(--ink-2);
-  }
-  .learning{
-    margin-top:36px;font-size:14px;color:var(--ink-3);
-    padding-top:22px;border-top:1px dashed var(--line);
-  }
-
-  /* ---------- 小红书模块（中心散发式布局） ---------- */
-  .xhs-stage{
-    position:relative;max-width:1020px;margin:20px auto 0;
-    min-height:660px;display:flex;align-items:center;justify-content:center;
-  }
-  .xhs-stage::before,.xhs-stage::after{
-    content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-    border-radius:50%;pointer-events:none;
-  }
-  .xhs-stage::before{width:520px;height:520px;border:1.5px dashed #ffd0da}
-  .xhs-stage::after{width:880px;height:880px;border:1.5px dashed #ffe6eb}
-  .xhs-profile{
-    position:relative;z-index:5;width:330px;text-align:center;
-    border:1px solid var(--line);border-radius:18px;padding:32px 26px 26px;
-    background:#fff;box-shadow:0 18px 44px rgba(20,20,40,.10);
-  }
-  .xhs-avatar{width:96px;height:96px;border-radius:50%;object-fit:cover;border:3px solid #ffe3e8;margin:0 auto 14px}
-  .xhs-info h3{font-size:22px;display:flex;align-items:center;justify-content:center;gap:10px}
-  .xhs-badge{font-size:11px;background:#ff2442;color:#fff;border-radius:6px;padding:3px 9px;font-weight:600;letter-spacing:1px}
-  .xhs-info p{font-size:13px;color:var(--ink-2);margin-top:6px}
-  .xhs-tags{display:flex;justify-content:center;gap:6px;margin-top:12px;flex-wrap:wrap}
-  .xhs-tags span{font-size:11px;color:var(--ink-2);background:var(--bg-soft);
-    border:1px solid var(--line);border-radius:999px;padding:3px 11px}
-  .xhs-stats{display:flex;justify-content:center;gap:26px;margin-top:18px;padding-top:16px;border-top:1px dashed var(--line)}
-  .xhs-stats b{font-size:19px;display:block}
-  .xhs-stats span{font-size:12px;color:var(--ink-3)}
-  .xhs-note{
-    position:absolute;width:212px;background:#fff;border:1px solid var(--line);
-    border-radius:14px;overflow:hidden;display:block;
-    box-shadow:0 10px 26px rgba(20,20,40,.10);
-    transition:transform .35s, box-shadow .35s;
-  }
-  .xhs-note img{width:100%;aspect-ratio:3/4;object-fit:cover}
-  .xhs-note .xhs-body{padding:12px 14px 13px}
-  .xhs-note h4{font-size:13.5px;line-height:1.45;margin-bottom:6px}
-  .xhs-meta{display:flex;justify-content:space-between;font-size:12px;color:var(--ink-3)}
-  .xhs-meta .like{color:#ff2442;font-weight:600}
-  .xhs-meta .fav{color:#e8a33d;font-weight:600}
-  .xn1{left:1%;top:0;transform:rotate(-9deg)}
-  .xn2{left:10%;bottom:0;transform:rotate(-4deg);z-index:2}
-  .xn3{right:10%;top:0;transform:rotate(5deg);z-index:2}
-  .xn4{right:1%;bottom:0;transform:rotate(10deg)}
-  .xhs-note:hover{transform:rotate(0deg) scale(1.07);z-index:9;box-shadow:0 22px 48px rgba(20,20,40,.18)}
-  @media(max-width:920px){
-    .xhs-stage{display:block;min-height:0}
-    .xhs-stage::before,.xhs-stage::after{display:none}
-    .xhs-profile{margin:0 auto 26px}
-    .xhs-note{position:static;width:100%;transform:none;margin-bottom:18px}
-  }
-
-  /* ---------- 06 兴趣切片（多主题） ---------- */
-  .life-theme{margin-bottom:56px;padding-top:20px}
-  .life-theme:last-child{margin-bottom:0}
-  .life-theme-head{display:flex;align-items:baseline;gap:14px;margin-bottom:20px;flex-wrap:wrap;position:relative}
-  .life-theme-head h3{font-size:22px;position:relative;z-index:1}
-  .life-theme-head p{position:relative;z-index:1}
-  .life-en{
-    position:absolute;left:-2px;top:-18px;z-index:0;pointer-events:none;user-select:none;
-    font-family:Georgia,"Times New Roman",serif;font-size:36px;font-weight:800;
-    letter-spacing:1px;line-height:1;color:var(--ink);opacity:.07;white-space:nowrap;
-  }
-  @media(max-width:640px){.life-en{font-size:26px;top:-12px}}
-  .life-theme-head p{font-size:14px;color:var(--ink-3)}
-  .life-theme-head .theme-num{font-size:13px;color:var(--accent);font-weight:600}
-  /* 摄影主题：电影胶片 · 自动滚动 */
-  .film{
-    background:#131313;border-radius:16px;overflow:hidden;
-    box-shadow:0 14px 34px rgba(20,20,40,.18);
-  }
-  .film-bar{
-    height:30px;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='38' height='30'%3E%3Crect x='10' y='9' width='18' height='12' rx='3' fill='%23f2f2f2'/%3E%3C/svg%3E");
-    background-repeat:repeat-x;background-position:center;
-  }
-  .photo-strip{
-    display:flex;gap:10px;overflow-x:auto;
-    padding:12px;scrollbar-width:none;cursor:grab;
-    background:#131313;
-  }
-  .photo-strip::-webkit-scrollbar{display:none}
-  .photo-strip.dragging{cursor:grabbing}
-  .photo-strip figure{
-    flex:0 0 auto;height:360px;margin:0;
-    border-radius:6px;overflow:hidden;
-  }
-  .photo-strip img{height:100%;width:auto;display:block}
-  .photo-hint{font-size:12.5px;color:var(--ink-3);margin-top:10px}
-  @media(max-width:600px){.photo-strip figure{height:240px}.film-bar{height:24px}}
-  /* 瀑布流（我 / 线下活动主题） */
-  .gallery-masonry{columns:3;column-gap:18px}
-  .gallery-masonry figure{margin:0 0 18px;break-inside:avoid;border-radius:var(--radius);overflow:hidden;position:relative}
-  .gallery-masonry img{width:100%;transition:.3s}
-  .gallery-masonry figure:hover img{transform:scale(1.03)}
-  @media(max-width:960px){.gallery-masonry{columns:2}}
-  @media(max-width:600px){.gallery-masonry{columns:1}}
-  .gallery-masonry.sm{columns:4;column-gap:14px}
-  .gallery-masonry.sm figure{margin-bottom:14px}
-  @media(max-width:960px){.gallery-masonry.sm{columns:3}}
-  @media(max-width:600px){.gallery-masonry.sm{columns:2}}
-
-  /* ---------- 07 推荐语 ---------- */
-  .quotes{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
-  @media(max-width:860px){.quotes{grid-template-columns:1fr}}
-  .quote{
-    border:1px solid var(--line);border-radius:var(--radius);padding:28px 26px;
-    background:#fff;
-  }
-  .quote p{font-size:15px;color:var(--ink-2);margin-bottom:20px}
-  .quote p::before{content:"“";color:var(--accent);font-size:26px;line-height:0;margin-right:2px}
-  .quote-who{display:flex;align-items:center;gap:12px}
-  .quote-who i{
-    width:40px;height:40px;border-radius:50%;background:var(--bg-soft);
-    display:flex;align-items:center;justify-content:center;
-    font-style:normal;color:var(--ink-3);font-size:13px;border:1px solid var(--line);
-  }
-  .quote-who b{font-size:14px;display:block}
-  .quote-who small{font-size:12.5px;color:var(--ink-3)}
-
-  /* ---------- 08 联系 CTA ---------- */
-  .contact{background:var(--bg-soft);border-top:1px solid var(--line)}
-  .contact-inner{text-align:center;max-width:620px;margin:0 auto;position:relative}
-  .contact-inner h2{font-size:36px;margin-bottom:14px;position:relative;z-index:1}
-  .contact-inner>p{color:var(--ink-2);margin-bottom:34px;position:relative;z-index:1}
-  .contact-en{
-    position:absolute;left:50%;transform:translateX(-50%);top:-24px;z-index:0;
-    pointer-events:none;user-select:none;
-    font-family:Georgia,"Times New Roman",serif;font-size:52px;font-weight:800;
-    letter-spacing:2px;line-height:1;color:var(--ink);opacity:.07;white-space:nowrap;
-  }
-  @media(max-width:640px){.contact-en{font-size:34px;top:-14px}}
-  .contact-channels{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-bottom:30px}
-  .channel{
-    display:flex;align-items:center;gap:8px;font-size:14.5px;
-    border:1px solid var(--line);background:#fff;border-radius:10px;padding:11px 20px;
-  }
-  .channel:hover{border-color:var(--accent);color:var(--accent)}
-
-  /* ---------- 09 页脚 ---------- */
-  footer{padding:34px 0;border-top:1px solid var(--line)}
-  .foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;
-    font-size:13px;color:var(--ink-3)}
-  .foot-links{display:flex;gap:20px}
-  .foot-links a:hover{color:var(--accent)}
-
-  /* ================= 动效系统 ================= */
-  /* 首屏载入 */
-  @keyframes heroUp{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
-  .hero-grid>div:first-child>*{animation:heroUp .7s cubic-bezier(.22,.61,.36,1) both}
-  .hero-grid>div:first-child>*:nth-child(2){animation-delay:.08s}
-  .hero-grid>div:first-child>*:nth-child(3){animation-delay:.16s}
-  .hero-grid>div:first-child>*:nth-child(4){animation-delay:.24s}
-  .hero-grid>div:first-child>*:nth-child(5){animation-delay:.32s}
-  .hero-grid>div:first-child>*:nth-child(6){animation-delay:.4s}
-  .hero-photo{animation:heroUp .8s .28s cubic-bezier(.22,.61,.36,1) both}
-
-  /* 导航滚动阴影 */
-  header{transition:box-shadow .3s}
-  header.scrolled{box-shadow:0 6px 24px rgba(20,20,40,.07)}
-
-  /* 滚动显现：单元素 */
-  .reveal{opacity:0;transform:translateY(30px);
-    transition:opacity .8s ease,transform .8s cubic-bezier(.22,.61,.36,1)}
-  .reveal-pop{transform:scale(.92) translateY(18px)}
-  .reveal.in{opacity:1;transform:none}
-
-  /* 滚动显现：分组错峰（--sd 错峰延迟，settled 后清零避免悬浮卡顿） */
-  .reveal-group>*{opacity:0;transform:translateY(26px);
-    transition:opacity .7s ease var(--sd,0s),transform .7s cubic-bezier(.22,.61,.36,1) var(--sd,0s),box-shadow .3s ease}
-  .reveal-group>*:nth-child(2){--sd:.09s}
-  .reveal-group>*:nth-child(3){--sd:.18s}
-  .reveal-group>*:nth-child(4){--sd:.27s}
-  .reveal-group>*:nth-child(5){--sd:.36s}
-  .reveal-group>*:nth-child(6){--sd:.45s}
-  .reveal-group>*:nth-child(7){--sd:.54s}
-  .reveal-group>*:nth-child(8){--sd:.63s}
-  .reveal-group>*:nth-child(9){--sd:.72s}
-  .reveal-group.in>*{opacity:1;transform:none}
-  .reveal-group.settled>*{--sd:0s;transition-duration:.5s,.35s,.3s}
-
-  /* 分组变体：时间线左滑 / 推荐语翻转 / 照片墙缩放 */
-  .timeline.reveal-group>*{transform:translateX(-26px)}
-  .timeline.reveal-group.in>*{transform:none}
-  .quotes.reveal-group>*{transform:perspective(700px) rotateX(9deg) translateY(24px)}
-  .quotes.reveal-group.in>*{transform:none}
-  .gallery-masonry.reveal-group>*{transform:translateY(30px) scale(.96)}
-  .gallery-masonry.reveal-group.in>*{transform:none}
-
-  /* 显现后保持悬浮效果（优先级修正） */
-  .gallery-masonry.reveal-group.in>figure:hover{transform:translateY(-6px) rotate(-.6deg)}
-
-  /* 时间线圆点发光 */
-  .timeline.in .tl-item::before{box-shadow:0 0 0 5px var(--accent-soft);transition:box-shadow .6s .3s}
-
-  /* 小红书：笔记从中心散发入场 */
-  .xhs-stage .xhs-note{opacity:0;
-    transition:opacity .55s ease var(--sd,0s),transform .75s cubic-bezier(.22,.61,.36,1) var(--sd,0s),box-shadow .35s}
-  .xhs-stage .xn1{--sd:.2s;transform:rotate(-9deg) scale(.55)}
-  .xhs-stage .xn2{--sd:.35s;transform:rotate(-4deg) scale(.55)}
-  .xhs-stage .xn3{--sd:.5s;transform:rotate(5deg) scale(.55)}
-  .xhs-stage .xn4{--sd:.65s;transform:rotate(10deg) scale(.55)}
-  .xhs-stage.in .xn1{opacity:1;transform:rotate(-9deg) scale(1)}
-  .xhs-stage.in .xn2{opacity:1;transform:rotate(-4deg) scale(1)}
-  .xhs-stage.in .xn3{opacity:1;transform:rotate(5deg) scale(1)}
-  .xhs-stage.in .xn4{opacity:1;transform:rotate(10deg) scale(1)}
-  .xhs-stage.in .xhs-note:hover{transform:rotate(0deg) scale(1.07)}
-  .xhs-stage.settled .xhs-note{--sd:0s;transition-duration:.35s,.35s,.35s}
-  @media(max-width:920px){
-    .xhs-stage .xhs-note,.xhs-stage.in .xhs-note{opacity:1;transform:none}
-  }
-
-  /* 照片墙：白边相纸质感 + 悬浮 */
-  .gallery-masonry figure{background:#fff;padding:7px;box-shadow:0 8px 22px rgba(20,20,40,.08)}
-  .gallery-masonry figure img{border-radius:calc(var(--radius) - 7px)}
-  .gallery-masonry figure:hover{box-shadow:0 18px 38px rgba(20,20,40,.14)}
-
-  /* 胶片：两侧渐隐 + 悬浮 */
-  .photo-strip{
-    mask-image:linear-gradient(90deg,transparent,#000 3.5%,#000 96.5%,transparent);
-    -webkit-mask-image:linear-gradient(90deg,transparent,#000 3.5%,#000 96.5%,transparent);
-  }
-  .photo-strip figure{transition:transform .3s}
-  .photo-strip figure:hover{transform:translateY(-6px)}
-
-  /* 技能标签 & 按钮微交互 */
-  .skill-tags span{transition:transform .2s,background .2s,color .2s,border-color .2s}
-  .skill-tags span:hover{transform:translateY(-3px);background:#fff;border-color:var(--accent);color:var(--accent)}
-  .btn{transition:.2s}
-  .btn:active{transform:scale(.96)}
-  .channel{transition:transform .2s,border-color .2s,color .2s}
-  .channel:hover{transform:translateY(-3px)}
-
-  /* 微信二维码弹出 */
-  .qr-channel{position:relative;cursor:pointer}
-  .qr-pop{
-    position:absolute;left:50%;bottom:calc(100% + 12px);transform:translateX(-50%) translateY(8px) scale(.9);
-    background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 12px 10px;
-    box-shadow:0 18px 44px rgba(20,20,40,.16);opacity:0;pointer-events:none;
-    transition:opacity .25s,transform .25s cubic-bezier(.22,.61,.36,1);z-index:20;width:172px;
-  }
-  .qr-pop::after{
-    content:"";position:absolute;left:50%;bottom:-6px;transform:translateX(-50%) rotate(45deg);
-    width:12px;height:12px;background:#fff;border-right:1px solid var(--line);border-bottom:1px solid var(--line);
-  }
-  .qr-pop img{width:148px;height:148px;border-radius:8px;display:block}
-  .qr-pop em{display:block;font-style:normal;font-size:12px;color:var(--ink-3);text-align:center;margin-top:8px}
-  .qr-channel:hover .qr-pop,.qr-channel:focus .qr-pop{
-    opacity:1;transform:translateX(-50%) translateY(0) scale(1);pointer-events:auto;
-  }
-
-  /* ---------- 结构微调 ---------- */
-  .sec-head.sub{margin-top:56px;margin-bottom:30px}
-  .life-theme-head{margin-bottom:18px}
-
-  /* ---------- 能力图谱：两列 + 工具图标 ---------- */
-  .skill-groups.two{grid-template-columns:.78fr 1.22fr;gap:40px;align-items:start}
-  @media(max-width:880px){.skill-groups.two{grid-template-columns:1fr;gap:26px}}
-  .skill-groups.two .skill-group{margin-bottom:30px}
-  .skill-groups.two .skill-group:last-child{margin-bottom:0}
-  .tool-sub{margin-bottom:16px}
-  .tool-sub:last-child{margin-bottom:0}
-  .tool-label{display:block;font-size:12.5px;color:var(--ink-3);margin-bottom:9px;letter-spacing:.5px}
-  .tool-grid{display:flex;flex-wrap:wrap;gap:9px}
-  .tool{
-    display:inline-flex;align-items:center;gap:8px;font-size:13.5px;color:var(--ink-2);
-    background:var(--bg-soft);border:1px solid var(--line);border-radius:10px;
-    padding:7px 13px 7px 11px;transition:.2s;
-  }
-  .tool:hover{background:#fff;border-color:var(--accent);color:var(--accent);transform:translateY(-3px)}
-  .tool b{font-weight:500}
-  .app-ico{
-    width:20px;height:20px;flex:0 0 20px;object-fit:contain;
-    border-radius:5px;display:block;transition:transform .2s;
-  }
-  .tool:hover .app-ico{transform:scale(1.12)}
-</style>
+<title>薛绍祎 · 个人作品集</title>
+<meta name="description" content="薛绍祎的个人作品集：双语沟通、项目售前与执行、品牌实践，以及生活与摄影记录。">
+<meta name="theme-color" content="#f37274">
+<link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
+<a class="skip-link" href="#hero">跳到正文</a>
 
 <!-- ================= 导航 ================= -->
 <header>
   <div class="wrap nav">
-    <div class="logo">薛绍祎<span>个人网站</span></div>
-    <nav class="nav-links">
+    <a class="logo" href="#hero" aria-label="薛绍祎，返回首页">薛绍祎<span>XUE SHAOYI / PORTFOLIO</span></a>
+    <nav class="nav-links" aria-label="主导航">
       <a href="#story">关于我</a>
       <a href="#education">教育与经历</a>
       <a href="#projects">项目与作品</a>
       <a href="#skills">能力</a>
       <a href="#life">相册</a>
     </nav>
-    <a class="nav-cta" href="#contact">联系我</a>
+    <a class="nav-cta" href="#contact">联系我 ↗</a>
     <div class="scroll-bar" id="scrollBar"></div>
   </div>
 </header>
@@ -572,6 +30,9 @@
 <!-- ================= 01 首屏个人封面 ================= -->
 <section class="hero" id="hero" style="border-top:none">
   <div class="wrap">
+    <div class="masthead"><span>PERSONAL PORTFOLIO / 2026</span><span>BEIJING, CHINA</span></div>
+    <div class="coral-band" aria-hidden="true"></div>
+    <p class="portfolio-title" aria-hidden="true">Portfolio.</p>
     <div class="hero-grid">
       <div>
         <div class="hero-status"><i></i>2027 届应届 · 求职中：项目助理 / 售前支持 / 产品运营 / 品牌商务</div>
@@ -583,14 +44,16 @@
           <span>商业敏感</span><span>执行力</span>
         </div>
         <div class="hero-cta">
-          <a class="btn btn-primary" href="#projects">查看项目与作品</a>
-          <a class="btn btn-ghost" href="#contact">下载简历 / 联系我</a>
+          <a class="btn btn-primary" href="#projects">查看项目与作品 <span aria-hidden="true">↗</span></a>
+          <a class="btn btn-ghost" href="%E8%96%9B%E7%BB%8D%E7%A5%8E-%E7%AE%80%E5%8E%862.pdf" download="薛绍祎-简历.pdf">下载简历（PDF） <span aria-hidden="true">↓</span></a>
         </div>
       </div>
-      <div class="hero-photo">
-        <img src="assets/avatar.jpg" alt="薛绍祎个人照片">
-      </div>
+      <figure class="hero-photo">
+        <img src="assets/avatar.jpg" alt="薛绍祎个人照片" fetchpriority="high" width="900" height="900">
+        <figcaption><span>薛绍祎 / XUE SHAOYI</span><span>01 — PROFILE</span></figcaption>
+      </figure>
     </div>
+    <div class="hero-footer"><span>双语沟通 / 项目实践 / 生活观察</span><span>SCROLL TO EXPLORE ↓</span></div>
   </div>
 </section>
 
@@ -598,12 +61,12 @@
 <section id="story">
   <div class="wrap">
     <div class="sec-head reveal">
-      <span class="sec-en">About</span>
+      <span class="sec-en">About me.</span>
       <h2>关于我</h2>
     </div>
     <div class="story-grid reveal-group">
       <figure class="story-photo">
-        <img src="assets/story.jpg" alt="生活照">
+        <img loading="lazy" decoding="async" src="assets/story.jpg" alt="生活照" width="810" height="1080">
       </figure>
       <div class="story-text">
         <div class="story-block">
@@ -622,7 +85,7 @@
           <div class="story-label">目标方向</div>
           <span class="on">项目助理</span><span class="on">售前支持</span><span class="on">产品运营</span><span class="on">品牌商务</span>
         </div>
-        <div class="story-cta"><a class="btn btn-ghost" href="#contact">下载完整简历（PDF）</a></div>
+        <div class="story-cta"><a class="btn btn-ghost" href="%E8%96%9B%E7%BB%8D%E7%A5%8E-%E7%AE%80%E5%8E%862.pdf" download="薛绍祎-简历.pdf">下载完整简历（PDF） ↓</a></div>
       </div>
     </div>
   </div>
@@ -668,7 +131,7 @@
 <section id="projects">
   <div class="wrap">
     <div class="sec-head reveal">
-      <span class="sec-en">Projects &amp; work</span>
+      <span class="sec-en">Selected work.</span>
       <h2>项目与作品</h2>
     </div>
   </div>
@@ -690,14 +153,14 @@
 
       <div class="proj-table reveal">
         <div class="pt-head"><span>客户</span><span>领域</span><span>我参与的环节</span></div>
-        <div class="pt-row"><span class="pt-name"><img class="pt-ico" src="assets/logos/sh-electric.png" alt="">上海电气</span><span>装备制造</span><span>需求调研 · 信息架构 · 页面原型</span></div>
-        <div class="pt-row"><span class="pt-name"><img class="pt-ico" src="assets/logos/pipechina.png" alt="">国家管网</span><span>能源</span><span>栏目梳理 · 需求文档 · 页面原型</span></div>
-        <div class="pt-row"><span class="pt-name"><img class="pt-ico" src="assets/logos/ccj.png" alt="">中国建投</span><span>金融投资</span><span>需求调研 · 信息架构 · 文档撰写</span></div>
-        <div class="pt-row"><span class="pt-name"><img class="pt-ico" src="assets/logos/pumch.png" alt="">北京协和医院</span><span>医疗</span><span>科室栏目规划 · 页面原型</span></div>
-        <div class="pt-row"><span class="pt-name"><img class="pt-ico" src="assets/logos/wch.png" alt="">四川大学华西医院</span><span>医疗</span><span>内容模块规划 · 页面原型</span></div>
+        <div class="pt-row"><span class="pt-name"><img loading="lazy" decoding="async" class="pt-ico" src="assets/logos/sh-electric.png" alt="" width="900" height="250">上海电气</span><span>装备制造</span><span>需求调研 · 信息架构 · 页面原型</span></div>
+        <div class="pt-row"><span class="pt-name"><img loading="lazy" decoding="async" class="pt-ico" src="assets/logos/pipechina.png" alt="" width="807" height="267">国家管网</span><span>能源</span><span>栏目梳理 · 需求文档 · 页面原型</span></div>
+        <div class="pt-row"><span class="pt-name"><img loading="lazy" decoding="async" class="pt-ico" src="assets/logos/ccj.png" alt="" width="179" height="59">中国建投</span><span>金融投资</span><span>需求调研 · 信息架构 · 文档撰写</span></div>
+        <div class="pt-row"><span class="pt-name"><img loading="lazy" decoding="async" class="pt-ico" src="assets/logos/pumch.png" alt="" width="114" height="98">北京协和医院</span><span>医疗</span><span>科室栏目规划 · 页面原型</span></div>
+        <div class="pt-row"><span class="pt-name"><img loading="lazy" decoding="async" class="pt-ico" src="assets/logos/wch.png" alt="" width="500" height="507">四川大学华西医院</span><span>医疗</span><span>内容模块规划 · 页面原型</span></div>
         <div class="pt-row"><span class="pt-name"><span class="pt-mono">瑞</span>上海瑞金医院</span><span>医疗</span><span>需求调研 · 页面原型 · 交付跟进</span></div>
-        <div class="pt-row"><span class="pt-name"><img class="pt-ico" src="assets/logos/pku.png" alt="">北京大学</span><span>高校</span><span>信息架构 · 页面原型</span></div>
-        <div class="pt-row"><span class="pt-name"><img class="pt-ico" src="assets/logos/gbu.png" alt="">大湾区大学</span><span>高校</span><span>栏目体系梳理 · 页面原型</span></div>
+        <div class="pt-row"><span class="pt-name"><img loading="lazy" decoding="async" class="pt-ico" src="assets/logos/pku.png" alt="" width="864" height="252">北京大学</span><span>高校</span><span>信息架构 · 页面原型</span></div>
+        <div class="pt-row"><span class="pt-name"><img loading="lazy" decoding="async" class="pt-ico" src="assets/logos/gbu.png" alt="" width="900" height="216">大湾区大学</span><span>高校</span><span>栏目体系梳理 · 页面原型</span></div>
       </div>
 
       <div class="work-grid" style="margin-top:44px">
@@ -834,23 +297,23 @@
 
       <!-- 中心主页 + 两侧散发笔记 -->
       <div class="xhs-stage">
-        <a class="xhs-note xn3" href="#">
-          <img src="assets/xhs-1.jpg" alt="深圳出片地点">
+        <article class="xhs-note xn3">
+          <img loading="lazy" decoding="async" src="assets/xhs-1.jpg" alt="深圳出片地点" width="581" height="584">
           <div class="xhs-body">
             <h4>📍 深圳出片地点</h4>
             <div class="xhs-meta"><span class="like">❤ 2524</span><span class="fav">⭐ 1156</span></div>
           </div>
-        </a>
-        <a class="xhs-note xn2" href="#">
-          <img src="assets/xhs-2.jpg" alt="五一大连攻略">
+        </article>
+        <article class="xhs-note xn2">
+          <img loading="lazy" decoding="async" src="assets/xhs-2.jpg" alt="五一大连攻略" width="566" height="745">
           <div class="xhs-body">
             <h4>五一大连攻略（游玩篇）</h4>
             <div class="xhs-meta"><span class="like">❤ 2314</span><span class="fav">⭐ 2792</span></div>
           </div>
-        </a>
+        </article>
 
         <div class="xhs-profile reveal reveal-pop">
-          <img class="xhs-avatar" src="assets/xhs-avatar.jpg" alt="小红书头像">
+          <img loading="lazy" decoding="async" class="xhs-avatar" src="assets/xhs-avatar.jpg" alt="小红书头像" width="400" height="400">
           <div class="xhs-info">
             <h3>1018 <span class="xhs-badge">小红书</span></h3>
             <p>小红书号：1088206577 · IP：北京</p>
@@ -863,20 +326,20 @@
           </div>
         </div>
 
-        <a class="xhs-note xn1" href="#">
-          <img src="assets/xhs-3.jpg" alt="zara 给的氛围感">
+        <article class="xhs-note xn1">
+          <img loading="lazy" decoding="async" src="assets/xhs-3.jpg" alt="zara 给的氛围感" width="581" height="765">
           <div class="xhs-body">
             <h4>zara 给的氛围感</h4>
             <div class="xhs-meta"><span class="like">❤ 161</span><span></span></div>
           </div>
-        </a>
-        <a class="xhs-note xn4" href="#">
-          <img src="assets/xhs-4.jpg" alt="涂鸦探店">
+        </article>
+        <article class="xhs-note xn4">
+          <img loading="lazy" decoding="async" src="assets/xhs-4.jpg" alt="涂鸦探店" width="566" height="747">
           <div class="xhs-body">
             <h4>🎨</h4>
             <div class="xhs-meta"><span class="like">❤ 246</span><span></span></div>
           </div>
-        </a>
+        </article>
       </div>
     </div>
   </div>
@@ -913,29 +376,29 @@
         <div class="tool-sub">
           <span class="tool-label">AI 与开发</span>
           <div class="tool-grid">
-            <span class="tool"><img class="app-ico" src="assets/icons/claude.svg" alt=""><b>Claude Code</b></span>
-            <span class="tool"><img class="app-ico" src="assets/icons/codex.svg" alt=""><b>Codex</b></span>
-            <span class="tool"><img class="app-ico" src="assets/icons/trae.png" alt=""><b>Trae</b></span>
-            <span class="tool"><img class="app-ico" src="assets/icons/workbuddy.svg" alt=""><b>WorkBuddy</b></span>
-            <span class="tool"><img class="app-ico" src="assets/icons/github.svg" alt=""><b>GitHub</b></span>
-            <span class="tool"><img class="app-ico" src="assets/icons/vscode.svg" alt=""><b>VS Code</b></span>
+            <span class="tool"><img loading="lazy" decoding="async" class="app-ico" src="assets/icons/claude.svg" alt=""><b>Claude Code</b></span>
+            <span class="tool"><img loading="lazy" decoding="async" class="app-ico" src="assets/icons/codex.svg" alt=""><b>Codex</b></span>
+            <span class="tool"><img loading="lazy" decoding="async" class="app-ico" src="assets/icons/trae.png" alt="" width="48" height="48"><b>Trae</b></span>
+            <span class="tool"><img loading="lazy" decoding="async" class="app-ico" src="assets/icons/workbuddy.svg" alt=""><b>WorkBuddy</b></span>
+            <span class="tool"><img loading="lazy" decoding="async" class="app-ico" src="assets/icons/github.svg" alt=""><b>GitHub</b></span>
+            <span class="tool"><img loading="lazy" decoding="async" class="app-ico" src="assets/icons/vscode.svg" alt=""><b>VS Code</b></span>
           </div>
         </div>
 
         <div class="tool-sub">
           <span class="tool-label">工作协作</span>
           <div class="tool-grid">
-            <span class="tool"><img class="app-ico" src="assets/icons/feishu.png" alt=""><b>飞书</b></span>
-            <span class="tool"><img class="app-ico" src="assets/icons/wecom.png" alt=""><b>企业微信</b></span>
-            <span class="tool"><img class="app-ico" src="assets/icons/dingtalk.png" alt=""><b>钉钉</b></span>
+            <span class="tool"><img loading="lazy" decoding="async" class="app-ico" src="assets/icons/feishu.png" alt="" width="144" height="145"><b>飞书</b></span>
+            <span class="tool"><img loading="lazy" decoding="async" class="app-ico" src="assets/icons/wecom.png" alt="" width="48" height="48"><b>企业微信</b></span>
+            <span class="tool"><img loading="lazy" decoding="async" class="app-ico" src="assets/icons/dingtalk.png" alt="" width="256" height="256"><b>钉钉</b></span>
           </div>
         </div>
 
         <div class="tool-sub">
           <span class="tool-label">设计</span>
           <div class="tool-grid">
-            <span class="tool"><img class="app-ico" src="assets/icons/figma.svg" alt=""><b>Figma</b></span>
-            <span class="tool"><img class="app-ico" src="assets/icons/photoshop.svg" alt=""><b>Photoshop</b></span>
+            <span class="tool"><img loading="lazy" decoding="async" class="app-ico" src="assets/icons/figma.svg" alt=""><b>Figma</b></span>
+            <span class="tool"><img loading="lazy" decoding="async" class="app-ico" src="assets/icons/photoshop.svg" alt=""><b>Photoshop</b></span>
           </div>
         </div>
       </div>
@@ -948,7 +411,7 @@
 <section id="life">
   <div class="wrap">
     <div class="sec-head reveal">
-      <span class="sec-en">Gallery</span>
+      <span class="sec-en">Life, in frames.</span>
       <h2>相册</h2>
     </div>
     <div class="life-theme">
@@ -957,15 +420,15 @@
         <h3>生活记录</h3>
       </div>
       <div class="gallery-masonry sm reveal-group">
-        <figure><img src="assets/me-p1.jpg" alt=""></figure>
-        <figure><img src="assets/me-p2.jpg" alt=""></figure>
-        <figure><img src="assets/me-p3.jpg" alt=""></figure>
-        <figure><img src="assets/me-p4.jpg" alt=""></figure>
-        <figure><img src="assets/me-p5.jpg" alt=""></figure>
-        <figure><img src="assets/me-p6.jpg" alt=""></figure>
-        <figure><img src="assets/me-p7.jpg" alt=""></figure>
-        <figure><img src="assets/me-p8.jpg" alt=""></figure>
-        <figure><img src="assets/me-p9.jpg" alt=""></figure>
+        <figure><img loading="lazy" decoding="async" src="assets/me-p1.jpg" alt="" width="1000" height="1323"></figure>
+        <figure><img loading="lazy" decoding="async" src="assets/me-p2.jpg" alt="" width="1000" height="1333"></figure>
+        <figure><img loading="lazy" decoding="async" src="assets/me-p3.jpg" alt="" width="1000" height="666"></figure>
+        <figure><img loading="lazy" decoding="async" src="assets/me-p4.jpg" alt="" width="1000" height="666"></figure>
+        <figure><img loading="lazy" decoding="async" src="assets/me-p5.jpg" alt="" width="1000" height="1333"></figure>
+        <figure><img loading="lazy" decoding="async" src="assets/me-p6.jpg" alt="" width="1000" height="1333"></figure>
+        <figure><img loading="lazy" decoding="async" src="assets/me-p7.jpg" alt="" width="1000" height="1334"></figure>
+        <figure><img loading="lazy" decoding="async" src="assets/me-p8.jpg" alt="" width="1000" height="1333"></figure>
+        <figure><img loading="lazy" decoding="async" src="assets/me-p9.jpg" alt="" width="1000" height="1495"></figure>
       </div>
     </div>
 
@@ -977,20 +440,20 @@
       </div>
       <div class="film reveal">
         <div class="film-bar"></div>
-        <div class="photo-strip" id="photoStrip">
-          <figure><img src="assets/photo-07.jpg" alt=""></figure>
-          <figure><img src="assets/photo-08.jpg" alt=""></figure>
-          <figure><img src="assets/photo-04.jpg" alt=""></figure>
-          <figure><img src="assets/photo-09.jpg" alt=""></figure>
-          <figure><img src="assets/photo-10.jpg" alt=""></figure>
-          <figure><img src="assets/photo-03.jpg" alt=""></figure>
-          <figure><img src="assets/photo-11.jpg" alt=""></figure>
-          <figure><img src="assets/photo-05.jpg" alt=""></figure>
-          <figure><img src="assets/photo-12.jpg" alt=""></figure>
+        <div class="photo-strip" id="photoStrip" tabindex="0" role="region" aria-label="摄影作品，使用左右方向键浏览">
+          <figure><img loading="lazy" decoding="async" src="assets/photo-07.jpg" alt="" width="1200" height="443"></figure>
+          <figure><img loading="lazy" decoding="async" src="assets/photo-08.jpg" alt="" width="1200" height="900"></figure>
+          <figure><img loading="lazy" decoding="async" src="assets/photo-04.jpg" alt="" width="1200" height="1600"></figure>
+          <figure><img loading="lazy" decoding="async" src="assets/photo-09.jpg" alt="" width="1200" height="900"></figure>
+          <figure><img loading="lazy" decoding="async" src="assets/photo-10.jpg" alt="" width="1200" height="1600"></figure>
+          <figure><img loading="lazy" decoding="async" src="assets/photo-03.jpg" alt="" width="1200" height="900"></figure>
+          <figure><img loading="lazy" decoding="async" src="assets/photo-11.jpg" alt="" width="1200" height="1600"></figure>
+          <figure><img loading="lazy" decoding="async" src="assets/photo-05.jpg" alt="" width="1200" height="1600"></figure>
+          <figure><img loading="lazy" decoding="async" src="assets/photo-12.jpg" alt="" width="1200" height="1600"></figure>
         </div>
         <div class="film-bar"></div>
       </div>
-      <p class="photo-hint">🎞 自动播放中 · 悬停暂停 · 可按住拖动</p>
+      <div class="photo-controls"><p class="photo-hint">拖动或左右滑动浏览 · 悬停暂停</p><button type="button" class="photo-toggle" id="photoToggle" aria-controls="photoStrip" aria-pressed="true">暂停播放</button></div>
     </div>
 
   </div>
@@ -999,21 +462,21 @@
 <!-- ================= 08 联系 CTA ================= -->
 <section class="contact" id="contact">
   <div class="wrap contact-inner reveal">
-    <span class="contact-en">Contact</span>
+    <span class="contact-en">Let’s connect.</span>
     <h2>联系方式</h2>
     <p>欢迎通过以下任意方式与我取得联系。</p>
     <div class="contact-channels">
-      <a class="channel" href="tel:15313031018">📱 15313031018</a>
-      <a class="channel" href="mailto:xue_shaoyi@qq.com">📮 xue_shaoyi@qq.com</a>
-      <span class="channel qr-channel" tabindex="0">💬 微信
-        <span class="qr-pop">
-          <img src="assets/wechat-qr.jpg" alt="微信二维码">
+      <a class="channel" href="tel:15313031018"><span class="channel-label">PHONE</span>15313031018</a>
+      <a class="channel" href="mailto:xue_shaoyi@qq.com"><span class="channel-label">EMAIL</span>xue_shaoyi@qq.com</a>
+      <button type="button" class="channel qr-channel" aria-expanded="false" aria-controls="wechatQR"><span class="channel-label">WECHAT</span>微信 ↗
+        <span class="qr-pop" id="wechatQR" aria-hidden="true">
+          <img loading="lazy" decoding="async" src="assets/wechat-qr.jpg" alt="微信二维码" width="671" height="654">
           <em>扫码加我微信</em>
         </span>
-      </span>
-      <a class="channel" href="#">📍 北京</a>
+      </button>
+      <span class="channel location"><span class="channel-label">BASED IN</span>北京</span>
     </div>
-    <a class="btn btn-primary" href="#">下载简历（PDF）</a>
+    <a class="btn btn-primary" href="%E8%96%9B%E7%BB%8D%E7%A5%8E-%E7%AE%80%E5%8E%862.pdf" download="薛绍祎-简历.pdf">下载简历（PDF） <span aria-hidden="true">↓</span></a>
   </div>
 </section>
 
@@ -1029,126 +492,9 @@
   </div>
 </footer>
 
-<script>
-/* 摄影胶片：自动滚动播放 + 拖拽（无缝循环） */
-(function(){
-  const el = document.getElementById("photoStrip");
-  if (!el) return;
-  el.innerHTML += el.innerHTML; /* 复制一份实现无缝循环 */
-  let down = false, startX = 0, startScroll = 0, hovering = false;
 
-  el.addEventListener("pointerenter", () => hovering = true);
-  el.addEventListener("pointerleave", () => hovering = false);
-  el.addEventListener("pointerdown", e => {
-    down = true; startX = e.clientX; startScroll = el.scrollLeft;
-    el.classList.add("dragging"); el.setPointerCapture(e.pointerId);
-  });
-  el.addEventListener("pointermove", e => {
-    if (!down) return;
-    el.scrollLeft = startScroll - (e.clientX - startX);
-  });
-  ["pointerup", "pointercancel"].forEach(ev =>
-    el.addEventListener(ev, () => { down = false; el.classList.remove("dragging"); }));
 
-  function tick(){
-    const half = el.scrollWidth / 2;
-    if (half > 0) {
-      if (!down && !hovering) el.scrollLeft += 0.6;
-      if (el.scrollLeft >= half) el.scrollLeft -= half;
-      if (el.scrollLeft < 0) el.scrollLeft += half;
-    }
-    requestAnimationFrame(tick);
-  }
-  tick();
-})();
-</script>
 
-<script>
-/* 滚动显现 & 数字滚动 & 导航阴影 */
-(function(){
-  const io = new IntersectionObserver(entries => {
-    entries.forEach(en => {
-      if (!en.isIntersecting) return;
-      const el = en.target;
-      el.classList.add("in");
-      setTimeout(() => el.classList.add("settled"), 1500);
-      if (el.classList.contains("xhs-stage")) startStats(el);
-      io.unobserve(el);
-    });
-  }, { threshold: 0.15 });
-  document.querySelectorAll(".reveal,.reveal-group,.xhs-stage").forEach(el => io.observe(el));
-
-  function countUp(el){
-    const raw = el.textContent.trim();
-    const m = raw.match(/^([\d.]+)(.*)$/);
-    if (!m) return;
-    const target = parseFloat(m[1]), suffix = m[2] || "";
-    const isFloat = m[1].indexOf(".") > -1;
-    const dur = 1200, t0 = performance.now();
-    (function step(t){
-      const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3);
-      const v = target * e;
-      el.textContent = (isFloat ? v.toFixed(1) : Math.round(v)) + suffix;
-      if (p < 1) requestAnimationFrame(step);
-    })(t0);
-  }
-  function startStats(stage){
-    stage.querySelectorAll(".xhs-stats b").forEach(countUp);
-  }
-
-  const hdr = document.querySelector("header");
-  addEventListener("scroll", () => hdr.classList.toggle("scrolled", scrollY > 8), { passive: true });
-})();
-
-/* 滚动进度条：顶部整体进度 + 当前栏目下划线进度 */
-(function(){
-  const bar = document.getElementById("scrollBar");
-  const nav = document.querySelector(".works-nav") || document.querySelector(".nav-links");
-  if (!nav) return;
-  const items = [...nav.querySelectorAll("a")].map(a => {
-    const href = a.getAttribute("href") || "";
-    const hash = href.indexOf("#");
-    let sec = null;
-    if (hash > -1){
-      const id = href.slice(hash);
-      const el = document.querySelector(id);
-      if (el && el !== document.body) sec = el;
-    }
-    if (!sec && document.querySelector(".works-nav")) sec = document.body;
-    return { a: a, sec: sec };
-  }).filter(x => x.sec);
-  if (!items.length) return;
-
-  function measure(it){
-    if (it.sec === document.body){
-      return { top: 0, h: Math.max(1, document.documentElement.scrollHeight - innerHeight) };
-    }
-    return { top: it.sec.offsetTop, h: Math.max(1, it.sec.offsetHeight) };
-  }
-
-  function upd(){
-    const doc = document.documentElement;
-    const total = Math.max(1, doc.scrollHeight - innerHeight);
-    if (bar) bar.style.width = (Math.min(1, scrollY / total) * 100).toFixed(2) + "%";
-
-    const line = scrollY + innerHeight * 0.35;
-    let cur = -1, curTop = -1;
-    items.forEach(function(it, i){
-      const m = measure(it);
-      if (m.top <= line && m.top >= curTop){ curTop = m.top; cur = i; }
-    });
-    items.forEach(function(it, i){
-      const m = measure(it);
-      const p = Math.max(0, Math.min(1, (line - m.top) / m.h));
-      it.a.style.setProperty("--p", p.toFixed(3));
-      it.a.classList.toggle("active", i === cur);
-    });
-  }
-
-  addEventListener("scroll", upd, { passive: true });
-  addEventListener("resize", upd);
-  upd();
-})();
-</script>
+<script src="assets/site.js" defer></script>
 </body>
 </html>
