@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>网站内容问卷 · 薛绍祎</title>
+<script src="https://cdn.jsdelivr.net/npm/@tencent-ai/workbuddy-cloud-sdk@dev/lib/index.global.js"></script>
+<style>
+  :root{
+    --ink:#1a1a1e; --ink-2:#55565c; --ink-3:#8a8b92;
+    --line:#e6e6ea; --bg:#f7f7f9; --card:#ffffff;
+    --accent:#3f5ef0; --accent-soft:#eef1fe; --radius:12px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:"PingFang SC","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;
+    color:var(--ink);background:var(--bg);line-height:1.7;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:760px;margin:0 auto;padding:0 20px}
+  header.top{background:#fff;border-bottom:1px solid var(--line);padding:18px 0;position:sticky;top:0;z-index:10}
+  .top-inner{max-width:760px;margin:0 auto;padding:0 20px;display:flex;justify-content:space-between;align-items:center}
+  .top-inner b{font-size:16px}
+  .top-inner span{font-size:13px;color:var(--ink-3)}
+  main{padding:36px 0 90px}
+  .intro{color:var(--ink-2);font-size:14.5px;margin-bottom:26px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:26px 26px 30px;margin-bottom:22px}
+  .card>h2{font-size:19px;margin-bottom:4px;display:flex;align-items:center;gap:10px}
+  .card>h2 .no{font-size:12px;color:#fff;background:var(--accent);border-radius:6px;
+    padding:2px 8px;font-weight:600;letter-spacing:1px}
+  .card>.desc{font-size:13px;color:var(--ink-3);margin-bottom:18px}
+  .field{margin-bottom:16px}
+  .field label{display:block;font-size:14px;font-weight:500;margin-bottom:6px}
+  .field label small{font-weight:400;color:var(--ink-3);margin-left:6px}
+  .field input[type=text],.field input[type=email],.field input[type=password],
+  .field input[type=url],.field textarea{
+    width:100%;border:1px solid var(--line);border-radius:8px;padding:10px 13px;
+    font-size:14.5px;font-family:inherit;color:var(--ink);background:#fff;outline:none;transition:.15s}
+  .field input:focus,.field textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  .field textarea{min-height:84px;resize:vertical}
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:560px){.field-row{grid-template-columns:1fr}}
+  .hint{font-size:12.5px;color:var(--ink-3);margin-top:5px}
+  .filebox{border:1.5px dashed var(--line);border-radius:8px;padding:14px;font-size:13.5px;
+    color:var(--ink-2);background:#fbfbfc;cursor:pointer}
+  .filebox:hover{border-color:var(--accent)}
+  .filebox input{display:none}
+  .filelist{margin-top:8px;font-size:12.5px;color:var(--ink-2)}
+  .filelist div{padding:2px 0}
+  .dyn-block{border:1px solid var(--line);border-radius:10px;padding:18px;margin-bottom:14px;position:relative;background:#fdfdfe}
+  .dyn-block .del{position:absolute;top:10px;right:12px;font-size:12px;color:var(--ink-3);
+    cursor:pointer;border:1px solid var(--line);border-radius:6px;padding:2px 10px;background:#fff}
+  .dyn-block .del:hover{color:#dc2626;border-color:#fecaca}
+  .dyn-block .tag{font-size:12px;color:var(--accent);font-weight:600;margin-bottom:12px}
+  .add-btn{width:100%;border:1.5px dashed var(--line);background:none;border-radius:8px;
+    padding:11px;font-size:14px;color:var(--ink-2);cursor:pointer;transition:.15s}
+  .add-btn:hover{border-color:var(--accent);color:var(--accent)}
+  .btn{display:inline-block;border:none;border-radius:10px;padding:14px 34px;font-size:15.5px;
+    background:var(--accent);color:#fff;cursor:pointer;transition:.2s;font-family:inherit}
+  .btn:hover{background:#2f4bd0}
+  .btn:disabled{background:#a9b6f5;cursor:not-allowed}
+  .btn-line{background:#fff;color:var(--ink);border:1px solid var(--line);padding:10px 22px;font-size:14px}
+  .btn-line:hover{border-color:var(--accent);color:var(--accent);background:#fff}
+  .progress{margin-top:14px;font-size:13.5px;color:var(--ink-2)}
+  .msg{font-size:13.5px;margin-top:10px}
+  .msg.err{color:#dc2626}
+  .msg.ok{color:#047857}
+  .tabs{display:flex;gap:8px;margin-bottom:22px}
+  .tabs button{flex:1;border:1px solid var(--line);background:#fff;border-radius:8px;
+    padding:10px;font-size:14.5px;cursor:pointer;color:var(--ink-2);font-family:inherit}
+  .tabs button.on{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);font-weight:600}
+  .otp-row{display:grid;grid-template-columns:1fr auto;gap:10px}
+  .hidden{display:none!important}
+  .done{text-align:center;padding:40px 20px}
+  .done h2{font-size:24px;margin-bottom:10px}
+  .done p{color:var(--ink-2);font-size:14.5px;margin-bottom:24px}
+  .past{margin-top:26px;text-align:left}
+  .past h3{font-size:14px;color:var(--ink-3);margin-bottom:10px}
+  .past .item{border:1px solid var(--line);border-radius:8px;padding:10px 14px;font-size:13.5px;
+    color:var(--ink-2);margin-bottom:8px;background:#fff;display:flex;justify-content:space-between}
+  .radio-row{display:flex;gap:12px}
+  .radio-row label{border:1px solid var(--line);border-radius:8px;padding:9px 20px;font-size:14px;
+    cursor:pointer;color:var(--ink-2)}
+  .radio-row input{accent-color:var(--accent);margin-right:6px}
+  footer.note{text-align:center;font-size:12.5px;color:var(--ink-3);padding:20px 0 40px}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <b>薛绍祎 · 个人网站内容问卷</b>
+    <span id="userBadge"></span>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ 登录视图 ============ -->
+  <div id="loginView">
+    <p class="intro">这份问卷用于收集个人网站上所有待补充的内容（文字 + 照片）。为保护你的照片和个人信息，填写前请先通过邮箱验证登录。填写结果只有你自己可见。</p>
+    <div class="card">
+      <div class="tabs">
+        <button id="tabOtp" class="on" type="button">验证码登录 / 注册</button>
+        <button id="tabPwd" type="button">密码登录</button>
+      </div>
+
+      <!-- OTP -->
+      <form id="otpForm">
+        <div class="field">
+          <label>邮箱</label>
+          <input type="email" id="otpEmail" placeholder="you@example.com" required>
+        </div>
+        <div class="field">
+          <label>邮箱验证码</label>
+          <div class="otp-row">
+            <input type="text" id="otpCode" placeholder="6 位验证码" required>
+            <button class="btn-line" id="sendCodeBtn" type="button">获取验证码</button>
+          </div>
+          <div class="hint">新邮箱验证通过后即为注册，请同时设置一个密码。</div>
+        </div>
+        <div class="field hidden" id="otpPwdWrap">
+          <label>设置密码 <small>新用户注册必填，用于下次密码登录</small></label>
+          <input type="password" id="otpPassword" placeholder="至少 6 位">
+        </div>
+        <button class="btn" id="otpSubmit" type="submit" style="width:100%">登录 / 注册</button>
+        <div class="msg err" id="otpMsg"></div>
+      </form>
+
+      <!-- 密码登录 -->
+      <form id="pwdForm" class="hidden">
+        <div class="field">
+          <label>邮箱</label>
+          <input type="email" id="pwdEmail" placeholder="you@example.com">
+        </div>
+        <div class="field">
+          <label>密码</label>
+          <input type="password" id="pwdPassword" placeholder="登录密码">
+        </div>
+        <button class="btn" type="submit" style="width:100%">登录</button>
+        <div class="msg err" id="pwdMsg"></div>
+        <div style="margin-top:14px;font-size:13px">
+          <a href="javascript:void(0)" id="forgotLink" style="color:var(--accent)">忘记密码？用邮箱验证码重置</a>
+        </div>
+        <div id="forgotBox" class="hidden" style="margin-top:16px;border-top:1px dashed var(--line);padding-top:16px">
+          <div class="field">
+            <label>验证码</label>
+            <div class="otp-row">
+              <input type="text" id="forgotCode" placeholder="6 位验证码">
+              <button class="btn-line" id="forgotSendBtn" type="button">发送验证码</button>
+            </div>
+          </div>
+          <div class="field">
+            <label>新密码</label>
+            <input type="password" id="forgotNewPwd" placeholder="至少 6 位">
+          </div>
+          <button class="btn-line" id="forgotSubmit" type="button">确认重置</button>
+          <div class="msg" id="forgotMsg"></div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ 问卷视图 ============ -->
+  <div id="formView" class="hidden">
+    <p class="intro">以下内容与网站上的【待补充】位置一一对应。带 <b>（可选）</b> 的项目不填则沿用网站现有内容；照片不传则沿用现有照片。填完点底部「提交问卷」即可。</p>
+
+    <form id="qForm">
+      <!-- 1 首屏封面 -->
+      <div class="card">
+        <h2><span class="no">01</span>首屏封面</h2>
+        <div class="desc">网站第一屏：名字旁边的所有文字</div>
+        <div class="field"><label>当前状态</label>
+          <input type="text" name="hero_status" placeholder="例：2026 届校招中 · 开放实习 / 全职机会"></div>
+        <div class="field"><label>一句话自我定义</label>
+          <input type="text" name="hero_tagline" placeholder="例：用设计和代码讲故事的人"></div>
+        <div class="field-row">
+          <div class="field"><label>学校</label><input type="text" name="hero_school" placeholder="例：XX大学"></div>
+          <div class="field"><label>专业</label><input type="text" name="hero_major" placeholder="例：数字媒体技术"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>届别</label><input type="text" name="hero_grade" placeholder="例：2026 届本科"></div>
+          <div class="field"><label>关键词 <small>3–5 个，用逗号隔开</small></label>
+            <input type="text" name="hero_keywords" placeholder="例：产品思维, 视觉设计, 前端, 摄影"></div>
+        </div>
+        <div class="field"><label>首屏照片（可选）</label>
+          <label class="filebox">点击选择图片（不换则沿用现在的正装照）
+            <input type="file" name="hero_photo" accept="image/*" data-kind="image"></label>
+          <div class="filelist"></div>
+        </div>
+      </div>
+
+      <!-- 2 我是谁 / 我的故事 -->
+      <div class="card">
+        <h2><span class="no">02</span>我是谁 · 我的故事</h2>
+        <div class="desc">不只写职位，写你相信什么、怎么做事</div>
+        <div class="field"><label>个人简介 <small>2–3 句</small></label>
+          <textarea name="about_intro" placeholder="你是谁、你在做什么、你相信什么"></textarea></div>
+        <div class="field"><label>价值观 / 做事方式</label>
+          <textarea name="about_values" placeholder="例：先把事情做小做透，再谈做大"></textarea></div>
+        <div class="field-row">
+          <div class="field"><label>性格关键词 <small>3–5 个</small></label>
+            <input type="text" name="about_traits" placeholder="例：好奇, 执行力强, 细节控"></div>
+          <div class="field"><label>目标方向</label>
+            <input type="text" name="about_goal" placeholder="例：成为懂技术的产品设计师"></div>
+        </div>
+        <div class="field"><label>关键转折 <small>200 字以内</small></label>
+          <textarea name="about_turning" placeholder="为什么做现在的事——影响你的人 / 书 / 经历"></textarea></div>
+        <div class="field"><label>故事区配图（可选）</label>
+          <label class="filebox">点击选择图片（不换则沿用湖边剪影照）
+            <input type="file" name="about_photo" accept="image/*" data-kind="image"></label>
+          <div class="filelist"></div>
+        </div>
+        <div class="field"><label>简历 PDF（可选）</label>
+          <label class="filebox">点击选择 PDF（上传后网站提供下载）
+            <input type="file" name="resume_pdf" accept=".pdf,application/pdf" data-kind="pdf"></label>
+          <div class="filelist"></div>
+        </div>
+      </div>
+
+      <!-- 3 教育经历 -->
+      <div class="card">
+        <h2><span class="no">03</span>教育经历</h2>
+        <div class="desc">可添加 1–3 段</div>
+        <div id="eduList"></div>
+        <button class="add-btn" type="button" data-add="edu">＋ 添加一段教育经历</button>
+      </div>
+
+      <!-- 4 精选项目 -->
+      <div class="card">
+        <h2><span class="no">04</span>精选项目</h2>
+        <div class="desc">最能代表你的 3–6 个项目：校园项目 / 客户项目都可以</div>
+        <div id="projList"></div>
+        <button class="add-btn" type="button" data-add="proj">＋ 添加一个项目</button>
+      </div>
+
+      <!-- 5 实习 & 实践 -->
+      <div class="card">
+        <h2><span class="no">05</span>实习 &amp; 实践经历</h2>
+        <div class="desc">公司、岗位、时间、一句成果；按时间倒序填</div>
+        <div id="expList"></div>
+        <button class="add-btn" type="button" data-add="exp">＋ 添加一段经历</button>
+      </div>
+
+      <!-- 6 能力图谱 -->
+      <div class="card">
+        <h2><span class="no">06</span>能力图谱</h2>
+        <div class="desc">每组用逗号隔开填写</div>
+        <div class="field"><label>专业技能</label>
+          <input type="text" name="skill_pro" placeholder="例：UI 设计, 用户研究, 前端开发"></div>
+        <div class="field"><label>工具栈</label>
+          <input type="text" name="skill_tools" placeholder="例：Figma, VS Code, Python, 剪映"></div>
+        <div class="field"><label>语言 &amp; 证书</label>
+          <input type="text" name="skill_certs" placeholder="例：CET-6, 普通话二甲"></div>
+        <div class="field"><label>正在学习 / 正在探索</label>
+          <input type="text" name="skill_learning" placeholder="例：AI 辅助设计工作流、Three.js"></div>
+      </div>
+
+      <!-- 7 兴趣切片 -->
+      <div class="card">
+        <h2><span class="no">07</span>兴趣切片 · 多主题</h2>
+        <div class="desc">已按「旅行与风光 / 城市漫游 / 现场与活动」预填三个主题，可改可删可加。每个主题配若干照片和一句话介绍。</div>
+        <div id="themeList"></div>
+        <button class="add-btn" type="button" data-add="theme">＋ 添加一个主题</button>
+      </div>
+
+      <!-- 8 推荐语 -->
+      <div class="card">
+        <h2><span class="no">08</span>推荐语 / 评价 <small style="font-size:13px;color:var(--ink-3);font-weight:400">（可选）</small></h2>
+        <div class="desc">老师、领导、同事、合作方的评价；语气真实，具体事例优先</div>
+        <div id="quoteList"></div>
+        <button class="add-btn" type="button" data-add="quote">＋ 添加一条推荐语</button>
+      </div>
+
+      <!-- 9 联系方式 -->
+      <div class="card">
+        <h2><span class="no">09</span>联系方式 &amp; 页脚</h2>
+        <div class="desc">降低联系门槛，别只留一个邮箱</div>
+        <div class="field-row">
+          <div class="field"><label>邮箱</label><input type="text" name="contact_email" placeholder="hello@example.com"></div>
+          <div class="field"><label>微信号</label><input type="text" name="contact_wechat" placeholder="你的微信号"></div>
+        </div>
+        <div class="field"><label>微信二维码（可选）</label>
+          <label class="filebox">点击选择二维码图片
+            <input type="file" name="wechat_qr" accept="image/*" data-kind="image"></label>
+          <div class="filelist"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>社交主页链接（可选）</label><input type="url" name="contact_social" placeholder="https://…"></div>
+          <div class="field"><label>预约通话链接（可选）</label><input type="url" name="contact_booking" placeholder="https://…"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>备案号（可选）</label><input type="text" name="footer_icp" placeholder="例：京ICP备XXXXXXXX号"></div>
+          <div class="field"><label>是否需要英文版</label>
+            <div class="radio-row">
+              <label><input type="radio" name="need_en" value="需要">需要</label>
+              <label><input type="radio" name="need_en" value="暂不需要" checked>暂不需要</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 10 小红书 -->
+      <div class="card">
+        <h2><span class="no">10</span>小红书主页 &amp; 笔记 <small style="font-size:13px;color:var(--ink-3);font-weight:400">（可选）</small></h2>
+        <div class="desc">网站「小红书」模块：主页信息 + 精选笔记展示，笔记可添加 1–6 篇</div>
+        <div class="field-row">
+          <div class="field"><label>小红书昵称</label><input type="text" name="xhs_nickname"></div>
+          <div class="field"><label>小红书号</label><input type="text" name="xhs_id"></div>
+        </div>
+        <div class="field"><label>主页链接</label>
+          <input type="url" name="xhs_home" placeholder="https://www.xiaohongshu.com/user/profile/…"></div>
+        <div class="field"><label>一句话简介（可选）</label>
+          <input type="text" name="xhs_bio" placeholder="例：记录校园与项目日常的运营人"></div>
+        <div class="field-row">
+          <div class="field"><label>粉丝数（可选）</label><input type="text" name="xhs_followers" placeholder="例：1.2k"></div>
+          <div class="field"><label>获赞与收藏（可选）</label><input type="text" name="xhs_likes_total" placeholder="例：3.4k"></div>
+        </div>
+        <div id="xhsList"></div>
+        <button class="add-btn" type="button" data-add="xhs">＋ 添加一篇笔记</button>
+      </div>
+
+      <button class="btn" id="submitBtn" type="submit" style="width:100%;padding:16px;font-size:16.5px">提交问卷</button>
+      <div class="progress" id="progressText"></div>
+      <div class="msg err" id="submitMsg"></div>
+    </form>
+  </div>
+
+  <!-- ============ 完成视图 ============ -->
+  <div id="doneView" class="hidden">
+    <div class="card done">
+      <h2>✅ 提交成功</h2>
+      <p>你的填写内容和照片已保存。告诉 WorkBuddy「问卷我填好了」，<br>它就会把内容更新到网站上。</p>
+      <button class="btn-line" id="againBtn" type="button">再填一份 / 修改重交</button>
+      <div class="past" id="pastBox">
+        <h3>我的历史提交</h3>
+        <div id="pastList"></div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="note">填写内容仅保存在你的个人空间，仅本人可见 · 单张图片不超过 20MB</footer>
+</main>
+
+<script>
+const cloud = WorkBuddyCloud.createWorkBuddyCloud({
+  endpoint: "https://xueshaoyi-home.app.workbuddy.host",
+  publishableKey: "wbpk_cdTRutGK2j93Y7fd7SNMsf_ja78zZ3jbZDZhv3IFJ4cnN6Phdbc2pEp",
+});
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+let currentUser = null;
+
+/* ---------------- 登录 ---------------- */
+const loginView = $("#loginView"), formView = $("#formView"), doneView = $("#doneView");
+function show(view){
+  [loginView, formView, doneView].forEach(v => v.classList.add("hidden"));
+  view.classList.remove("hidden");
+  window.scrollTo(0, 0);
+}
+function setUserBadge(){
+  $("#userBadge").textContent = currentUser ? "已登录 · " + (currentUser.email || "") : "";
+}
+async function boot(){
+  const { data: session } = await cloud.auth.getSession();
+  if (session && session.user) { currentUser = session.user; setUserBadge(); show(formView); }
+  else show(loginView);
+}
+$("#tabOtp").onclick = () => { $("#tabOtp").classList.add("on"); $("#tabPwd").classList.remove("on");
+  $("#otpForm").classList.remove("hidden"); $("#pwdForm").classList.add("hidden"); };
+$("#tabPwd").onclick = () => { $("#tabPwd").classList.add("on"); $("#tabOtp").classList.remove("on");
+  $("#pwdForm").classList.remove("hidden"); $("#otpForm").classList.add("hidden"); };
+
+let pendingOtp = null;
+$("#sendCodeBtn").onclick = async () => {
+  const email = $("#otpEmail").value.trim();
+  const msg = $("#otpMsg"); msg.textContent = "";
+  if (!email) { msg.textContent = "请先填写邮箱"; return; }
+  $("#sendCodeBtn").disabled = true;
+  const sent = await cloud.auth.sendOtp({ email });
+  $("#sendCodeBtn").disabled = false;
+  if (sent.error) { msg.textContent = sent.error.message; return; }
+  pendingOtp = { email, verificationId: sent.data.verificationId, isExistingUser: sent.data.isExistingUser };
+  $("#otpPwdWrap").classList.toggle("hidden", sent.data.isExistingUser);
+  msg.className = "msg ok"; msg.textContent = "验证码已发送，请查收邮箱";
+};
+$("#otpForm").onsubmit = async e => {
+  e.preventDefault();
+  const msg = $("#otpMsg"); msg.className = "msg err"; msg.textContent = "";
+  const email = $("#otpEmail").value.trim(), token = $("#otpCode").value.trim();
+  if (!pendingOtp || pendingOtp.email !== email) { msg.textContent = "请先获取当前邮箱的验证码"; return; }
+  const password = pendingOtp.isExistingUser ? undefined : $("#otpPassword").value;
+  if (!pendingOtp.isExistingUser && (!password || password.length < 6)) { msg.textContent = "新用户请设置至少 6 位密码"; return; }
+  $("#otpSubmit").disabled = true;
+  const done = await cloud.auth.verifyOtp({
+    email, verificationId: pendingOtp.verificationId,
+    isExistingUser: pendingOtp.isExistingUser, token, password,
+  });
+  $("#otpSubmit").disabled = false;
+  if (done.error) { msg.textContent = done.error.message; return; }
+  pendingOtp = null; currentUser = done.data.user; setUserBadge(); show(formView);
+};
+$("#pwdForm").onsubmit = async e => {
+  e.preventDefault();
+  const msg = $("#pwdMsg"); msg.textContent = "";
+  const { data, error } = await cloud.auth.signInWithPassword({
+    email: $("#pwdEmail").value.trim(), password: $("#pwdPassword").value,
+  });
+  if (error) { msg.textContent = "账号或密码不正确"; return; }
+  currentUser = data.user; setUserBadge(); show(formView);
+};
+let resetFlow = null;
+$("#forgotLink").onclick = () => $("#forgotBox").classList.toggle("hidden");
+$("#forgotSendBtn").onclick = async () => {
+  const email = $("#pwdEmail").value.trim();
+  const msg = $("#forgotMsg"); msg.className = "msg err"; msg.textContent = "";
+  if (!email) { msg.textContent = "请先在上面填写邮箱"; return; }
+  const started = await cloud.auth.resetPasswordForEmail(email);
+  if (started.error) { msg.textContent = started.error.message; return; }
+  resetFlow = started.data;
+  msg.className = "msg ok"; msg.textContent = "重置验证码已发送";
+};
+$("#forgotSubmit").onclick = async () => {
+  const msg = $("#forgotMsg"); msg.className = "msg err"; msg.textContent = "";
+  if (!resetFlow) { msg.textContent = "请先发送验证码"; return; }
+  const done = await resetFlow.updateUser({ nonce: $("#forgotCode").value.trim(), password: $("#forgotNewPwd").value });
+  if (done.error) { msg.textContent = done.error.message; return; }
+  msg.className = "msg ok"; msg.textContent = "密码已重置并已登录";
+  const { data: session } = await cloud.auth.getSession();
+  if (session && session.user) { currentUser = session.user; setUserBadge(); setTimeout(() => show(formView), 800); }
+};
+
+/* ---------------- 动态条目 ---------------- */
+const LIMITS = { edu: 3, proj: 6, exp: 5, theme: 5, quote: 4, xhs: 6 };
+const TEMPLATES = {
+  edu: i => `
+    <div class="tag">教育经历 ${i}</div><button type="button" class="del">删除</button>
+    <div class="field-row">
+      <div class="field"><label>时间段</label><input type="text" name="edu_period" placeholder="例：2022.09 – 2026.06"></div>
+      <div class="field"><label>学校</label><input type="text" name="edu_school" placeholder="学校名称"></div>
+    </div>
+    <div class="field"><label>专业 · 学历 · GPA / 排名（可选）</label><input type="text" name="edu_major" placeholder="例：数字媒体技术 · 本科 · GPA 3.6/4.0"></div>
+    <div class="field"><label>补充说明 <small>主修课程、荣誉奖项、校园组织，1–2 句</small></label>
+      <textarea name="edu_note"></textarea></div>`,
+  proj: i => `
+    <div class="tag">项目 ${i}</div><button type="button" class="del">删除</button>
+    <div class="field-row">
+      <div class="field"><label>项目名称</label><input type="text" name="proj_name"></div>
+      <div class="field"><label>我的角色</label><input type="text" name="proj_role" placeholder="例：独立设计 + 前端"></div>
+    </div>
+    <div class="field"><label>一句话说明 <small>做了什么 + 成果亮点</small></label>
+      <textarea name="proj_summary" placeholder="例：从 0 到 1 完成 XX，带来 XX 结果"></textarea></div>
+    <div class="field"><label>详情链接（可选）</label><input type="url" name="proj_link" placeholder="https://…"></div>
+    <div class="field"><label>项目封面图（可选，16:10 最佳）</label>
+      <label class="filebox">点击选择图片<input type="file" name="proj_cover" accept="image/*" data-kind="image"></label>
+      <div class="filelist"></div></div>`,
+  exp: i => `
+    <div class="tag">经历 ${i}</div><button type="button" class="del">删除</button>
+    <div class="field-row">
+      <div class="field"><label>时间段</label><input type="text" name="exp_period" placeholder="例：2025.06 – 2025.09"></div>
+      <div class="field"><label>公司 / 组织</label><input type="text" name="exp_org"></div>
+    </div>
+    <div class="field"><label>岗位</label><input type="text" name="exp_title" placeholder="例：产品实习生"></div>
+    <div class="field"><label>一句成果 <small>做了什么 + 量化结果</small></label>
+      <textarea name="exp_result"></textarea></div>`,
+  theme: i => `
+    <div class="tag">兴趣主题 ${i}</div><button type="button" class="del">删除</button>
+    <div class="field-row">
+      <div class="field"><label>主题名</label><input type="text" name="theme_name" placeholder="例：旅行与风光"></div>
+      <div class="field"><label>一句话介绍</label><input type="text" name="theme_desc" placeholder="例：走在路上，随手记录"></div>
+    </div>
+    <div class="field"><label>主题照片（可多选；不上传则沿用网站现有照片）</label>
+      <label class="filebox">点击选择图片（可多选）<input type="file" name="theme_photos" accept="image/*" data-kind="image" multiple></label>
+      <div class="filelist"></div></div>`,
+  quote: i => `
+    <div class="tag">推荐语 ${i}</div><button type="button" class="del">删除</button>
+    <div class="field-row">
+      <div class="field"><label>姓名</label><input type="text" name="quote_name"></div>
+      <div class="field"><label>身份</label><input type="text" name="quote_identity" placeholder="例：XX公司 主管"></div>
+    </div>
+    <div class="field"><label>评价内容 <small>1–2 句，具体事例优先</small></label>
+      <textarea name="quote_text"></textarea></div>
+    <div class="field"><label>TA 的头像（可选）</label>
+      <label class="filebox">点击选择图片<input type="file" name="quote_avatar" accept="image/*" data-kind="image"></label>
+      <div class="filelist"></div></div>`,
+  xhs: i => `
+    <div class="tag">笔记 ${i}</div><button type="button" class="del">删除</button>
+    <div class="field"><label>笔记标题</label><input type="text" name="xhs_title"></div>
+    <div class="field-row">
+      <div class="field"><label>笔记链接</label><input type="url" name="xhs_link" placeholder="https://www.xiaohongshu.com/…"></div>
+      <div class="field"><label>点赞数（可选）</label><input type="text" name="xhs_likes" placeholder="例：1.2k"></div>
+    </div>
+    <div class="field"><label>笔记封面图（可选，3:4 竖图最佳）</label>
+      <label class="filebox">点击选择图片<input type="file" name="xhs_cover" accept="image/*" data-kind="image"></label>
+      <div class="filelist"></div></div>`,
+};
+const LIST_OF = { edu: "#eduList", proj: "#projList", exp: "#expList", theme: "#themeList", quote: "#quoteList", xhs: "#xhsList" };
+
+function addBlock(kind, prefill){
+  const list = $(LIST_OF[kind]);
+  if (list.children.length >= LIMITS[kind]) return;
+  const div = document.createElement("div");
+  div.className = "dyn-block";
+  div.innerHTML = TEMPLATES[kind](list.children.length + 1);
+  div.querySelector(".del").onclick = () => { div.remove(); renumber(kind); };
+  list.appendChild(div);
+  if (prefill) {
+    const n = div.querySelector('[name=theme_name]'), d = div.querySelector('[name=theme_desc]');
+    if (n && prefill.name) n.value = prefill.name;
+    if (d && prefill.desc) d.value = prefill.desc;
+  }
+  bindFileLists(div);
+}
+function renumber(kind){
+  Array.from($(LIST_OF[kind]).children).forEach((el, idx) => {
+    const t = el.querySelector(".tag"); if (t) t.textContent = t.textContent.replace(/\d+$/, String(idx + 1));
+  });
+}
+$$("[data-add]").forEach(btn => btn.onclick = () => addBlock(btn.dataset.add));
+
+function bindFileLists(scope){
+  scope.querySelectorAll('input[type=file]').forEach(inp => {
+    inp.addEventListener("change", () => {
+      const box = inp.closest(".field").querySelector(".filelist");
+      box.innerHTML = "";
+      Array.from(inp.files).forEach(f => {
+        if (f.size > 20 * 1024 * 1024) { box.innerHTML += `<div style="color:#dc2626">⚠ ${f.name} 超过 20MB，请压缩后再传</div>`; }
+        else box.innerHTML += `<div>📎 ${f.name}（${(f.size/1024/1024).toFixed(1)}MB）</div>`;
+      });
+    });
+  });
+}
+
+/* 初始条目 */
+addBlock("edu");
+addBlock("proj"); addBlock("proj"); addBlock("proj");
+addBlock("exp"); addBlock("exp");
+addBlock("theme", { name: "旅行与风光", desc: "" });
+addBlock("theme", { name: "城市漫游", desc: "" });
+addBlock("theme", { name: "现场与活动", desc: "" });
+addBlock("quote"); addBlock("quote");
+addBlock("xhs"); addBlock("xhs"); addBlock("xhs");
+bindFileLists(document);
+
+/* ---------------- 提交 ---------------- */
+async function uploadFile(file, stamp, label){
+  const safe = label + "-" + Date.now() + "-" + file.name.replace(/[^\w.\-一-龥]/g, "_").slice(-60);
+  const path = cloud.storage.userPath(currentUser.id, `questionnaire/${stamp}/${safe}`);
+  const res = await cloud.storage.upload(path, file, { contentType: file.type || "application/octet-stream" });
+  if (res.error) throw new Error("上传失败：" + file.name);
+  return { path, name: file.name };
+}
+function val(scope, name){
+  const el = (scope || document).querySelector(`[name=${name}]`);
+  return el ? el.value.trim() : "";
+}
+function collectBlocks(listSel, names){
+  return Array.from($(listSel).children).map(block => {
+    const item = {};
+    names.forEach(n => { item[n.replace(/^\w+_/, "")] = val(block, n); });
+    return item;
+  }).filter(item => Object.values(item).some(v => v));
+}
+
+$("#qForm").onsubmit = async e => {
+  e.preventDefault();
+  const btn = $("#submitBtn"), prog = $("#progressText"), msg = $("#submitMsg");
+  msg.textContent = ""; prog.textContent = "";
+  const { data: session } = await cloud.auth.getSession();
+  if (!session || !session.user) { show(loginView); return; }
+  currentUser = session.user;
+  btn.disabled = true;
+  try {
+    const stamp = String(Date.now());
+    /* 1. 收集所有文件 */
+    const fileJobs = [];
+    const push = (input, label, into) => {
+      Array.from(input.files || []).forEach(f => {
+        if (f.size <= 20 * 1024 * 1024) fileJobs.push({ file: f, label, into });
+      });
+    };
+    push(document.querySelector("[name=hero_photo]"), "hero", "hero_photo");
+    push(document.querySelector("[name=about_photo]"), "about", "about_photo");
+    push(document.querySelector("[name=resume_pdf]"), "resume", "resume_pdf");
+    push(document.querySelector("[name=wechat_qr]"), "wechat-qr", "wechat_qr");
+    Array.from($("#projList").children).forEach((b, i) => {
+      const inp = b.querySelector("[name=proj_cover]");
+      if (inp) push(inp, `proj${i + 1}`, `proj_cover_${i}`);
+    });
+    Array.from($("#themeList").children).forEach((b, i) => {
+      const inp = b.querySelector("[name=theme_photos]");
+      if (inp) push(inp, `theme${i + 1}`, `theme_photos_${i}`);
+    });
+    Array.from($("#quoteList").children).forEach((b, i) => {
+      const inp = b.querySelector("[name=quote_avatar]");
+      if (inp) push(inp, `quote${i + 1}`, `quote_avatar_${i}`);
+    });
+    Array.from($("#xhsList").children).forEach((b, i) => {
+      const inp = b.querySelector("[name=xhs_cover]");
+      if (inp) push(inp, `xhs${i + 1}`, `xhs_cover_${i}`);
+    });
+
+    /* 2. 逐个上传 */
+    const uploaded = {};
+    let done = 0;
+    for (const job of fileJobs) {
+      prog.textContent = `正在上传照片/文件 ${++done} / ${fileJobs.length} …`;
+      const r = await uploadFile(job.file, stamp, job.label);
+      (uploaded[job.into] = uploaded[job.into] || []).push(r);
+    }
+
+    /* 3. 组装答案 */
+    prog.textContent = "正在保存问卷 …";
+    const themes = collectBlocks("#themeList", ["theme_name", "theme_desc"]);
+    themes.forEach((t, i) => { t.photos = uploaded[`theme_photos_${i}`] || []; });
+    const projects = collectBlocks("#projList", ["proj_name", "proj_role", "proj_summary", "proj_link"]);
+    projects.forEach((p, i) => { p.cover = (uploaded[`proj_cover_${i}`] || [])[0] || null; });
+    const quotes = collectBlocks("#quoteList", ["quote_name", "quote_identity", "quote_text"]);
+    quotes.forEach((q, i) => { q.avatar = (uploaded[`quote_avatar_${i}`] || [])[0] || null; });
+    const xhsNotes = collectBlocks("#xhsList", ["xhs_title", "xhs_link", "xhs_likes"]);
+    xhsNotes.forEach((n, i) => { n.cover = (uploaded[`xhs_cover_${i}`] || [])[0] || null; });
+
+    const payload = {
+      hero: {
+        status: val(document, "hero_status"), tagline: val(document, "hero_tagline"),
+        school: val(document, "hero_school"), major: val(document, "hero_major"),
+        grade: val(document, "hero_grade"), keywords: val(document, "hero_keywords"),
+        photo: (uploaded.hero_photo || [])[0] || null,
+      },
+      about: {
+        intro: val(document, "about_intro"), values: val(document, "about_values"),
+        traits: val(document, "about_traits"), goal: val(document, "about_goal"),
+        turning: val(document, "about_turning"),
+        photo: (uploaded.about_photo || [])[0] || null,
+        resume_pdf: (uploaded.resume_pdf || [])[0] || null,
+      },
+      education: collectBlocks("#eduList", ["edu_period", "edu_school", "edu_major", "edu_note"]),
+      projects,
+      experience: collectBlocks("#expList", ["exp_period", "exp_org", "exp_title", "exp_result"]),
+      skills: {
+        professional: val(document, "skill_pro"), tools: val(document, "skill_tools"),
+        certs: val(document, "skill_certs"), learning: val(document, "skill_learning"),
+      },
+      life_themes: themes,
+      testimonials: quotes,
+      xiaohongshu: {
+        profile: {
+          nickname: val(document, "xhs_nickname"), red_id: val(document, "xhs_id"),
+          home: val(document, "xhs_home"), bio: val(document, "xhs_bio"),
+          followers: val(document, "xhs_followers"), likes_total: val(document, "xhs_likes_total"),
+        },
+        notes: xhsNotes,
+      },
+      contact: {
+        email: val(document, "contact_email"), wechat: val(document, "contact_wechat"),
+        wechat_qr: (uploaded.wechat_qr || [])[0] || null,
+        social: val(document, "contact_social"), booking: val(document, "contact_booking"),
+        icp: val(document, "footer_icp"),
+        need_en: (document.querySelector("[name=need_en]:checked") || {}).value || "暂不需要",
+      },
+    };
+
+    const { error } = await cloud.database.from("questionnaire_responses").insert({ payload });
+    if (error) throw new Error(error.message || "保存失败");
+    prog.textContent = "";
+    show(doneView);
+    loadPast();
+  } catch (err) {
+    prog.textContent = "";
+    msg.textContent = err.message || "提交失败，请重试";
+  } finally {
+    btn.disabled = false;
+  }
+};
+
+/* ---------------- 历史提交 ---------------- */
+async function loadPast(){
+  const { data, error } = await cloud.database
+    .from("questionnaire_responses").select("id, created_at")
+    .order("created_at", { ascending: false }).limit(10);
+  const box = $("#pastList");
+  if (error || !data || !data.length) { box.innerHTML = '<div class="item">暂无记录</div>'; return; }
+  box.innerHTML = data.map(r =>
+    `<div class="item"><span>第 ${r.id} 份问卷</span><span>${new Date(r.created_at).toLocaleString("zh-CN")}</span></div>`
+  ).join("");
+}
+$("#againBtn").onclick = () => show(formView);
+
+boot();
+</script>
+</body>
+</html>
