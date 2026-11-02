@@ -4,72 +4,136 @@
   const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
   const clamp = value => Math.max(0, Math.min(1, value));
 
-  // Content is visible by default. Entrance animations enhance offscreen content only.
-  const revealContainers = [...document.querySelectorAll('.reveal, .reveal-group, .xhs-stage')];
-  revealContainers.forEach(element => element.classList.add('in', 'settled'));
+  // Smooth wheel input, retaining native touch and the user's reduced-motion setting.
+  const header = document.querySelector('header');
+  let smoothScroll = null;
+  function configureScroll() {
+    if (motionPreference.matches) {
+      smoothScroll?.destroy();
+      smoothScroll = null;
+      return;
+    }
+    if (!smoothScroll && window.Lenis) {
+      smoothScroll = new window.Lenis({
+        autoRaf: true,
+        lerp: 0.14,
+        smoothWheel: true,
+        syncTouch: false,
+        anchors: { offset: 0, duration: 1, lerp: 0 },
+        stopInertiaOnNavigate: true,
+        virtualScroll: ({ event }) => !event.ctrlKey && !event.metaKey && !event.shiftKey
+      });
+    }
+  }
+  configureScroll();
+
+  // Prepare only content well below the screen, before it can flash into view.
+  // No hiding without JS; no replay when scrolling back up.
   const runningAnimations = new Set();
-  if ('IntersectionObserver' in window && Element.prototype.animate) {
-    const targets = new Set(document.querySelectorAll('.reveal'));
-    document.querySelectorAll('.reveal-group').forEach(group => {
-      [...group.children].forEach(child => targets.add(child));
-    });
-    const observer = new IntersectionObserver(entries => {
+  const pendingReveals = new Set();
+  let revealObserver = null;
+  const targets = new Map();
+  document.querySelectorAll('.reveal').forEach(element => targets.set(element, 0));
+  document.querySelectorAll('.reveal-group').forEach(group => {
+    [...group.children].forEach((child, index) => targets.set(child, Math.min(index, 3) * 55));
+  });
+  document.querySelectorAll('.xhs-note').forEach((element, index) => targets.set(element, index * 55));
+  function finishReveals() {
+    revealObserver?.disconnect();
+    pendingReveals.forEach(element => element.classList.remove('reveal-pending'));
+    pendingReveals.clear();
+    runningAnimations.forEach(animation => animation.cancel());
+    runningAnimations.clear();
+  }
+  if (!motionPreference.matches && 'IntersectionObserver' in window && Element.prototype.animate) {
+    revealObserver = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (!entry.isIntersecting) return;
-        observer.unobserve(entry.target);
+        const element = entry.target;
+        revealObserver.unobserve(element);
+        pendingReveals.delete(element);
+        element.classList.remove('reveal-pending');
         if (motionPreference.matches) return;
-        const animation = entry.target.animate([
-          { opacity: 0, transform: 'translateY(18px)' },
-          { opacity: 1, transform: 'none' }
-        ], { duration: 520, easing: 'cubic-bezier(.22,.61,.36,1)' });
+        const animation = element.animate([
+          { opacity: 0, transform: 'translate3d(0, 20px, 0)' },
+          { opacity: 1, transform: 'translate3d(0, 0, 0)' }
+        ], { duration: 680, delay: targets.get(element) || 0, easing: 'cubic-bezier(.2,.7,.2,1)', fill: 'backwards' });
         runningAnimations.add(animation);
-        animation.finished.then(
-          () => runningAnimations.delete(animation),
-          () => runningAnimations.delete(animation)
-        );
+        animation.finished.then(() => runningAnimations.delete(animation), () => runningAnimations.delete(animation));
       });
-    }, { threshold: 0.05 });
-    targets.forEach(element => {
-      if (element.getBoundingClientRect().top >= window.innerHeight) observer.observe(element);
+    }, { threshold: 0, rootMargin: '96px 0px 96px 0px' });
+    targets.forEach((delay, element) => {
+      if (element.getBoundingClientRect().top < window.innerHeight + 100) return;
+      // Avoid animating an element twice through an animated parent.
+      if (element.parentElement.closest('.reveal')) return;
+      element.classList.add('reveal-pending');
+      pendingReveals.add(element);
+      revealObserver.observe(element);
+    });
+    document.addEventListener('focusin', event => {
+      const pending = event.target.closest('.reveal-pending');
+      if (!pending) return;
+      pending.classList.remove('reveal-pending');
+      pendingReveals.delete(pending);
+      revealObserver.unobserve(pending);
     });
   }
 
-  // Keep the current section and both scroll indicators in sync.
-  const header = document.querySelector('header');
+  // Cache geometry on layout changes; scrolling performs no layout reads or width writes.
   const progress = document.getElementById('scrollBar');
   const navigation = [...document.querySelectorAll('.nav-links a[href^="#"]')]
-    .map(link => ({ link, section: document.getElementById(link.hash.slice(1)) }))
+    .map(link => ({ link, section: document.getElementById(link.hash.slice(1)), top: 0, bottom: 0 }))
     .filter(item => item.section);
   let navigationFrame = 0;
+  let measureFrame = 0;
+  let totalScroll = 1;
+  let viewportHeight = window.innerHeight;
+  let activeLink = null;
+  let headerScrolled = false;
 
   function updateNavigation() {
     navigationFrame = 0;
-    const total = document.documentElement.scrollHeight - window.innerHeight;
-    if (progress) progress.style.width = `${(total > 0 ? clamp(window.scrollY / total) * 100 : 0).toFixed(2)}%`;
-    if (header) header.classList.toggle('scrolled', window.scrollY > 8);
-    const marker = window.innerHeight * 0.35;
-    let activeItem = null;
+    const y = window.scrollY;
+    if (progress) progress.style.transform = 'scaleX(' + clamp(y / totalScroll).toFixed(4) + ')';
+    const scrolled = y > 8;
+    if (header && headerScrolled !== scrolled) {
+      header.classList.toggle('scrolled', scrolled);
+      headerScrolled = scrolled;
+    }
+    const marker = y + viewportHeight * 0.35;
+    const activeItem = navigation.find(item => item.top <= marker && item.bottom > marker);
+    const nextLink = activeItem?.link || null;
+    if (activeLink === nextLink) return;
+    activeLink?.classList.remove('active');
+    activeLink?.removeAttribute('aria-current');
+    nextLink?.classList.add('active');
+    nextLink?.setAttribute('aria-current', 'location');
+    activeLink = nextLink;
+  }
+  function measureNavigation() {
+    measureFrame = 0;
+    const y = window.scrollY;
+    viewportHeight = window.innerHeight;
+    totalScroll = Math.max(1, document.documentElement.scrollHeight - viewportHeight);
     navigation.forEach(item => {
       const rect = item.section.getBoundingClientRect();
-      item.link.style.setProperty('--p', clamp((marker - rect.top) / Math.max(rect.height, 1)).toFixed(3));
-      if (rect.top <= marker && rect.bottom > marker) activeItem = item;
+      item.top = rect.top + y;
+      item.bottom = rect.bottom + y;
     });
-    navigation.forEach(item => {
-      const active = item === activeItem;
-      item.link.classList.toggle('active', active);
-      if (active) item.link.setAttribute('aria-current', 'location');
-      else item.link.removeAttribute('aria-current');
-    });
+    // Lenis already honors the root scroll-padding-top; do not subtract it twice.
+    scheduleNavigation();
   }
-
   function scheduleNavigation() {
     if (!navigationFrame) navigationFrame = requestAnimationFrame(updateNavigation);
   }
+  function scheduleMeasure() {
+    if (!measureFrame) measureFrame = requestAnimationFrame(measureNavigation);
+  }
   window.addEventListener('scroll', scheduleNavigation, { passive: true });
-  window.addEventListener('resize', scheduleNavigation);
-  window.addEventListener('load', scheduleNavigation);
-  if ('ResizeObserver' in window) new ResizeObserver(scheduleNavigation).observe(document.body);
-  updateNavigation();
+  window.addEventListener('resize', scheduleMeasure);
+  window.addEventListener('load', scheduleMeasure);
+  if ('ResizeObserver' in window) new ResizeObserver(scheduleMeasure).observe(document.body);
+  measureNavigation();
 
   // A manually controllable, continuous photography strip.
   const strip = document.getElementById('photoStrip');
@@ -219,9 +283,9 @@
   }
 
   motionPreference.addEventListener('change', event => {
+    configureScroll();
     if (!event.matches) return;
-    runningAnimations.forEach(animation => animation.cancel());
-    runningAnimations.clear();
+    finishReveals();
     pauseForReducedMotion();
   });
 })();

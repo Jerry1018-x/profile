@@ -16,8 +16,10 @@ GitHub Pages 使用 `main` 分支根目录发布。更新文件并推送到 `mai
 
 ## 视觉设计
 
-采用 [视觉风格库 R11 · CHEN · 珊瑚履历](https://www.figma.com/design/4DIxwqVL8mX0M9iJfj0j80?node-id=141-132) 的视觉语言，适配本站真实内容，而非复刻参考人物或封面。白底 `#ffffff`、深灰 `#191919`、珊瑚色带 `#f37274`、行动色 `#a23a42`、次级文字 `#6d5859`、分隔线 `#e0d6d7`。
+参考 [Josh W. Comeau](https://www.joshwcomeau.com/) 的天空蓝、蓝紫交互色、清晰文字层级与轻量角色互动，适配本站履历、项目和摄影内容。白底 `#ffffff`、正文 `#20263f`、蓝紫 `#5146df`、浅天空蓝 `#edf5ff`。`design-preview.html` 是可直接打开的组件拆解与角色样板页。
 
-样式和交互分别位于 `assets/site.css` 和 `assets/site.js`。字体优先使用本机 Inter / Noto Sans SC，缺失时回退到系统无衬线字体，无外部字体请求。`assets/design/r11-editorial-line.svg` 来源于该风格库的 `141:148` 细线装饰。已有照片和图标保持原来源。
+样式和交互分别位于 `assets/site.css` 和 `assets/site.js`。字体优先使用本机 Inter / Noto Sans SC，缺失时回退到系统无衬线字体，无外部字体请求。已有照片和图标保持原来源。Lenis 1.3.27 固定版本在 `assets/vendor/`，保留 MIT 许可证；锚点使用 CSS scroll-padding，触摸保留原生滚动。
+
+原创抽象黏土角色由用户提供的 `story.jpg` 经内置 image_gen 工具生成，包含默认和开心两种透明图片；不是实时三维模型。网页加载 WebP（两张合计约 229 KiB），同时保留 PNG 原稿；素材和完整生成提示词位于 `assets/mascot/`。`assets/mascot.css` 与 `assets/mascot-demo.js` 为共享组件，支持悬停轻微倾斜、移出弹簧回位、点击换表情、键盘和触摸。Canvas 2D 装饰与角色在静止、离屏及页面隐藏后停止重绘；减少动效时保留静态表情反馈。
 
 手机端保留栏目导航；摄影支持暂停、拖动与键盘；微信二维码支持点击、外部点击和 Escape 关闭；遵循系统减少动效设置。

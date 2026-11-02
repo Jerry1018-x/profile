@@ -1,0 +1,39 @@
+/* Shared clay-character stage. Motion is controlled by mascot-demo.js. */
+.mascot-stage{position:relative;min-height:390px;display:flex;align-items:flex-end;justify-content:center;padding:62px 28px 24px;perspective:800px;isolation:isolate}
+.mascot-stage::before{content:"";position:absolute;width:290px;height:290px;left:50%;top:58%;translate:-50% -50%;border-radius:50%;background:radial-gradient(circle,#e1effb66 0,#d8e9fa33 55%,transparent 71%);z-index:-3}
+.mascot-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:-1}
+.mascot-button{position:relative;display:block;width:210px;max-width:75%;padding:0;border:0;background:transparent;flex-shrink:0;line-height:0;touch-action:manipulation;z-index:2;outline-offset:12px}
+.mascot-button:focus-visible{outline:2px dashed #8076ed;border-radius:35% 35% 22% 22%;outline-offset:12px}
+.mascot-figure{position:relative;display:block;width:100%;transform-style:preserve-3d;transform-origin:50% 78%;will-change:transform}
+.mascot-image{width:100%;height:auto;max-width:none;user-select:none;-webkit-user-drag:none;pointer-events:none;transition:opacity .2s ease}
+.mascot-idle{position:relative;opacity:1}
+.mascot-happy{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:contain;opacity:0}
+.mascot-button.is-happy .mascot-idle,.mascot-figure.is-happy .mascot-idle,.mascot-stage.is-happy .mascot-idle{opacity:0}
+.mascot-button.is-happy .mascot-happy,.mascot-figure.is-happy .mascot-happy,.mascot-stage.is-happy .mascot-happy{opacity:1}
+.mascot-cloud{position:absolute;bottom:20px;left:50%;translate:-50% 0;width:250px;height:47px;border-radius:50%;background:#fff;box-shadow:0 10px 30px #92b4d620,0 2px 2px #c7d9eb40;z-index:-2}
+.mascot-cloud::before,.mascot-cloud::after{content:"";position:absolute;border-radius:50%;background:#fff}
+.mascot-cloud::before{width:105px;height:52px;left:18px;top:-15px}
+.mascot-cloud::after{width:115px;height:61px;right:12px;top:-18px}
+.message-space{position:absolute;top:22px;left:50%;translate:-50% 0;width:max-content;max-width:calc(100% - 32px);min-height:50px;z-index:3;pointer-events:none}
+.mascot-message{position:relative;font-size:13px;line-height:1.6;background:#ffffffed;border:1px solid #d8e5f4;border-radius:13px;padding:10px 17px;color:#566381;box-shadow:0 5px 15px #96b3ce0b;text-align:center}
+.mascot-message::after{content:"";position:absolute;width:10px;height:10px;bottom:-6px;left:50%;background:#fff;border-right:1px solid #d8e5f4;border-bottom:1px solid #d8e5f4;rotate:45deg}
+.stage-star{position:absolute;pointer-events:none;z-index:-1;font-size:24px;color:#a5b9df}
+.star-one{top:34%;left:13%;rotate:-13deg}
+.star-two{right:14%;top:52%;font-size:30px;color:#c0b4e9}
+.stage-dot{position:absolute;right:24%;top:27%;width:7px;height:7px;border-radius:50%;background:#d4c4f1;pointer-events:none}
+.mascot-controls{display:flex;align-items:flex-start;justify-content:center;gap:15px;margin-top:5px}
+.mascot-controls p{font-size:11px;line-height:1.8;color:#6d8097}
+.mascot-controls p span{font-size:10px;color:#8a99ad}
+.reset-button{padding:2px 4px;min-height:30px;background:transparent;border:0;color:#7888a0;font-size:11px;white-space:nowrap}
+.reset-button span{font-size:16px;vertical-align:-1px}
+.reset-button:hover{color:var(--blue,#5347ed)}
+
+@media(max-width:900px){
+ .mascot-stage{min-height:360px;padding-inline:12px}.mascot-button{width:190px}.mascot-cloud{width:225px}.mascot-controls{gap:9px}.mascot-controls p{font-size:10px}.mascot-controls p span{font-size:9px}
+}
+@media(max-width:680px){
+ .mascot-stage{min-height:360px;padding-top:65px;padding-bottom:21px}.mascot-button{width:200px;max-width:65%}.mascot-controls{gap:18px}.mascot-controls p{font-size:11px}.mascot-controls p span{font-size:9px}
+}
+@media(prefers-reduced-motion:reduce){
+ .mascot-figure{will-change:auto}.mascot-image{transition:none}.mascot-stage *, .mascot-stage *::before, .mascot-stage *::after{animation:none!important}
+}

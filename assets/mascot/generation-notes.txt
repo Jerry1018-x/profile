@@ -1,0 +1,23 @@
+Created with the built-in image_gen tool on 2026-11-02.
+Source: user-provided story.jpg. The approved design abstracts hairstyle and clothing into a matte clay character; it does not reproduce detailed facial likeness. PNG files preserve generated transparency.
+Original rejected realistic portrait is not included in this project's assets.
+
+IDLE PROMPT
+Use case: stylized-concept.
+Create ONE very abstract, very charming hand-sculpted 3D CLAY LITTLE PERSON for a personal website, on a real transparent background.
+The input photograph is ONLY a reference for THREE signature cues: loose wavy black hair, black turtleneck, dark fuzzy jacket. Deliberately do NOT reproduce realistic facial likeness, realistic anatomy, skin pores, individual hairs, or realistic fabric. The user explicitly rejected a realistic portrait and wants abstraction.
+This is a simplified CLAY mascot, NOT a photorealistic person, NOT a glossy plastic/vinyl doll, NOT anime.
+Art direction: a small friendly stop-motion clay sculpture, extremely simple round and pill-shaped forms. Oversized roundish warm peach clay head about 40 percent of the whole figure height; just two small dark round dot eyes, a tiny softly pinched button nose, and a minimal curved closed smile. No detailed eyelids, eyelashes, teeth, nostrils, ears anatomy, facial shading planes, or realistic eyebrows. Three or four large curved charcoal clay tufts form the recognisable wavy fringe and rounded hair silhouette. Each tuft looks molded by fingers, NOT hair strands.
+Body: compact rounded charcoal jacket over black rolled turtleneck, mitten-simple hands, little tapered black trouser legs and simple charcoal rounded shoes. Slightly varied dark gray clay values reveal the different garments. A few broad molded bumps suggest the fuzzy coat without fur or knit texture.
+Pose and composition: full little person, casually seated with lower legs dangling, hands resting beside the hips, very slight three-quarter orientation and curious head tilt toward the viewer's right. No chair, no platform. Complete head, hands, and feet visible; centered with plenty of transparent margin. Sweet, understated, calm and friendly.
+Material is the priority: dry matte colored modeling CLAY, soft gently imperfect silhouette, subtle thumb impressions, soft contact shadows in creases, no gloss and no plastic reflections. Beautiful soft studio illumination, tiny hint of cool blue fill so dark clothes remain readable. Extremely clear and lovable at 160-240px height. Editorial website mascot quality.
+One single character only. Real transparent alpha background; no room, photo, background color, pedestal, text, logo, watermark, rainbow, props or decorations.
+
+HAPPY EXPRESSION PROMPT
+Use case: precise-object-edit.
+Input image is the approved master asset for an abstract 3D matte clay personal website mascot. Produce its HAPPY facial expression variant.
+Change ONLY the face expression: replace the two dot eyes with small softly arched closed happy clay eyes, and change the little closed smile into a slightly wider delighted simple curved smile, still a tiny closed mouth, no teeth or realistic mouth detail.
+CRITICAL preserve everything else exactly: identical canvas dimensions, transparent alpha background, pixel alignment, body and head position, silhouette, clay hair shape, skin colour, head angle, camera, proportions, seated pose, clothes, hands, feet, studio lighting, texture, transparent padding. Do not shift, rotate, reframe, zoom or resize the character. Do not introduce new objects or extra gestures. This will crossfade over the original, so all edges must stay aligned.
+Keep it extremely abstract and visibly handmade matte CLAY, not realistic, not shiny plastic. Exactly one character. No text, marks, decorations or backdrop.
+
+Delivery WebP files are encoded from the PNG masters at original dimensions, quality 90 and alpha quality 100, using Sharp. No visual retouching or generative changes were made during encoding.

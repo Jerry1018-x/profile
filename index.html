@@ -5,8 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>薛绍祎 · 个人作品集</title>
 <meta name="description" content="薛绍祎的个人作品集：双语沟通、项目售前与执行、品牌实践，以及生活与摄影记录。">
-<meta name="theme-color" content="#f37274">
-<link rel="stylesheet" href="assets/site.css">
+<meta name="theme-color" content="#e6f2ff">
+<link rel="stylesheet" href="assets/vendor/lenis-1.3.27.css">
+<link rel="stylesheet" href="assets/site.css?v=3">
+<link rel="stylesheet" href="assets/mascot.css?v=1">
 </head>
 <body>
 <a class="skip-link" href="#hero">跳到正文</a>
@@ -30,9 +32,7 @@
 <!-- ================= 01 首屏个人封面 ================= -->
 <section class="hero" id="hero" style="border-top:none">
   <div class="wrap">
-    <div class="masthead"><span>PERSONAL PORTFOLIO / 2026</span><span>BEIJING, CHINA</span></div>
-    <div class="coral-band" aria-hidden="true"></div>
-    <p class="portfolio-title" aria-hidden="true">Portfolio.</p>
+    <p class="hero-eyebrow">HELLO, NICE TO MEET YOU.</p>
     <div class="hero-grid">
       <div>
         <div class="hero-status"><i></i>2027 届应届 · 求职中：项目助理 / 售前支持 / 产品运营 / 品牌商务</div>
@@ -48,10 +48,20 @@
           <a class="btn btn-ghost" href="%E8%96%9B%E7%BB%8D%E7%A5%8E-%E7%AE%80%E5%8E%862.pdf" download="薛绍祎-简历.pdf">下载简历（PDF） <span aria-hidden="true">↓</span></a>
         </div>
       </div>
-      <figure class="hero-photo">
-        <img src="assets/avatar.jpg" alt="薛绍祎个人照片" fetchpriority="high" width="900" height="900">
-        <figcaption><span>薛绍祎 / XUE SHAOYI</span><span>01 — PROFILE</span></figcaption>
-      </figure>
+      <div class="hero-character">
+        <div class="mascot-stage" data-mascot-stage id="hello-mascot">
+          <canvas class="mascot-canvas" data-mascot-canvas aria-hidden="true"></canvas>
+          <div class="message-space"><p class="mascot-message" data-mascot-message aria-live="polite" aria-atomic="true">嗨，很高兴认识你。</p></div>
+          <div class="mascot-cloud" aria-hidden="true"></div>
+          <button type="button" class="mascot-button" data-mascot-button aria-label="和黏土小人打个招呼" aria-describedby="mascot-hint">
+            <span class="mascot-figure" data-mascot-figure>
+              <img class="mascot-image mascot-idle" data-mascot-idle src="assets/mascot/xue-clay-idle.webp" alt="卷发、黑高领的抽象黏土小人" width="1135" height="1386" fetchpriority="high" draggable="false">
+              <img class="mascot-image mascot-happy" data-mascot-happy src="assets/mascot/xue-clay-happy.webp" alt="" aria-hidden="true" width="1135" height="1386" decoding="async" draggable="false">
+            </span>
+          </button>
+        </div>
+        <p class="mascot-hint" id="mascot-hint">点一下，打个招呼 <span aria-hidden="true">✦</span></p>
+      </div>
     </div>
     <div class="hero-footer"><span>双语沟通 / 项目实践 / 生活观察</span><span>SCROLL TO EXPLORE ↓</span></div>
   </div>
@@ -495,6 +505,8 @@
 
 
 
-<script src="assets/site.js" defer></script>
+<script src="assets/vendor/lenis-1.3.27.min.js" defer></script>
+<script src="assets/site.js?v=3" defer></script>
+<script src="assets/mascot-demo.js?v=1" defer></script>
 </body>
 </html>
