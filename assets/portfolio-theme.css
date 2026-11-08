@@ -25,6 +25,8 @@ main aside small { color: var(--quiet); }
 .poster strong span { color: var(--coral); }
 .wb-intro { display: grid; grid-template-columns: 1fr 1.12fr; gap: clamp(20px, 5vw, 72px); align-items: center; }
 .wb-intro h3 { font: 750 clamp(27px, 3.8vw, 52px)/1.15 var(--type); letter-spacing: -.045em; }
+.wb-enter { display: inline-flex; align-items: center; gap: 1.25em; margin-top: .9rem; padding: .5em 1em; border-radius: 8px; background: #284355; color: #fff; font-weight: 650; }
+.wb-enter:hover, .wb-enter:focus-visible { background: #395e76; }
 .wb-intro p, .wb-tile p { color: var(--quiet); }
 .wb-group { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin: 2rem 0 .7rem; }
 .wb-group h4, .wb-tile h5 { margin: 0; }
