@@ -42,6 +42,28 @@
   font-size: .78em;
 }
 
+.contact-files { width:100%; max-width:340px; min-width:0; }
+#contact .resume-file { display:flex; align-items:center; gap:5px; margin-top:12px; padding:0 4px 0 12px; border:1px solid #405451; border-radius:10px; background:#192421; }
+#contact .resume-file a { text-decoration:none; }
+.resume-download { display:flex; flex:1; align-items:center; gap:10px; min-height:55px; }
+.resume-download svg { flex:none; color:#b4d8cc; }
+.resume-download span { display:grid; gap:3px; }
+.resume-download strong { font-size:14px; line-height:1.15; }
+.resume-download small { font:500 10px/1.2 Consolas,monospace; letter-spacing:.04em; color:#c4d4ce; }
+.resume-preview-link { display:grid; place-items:center; min-height:44px; padding:0 9px; color:#c9dcd6; font-size:13px; }
+#resume-viewer { width:min(690px,calc(100% - 24px)); max-height:90dvh; margin:auto; padding:0; color:#213744; background:white; border:0; border-radius:14px; overflow:hidden; box-shadow:0 20px 80px #0e263452; }
+#resume-viewer[open] { display:flex; flex-direction:column; }
+#resume-viewer::backdrop { background:#0b1926ae; }
+.resume-bar,.resume-actions { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:7px 16px; }
+.resume-bar h2 { font:650 clamp(16px,2vw,21px)/1.25 var(--type); margin:0; }
+.resume-bar button { display:grid; place-items:center; width:44px; height:44px; border:none; background:transparent; color:inherit; font-size:24px; cursor:pointer; }
+.resume-sheet { overflow:auto; overscroll-behavior:contain; min-height:0; background:#edf2f5; }
+.resume-sheet img { display:block; width:100%; height:auto; }
+.resume-actions { justify-content:flex-end; }
+.resume-actions a { display:inline-grid; align-items:center; padding:0 15px; min-height:44px; border-radius:8px; color:#2a4856; font-size:14px; }
+.resume-actions a[download] { color:white; background:#263f50; }
+#resume-viewer :focus-visible { outline:2px solid #c9623a; outline-offset:-3px; }
+
 #contact .footer-links {
   gap: 0;
   margin-top: -.15rem;

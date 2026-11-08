@@ -18,14 +18,21 @@ main a:focus-visible, #journal-viewer button:focus-visible, .build-notes summary
 .profile-intro > div { max-width:41em; color:var(--folio-muted); margin-top:18px; line-height:1.85; }
 .profile-intro p span { display:block; }
 .chapter-index b { font-weight:inherit; }.chapter-index i { display:none; font-style:normal; }
-.chapter-index { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:0; margin-bottom:clamp(36px,5vw,70px); border-block:1px solid var(--folio-line); }
-.chapter-index a { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:14px clamp(8px,1.5vw,20px); font-size:14px; font-weight:620; }
-.chapter-index a+a { border-left:1px solid var(--folio-line); }
-.chapter-index span { color:#5b7284; font-weight:500; }
-.chapter-index { position:sticky; top:0; z-index:4; background:#fffffff5; }
-.chapter-index a[aria-current="location"] { box-shadow:inset 0 -2px var(--folio-orange); color:#263e52; }
-main > section:not(.profile-spread) { scroll-margin-top:66px; }
-.chapter-index a:hover, .chapter-index a:focus-visible { background:#f0f5f7; color:#274c65; }
+.chapter-index {
+  position:sticky; top:max(8px,env(safe-area-inset-top)); z-index:4;
+  display:grid; width:100%; height:auto; align-items:stretch; grid-template-columns:repeat(6,minmax(0,1fr)); gap:3px; padding:5px;
+  margin-bottom:clamp(36px,5vw,70px); border:1px solid #d9e4e7; border-radius:18px;
+  background:linear-gradient(108deg,#eef5f1f5,#f4f7faf5 54%,#f1f0f8f5);
+  backdrop-filter:blur(14px); box-shadow:0 5px 18px -9px #24475d38,inset 0 1px #fff;
+}
+.chapter-index a { display:flex; align-items:center; justify-content:center; gap:clamp(5px,.8vw,12px); min-width:0; min-height:44px; padding:8px 3px; color:#304655; border-radius:12px; font-size:clamp(12px,1.35vw,15px); line-height:1.25; font-weight:650; text-decoration:none; white-space:nowrap; }
+.chapter-index a span { color:#546878; font-size:10px; letter-spacing:.04em; }
+.chapter-index a:is(:hover,:focus-visible) { background:#fff; color:#1e3a48; }
+.chapter-index a:focus-visible { outline-offset:-3px; }
+.chapter-index a[aria-current="location"] { background:#263f50; color:#fff; box-shadow:0 2px 6px #27415322; }
+.chapter-index a[aria-current="location"] span { color:#ffbd9e; }
+@media(prefers-reduced-motion:no-preference) { .chapter-index a { transition:background-color .18s,color .18s; } }
+main > section:not(.profile-spread) { scroll-margin-top:calc(72px + env(safe-area-inset-top)); }
 /* The case opens on the people-sized units of this tool: three small assistants. */
 .wb-project .wb-intro { isolation:isolate; position:relative; overflow:hidden; display:grid; grid-template-columns:1.08fr .92fr; gap:clamp(28px,5vw,76px); padding:clamp(26px,4.7vw,70px); border-radius:24px; color:#f7fbff; background:radial-gradient(ellipse at 92% 100%,#4e677c 0,transparent 55%),linear-gradient(120deg,#203848,#2a4256 75%); }
 .wb-intro::before { content:""; position:absolute; z-index:-1; inset:0; background-image:linear-gradient(90deg,#ffffff0a 1px,transparent 1px),linear-gradient(#ffffff0a 1px,transparent 1px); background-size:34px 34px; mask-image:linear-gradient(95deg,transparent,#000); }
@@ -91,7 +98,7 @@ main .note-cover img { display:block; width:100%; aspect-ratio:4/5; object-fit:c
 }
 @media(max-width:640px) {
   .profile-spread { grid-template-columns:1fr; gap:22px; }.profile-intro > div { font-size:14px; margin-top:12px; }
-  .chapter-index { grid-template-columns:repeat(6,minmax(0,1fr)); }.chapter-index a { flex-direction:column; justify-content:center; gap:3px; padding:6px 1px; font-size:12px; }.chapter-index i { display:inline; }.chapter-index b { position:absolute; clip-path:inset(50%); width:1px; height:1px; overflow:hidden; }.chapter-index a span { font-size:9px; line-height:1.15; }
+  .chapter-index { gap:1px; padding:3px; border-radius:15px; }.chapter-index a { flex-direction:column; justify-content:center; gap:4px; padding:5px 0; font-size:12px; border-radius:11px; }.chapter-index i { display:inline; }.chapter-index b { position:absolute; clip-path:inset(50%); width:1px; height:1px; overflow:hidden; }.chapter-index a span { font-size:9px; line-height:1.15; }
   #activities .activity-strip:first-child > a:first-child { grid-column:1/-1; }#activities .activity-strip:first-child > a:not(:first-child) img { aspect-ratio:4/3; }
   .wb-project .wb-intro { grid-template-columns:1fr; border-radius:17px; }.build-notes dl { grid-template-columns:1fr; gap:12px; }
   .tool-index { grid-template-columns:1fr; }.tool-index .toolrow:first-child { grid-column:auto; }.tool-index .toolrow p { margin-bottom:12px; }

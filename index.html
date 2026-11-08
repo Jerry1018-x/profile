@@ -34,9 +34,9 @@
     <div class="profile-identity"><img src="assets/avatar.jpg" width="76" height="76" alt="薛绍祎的头像"><div><small>PROFILE / 个人档案</small><h2 id="profile-title">薛绍祎</h2></div></div>
     <div class="profile-intro"><p><span>我做项目协调，</span><span>也用 AI 把想法做成网页。</span></p><div>北京第二外国语学院 · 英语（人文交流）本科。正在寻找项目经理、项目助理岗位。在分形科技，我参与需求访谈、原型评审与交付跟进；在自己的工作台里，我用 AI 辅助调研、整理笔记和制作网页。</div></div>
   </section>
-  <div class="chapter-index" role="navigation" aria-label="作品集目录">
+  <nav class="chapter-index" aria-label="作品集目录">
     <a href="#work"><span>01</span> <b>实习经历</b><i aria-hidden="true">实习</i></a><a href="#activities"><span>02</span> <b>活动经历</b><i aria-hidden="true">活动</i></a><a href="#lab"><span>03</span> <b>AI作品集</b><i aria-hidden="true">AI 作品</i></a><a href="#media"><span>04</span> <b>小红书</b><i aria-hidden="true">手记</i></a><a href="#tools"><span>05</span> <b>工具栈</b><i aria-hidden="true">工具</i></a><a href="#contact"><span>↘</span> <b>联系我</b><i aria-hidden="true">联系</i></a>
-  </div>
+  </nav>
 <section id="work" aria-labelledby="internship-title">
   <div class="heading"><small>01　／　PROJECT EXPERIENCE</small><h2 id="internship-title">实习经历</h2></div>
   <article id="fractal">
@@ -176,10 +176,19 @@
 <footer id="contact" aria-labelledby="contact-title">
   <canvas class="footer-field" aria-hidden="true"></canvas>
   <div class="footer-contacts">
+    <div class="contact-files">
     <address>
       <a class="footer-email" href="mailto:xue_shaoyi@qq.com"><span class="contact-method">邮箱</span><span>xue_shaoyi@qq.com</span></a>
       <a href="tel:+8615313031018"><span class="contact-method">电话</span><span>15313031018</span></a>
     </address>
+    <div class="resume-file">
+      <a class="resume-download" href="assets/shaoyi-xue-resume.pdf" download="薛绍祎-简历.pdf">
+        <svg aria-hidden="true" width="24" height="28" viewBox="0 0 24 28" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2.5h10l6 6V25H4z M14 3v6h6 M12 12v8m-3-3 3 3 3-3"/></svg>
+        <span><strong>下载简历</strong><small>PDF · 1 页</small></span>
+      </a>
+      <a class="resume-preview-link" href="assets/shaoyi-xue-resume.pdf" target="_blank" rel="noopener">预览</a>
+    </div>
+    </div>
     <div class="footer-links" lang="en" role="navigation" aria-label="Footer navigation">
       <a href="#top">Home</a>
       <a href="#work">Experience</a>
@@ -192,4 +201,10 @@
   </div>
   <h2 id="contact-title" lang="en"><span>Let’s talk</span><img src="assets/fonts/unifraktur/lets-talk.svg" alt="" width="257" height="56"></h2>
   <div class="footer-base"><span>薛绍祎　／　个人作品集</span><a href="#top">回到顶部 ↑</a></div>
-</footer></body></html>
+</footer>
+<dialog id="resume-viewer" aria-labelledby="resume-title">
+  <div class="resume-bar"><h2 id="resume-title">薛绍祎 · 个人简历</h2><button type="button" autofocus aria-label="关闭简历预览">×</button></div>
+  <div class="resume-sheet"><img data-src="assets/shaoyi-xue-resume-preview.webp" alt="薛绍祎的一页简历预览，完整文字可在 PDF 中阅读"></div>
+  <div class="resume-actions"><a href="assets/shaoyi-xue-resume.pdf" target="_blank" rel="noopener">打开 PDF ↗</a><a href="assets/shaoyi-xue-resume.pdf" download="薛绍祎-简历.pdf">下载 PDF ↓</a></div>
+</dialog>
+</body></html>

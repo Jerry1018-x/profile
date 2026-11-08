@@ -29,6 +29,27 @@
   window.addEventListener('pageshow', schedule);
   schedule();
 })();
+// The download is always a plain link. Load the preview only when requested.
+(() => {
+  const link = document.querySelector('.resume-preview-link');
+  const viewer = document.getElementById('resume-viewer');
+  if (!link || typeof viewer?.showModal !== 'function') return;
+  link.setAttribute('aria-haspopup','dialog');
+  link.addEventListener('click', event => {
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    const photo = viewer.querySelector('img');
+    if (!photo.hasAttribute('src')) photo.src = photo.dataset.src;
+    viewer.showModal();
+  });
+  viewer.querySelector('button').addEventListener('click', () => viewer.close());
+  viewer.addEventListener('click', event => {
+    if (event.target !== viewer) return;
+    const rect = viewer.getBoundingClientRect();
+    if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) viewer.close();
+  });
+  viewer.addEventListener('close', () => link.focus({preventScroll:true}));
+})();
 // Covers remain ordinary image links when JS or native dialog is unavailable.
 (() => {
   const viewer = document.querySelector('#journal-viewer');
