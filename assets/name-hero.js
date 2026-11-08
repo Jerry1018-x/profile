@@ -7,11 +7,13 @@
   const last = stage.querySelector('.name-last');
   const caption = stage.querySelector('.name-caption');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  const nativeTimeline = CSS.supports('animation-timeline: view()') && CSS.supports('animation-range: contain 0% contain 100%');
   const narrow = matchMedia('(max-width: 768px)');
   const clamp = n => Math.max(0, Math.min(1, n));
   let lenis, width, height, origin, run, lift, imageW, imageH, previous;
 
   function measure() {
+    if (nativeTimeline && !reduced.matches) return;
     width = stage.clientWidth;
     height = stage.clientHeight;
     origin = hero.getBoundingClientRect().top + window.scrollY;
@@ -21,17 +23,25 @@
     const aspect = photo.naturalWidth && photo.naturalHeight ? photo.naturalWidth / photo.naturalHeight : 1.5;
     imageW = Math.max(width, height * aspect);
     imageH = imageW / aspect;
-    photo.style.width = imageW + 'px';
-    photo.style.height = imageH + 'px';
+    if (!reduced.matches) {
+      photo.style.width = imageW + 'px';
+      photo.style.height = imageH + 'px';
+    }
     previous = -1;
     paint(window.scrollY);
   }
 
   function paint(y) {
-    if (reduced.matches || !width || !height) return;
+    if ((nativeTimeline && !reduced.matches) || !width || !height) return;
     const p = clamp((y - origin) / run);
     if (p === previous) return;
     previous = p;
+    if (reduced.matches) {
+      // Keep feedback directly under the user's gesture, without a large camera move.
+      last.style.transform = 'translateY(' + (-20 * p) + 'px)';
+      photo.style.transform = 'scale(' + (1 + .045 * p) + ')';
+      return;
+    }
     const mobile = narrow.matches;
     const remaining = (1 - p) ** 2;
     const t = clamp(p / .38);
@@ -63,18 +73,15 @@
     lenis?.destroy();
     lenis = null;
     const active = !reduced.matches;
-    hero.classList.toggle('has-scroll-motion', active);
-    if (!active) {
-      [frame, photo, first, last, caption, stage].forEach(el => el.removeAttribute('style'));
-      return;
-    }
-    if (window.Lenis) {
+    [frame, photo, first, last, caption, stage].forEach(el => el.removeAttribute('style'));
+    hero.classList.toggle('has-scroll-motion', active && !nativeTimeline);
+    if (active && window.Lenis) {
       lenis = new window.Lenis({
         autoRaf: true, smoothWheel: true, lerp: .105, syncTouch: false,
         stopInertiaOnNavigate: true,
         virtualScroll: ({event}) => !event.ctrlKey && !event.metaKey && !event.shiftKey
       });
-      lenis.on('scroll', event => paint(event.animatedScroll));
+      if (!nativeTimeline) lenis.on('scroll', event => paint(event.animatedScroll));
     }
     measure();
   }
@@ -92,12 +99,13 @@
     lenis.scrollTo(target === hero ? 'top' : target.id === 'contact' ? 'bottom' : target);
   });
   reduced.addEventListener('change', configure);
-  window.addEventListener('scroll', () => { if (!lenis) paint(window.scrollY); }, {passive: true});
+  // Native scrolling also covers scrollbars, keyboard input and wheel events outside Lenis.
+  window.addEventListener('scroll', () => paint(window.scrollY), {passive: true});
   window.addEventListener('popstate', () => { lenis?.reset(); });
-  window.addEventListener('pageshow', () => { if (!reduced.matches) measure(); });
-  const geometry = new ResizeObserver(() => { if (!reduced.matches) measure(); });
+  window.addEventListener('pageshow', measure);
+  const geometry = new ResizeObserver(measure);
   geometry.observe(stage);
-  photo.addEventListener('load', () => { if (!reduced.matches) measure(); });
+  photo.addEventListener('load', measure);
   configure();
 
   if ('IntersectionObserver' in window && !reduced.matches) {

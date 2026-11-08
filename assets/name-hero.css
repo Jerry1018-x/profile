@@ -224,3 +224,90 @@ html.lenis { scroll-behavior: auto; }
   .name-hero:not(.has-scroll-motion) .name-first { left:var(--edge); width:calc(100% - 2 * var(--edge)); transform:none; }
   .name-hero:not(.has-scroll-motion) .name-first svg + svg { display:none; }
 }
+
+.cover-scroll-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: .7em;
+  margin-top: clamp(8px, 1.3svh, 16px);
+  color: #385263;
+  font-size: 12px;
+  letter-spacing: .04em;
+}
+.cover-scroll-hint span { color: #2379a4; font-size: 1.25em; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .name-type .name-first svg { animation: cover-enter-right .78s cubic-bezier(.22,.75,.2,1) both; }
+  .name-type .name-last svg { animation: cover-enter-left .88s .06s cubic-bezier(.22,.75,.2,1) both; }
+}
+@keyframes cover-enter-right {
+  from { translate: 12vw 0; opacity: 0; }
+  to { translate: 0 0; opacity: 1; }
+}
+@keyframes cover-enter-left {
+  from { translate: -12vw 0; opacity: 0; }
+  to { translate: 0 0; opacity: 1; }
+}
+
+/* The header is one viewport taller than its sticky stage. The contain range
+   therefore follows exactly the distance for which the cover stays on screen. */
+@supports (animation-timeline: view()) and (animation-range: contain 0% contain 100%) {
+  @media (prefers-reduced-motion: no-preference) {
+    .name-hero {
+      height: 200svh;
+      view-timeline-name: --cover;
+      view-timeline-axis: block;
+      --start-photo: 34% 4% 8% 37%;
+      --half-photo: 7% 1% 2% 8%;
+      --start-xue: 42svh;
+      --lift-xue: -32svh;
+      --name-shift: -5vw;
+    }
+    .name-hero .name-last { top: var(--start-xue); animation-name: cover-surname; }
+    .name-hero .name-first { animation-name: cover-first-name; }
+    .name-hero .name-visual { animation-name: cover-frame; }
+    .name-hero .hero-still { animation-name: cover-zoom; }
+    .name-hero .name-caption { animation-name: cover-caption; }
+    .name-stage::after { animation-name: cover-progress; }
+    .name-hero :is(.name-last,.name-first,.name-visual,.hero-still,.name-caption), .name-stage::after {
+      animation-duration: 1s;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: --cover;
+      animation-range: contain 0% contain 100%;
+    }
+  }
+  @media (max-width:768px) and (prefers-reduced-motion: no-preference) {
+    .name-hero {
+      --start-photo: 40% 4% 20% 17%;
+      --half-photo: 9% 1% 4% 4%;
+      --start-xue: 31svh;
+      --lift-xue: -17svh;
+      --name-shift: -21vw;
+    }
+  }
+}
+@keyframes cover-frame {
+  0% { inset: var(--start-photo); }
+  45% { inset: var(--half-photo); }
+  90%, 100% { inset: 0; }
+}
+@keyframes cover-zoom {
+  from { transform: scale(1); }
+  to { transform: scale(1.14); }
+}
+@keyframes cover-surname {
+  0% { transform: translate3d(0,0,0); }
+  38% { transform: translate3d(4vw,var(--lift-xue),0) scale(.90); }
+  100% { transform: translate3d(4vw,calc(var(--lift-xue) - 20svh),0) scale(.90); }
+}
+@keyframes cover-first-name {
+  0% { transform: translate3d(0,0,0); }
+  38% { transform: translate3d(var(--name-shift),0,0) scale(.90); }
+  100% { transform: translate3d(var(--name-shift),-20svh,0) scale(.90); }
+}
+@keyframes cover-caption { 0% { opacity: 1; } 22%,100% { opacity: 0; } }
+@keyframes cover-progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@media (prefers-reduced-motion: reduce) {
+  .name-hero { height: 116svh; }
+}
