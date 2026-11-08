@@ -23,16 +23,51 @@ main aside { background: #e2e4da; }
 main aside small { color: var(--quiet); }
 .poster { background: #f0f2ff; color: var(--ink); }
 .poster strong span { color: var(--coral); }
-.workbench-project {
-  margin-top: clamp(32px, 5vw, 72px);
-  border-top: 1px solid var(--rule);
-  padding-top: 12px;
+.wb-intro { display: grid; grid-template-columns: 1fr 1.12fr; gap: clamp(20px, 5vw, 72px); align-items: center; }
+.wb-intro h3 { font: 750 clamp(27px, 3.8vw, 52px)/1.15 var(--type); letter-spacing: -.045em; }
+.wb-intro p, .wb-tile p { color: var(--quiet); }
+.wb-group { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin: 2rem 0 .7rem; }
+.wb-group h4, .wb-tile h5 { margin: 0; }
+.wb-group h4 { font-size: 1rem; }
+.wb-group > span { color: var(--quiet); font-size: .78rem; }
+.wb-grid { display: grid; grid-template-columns: repeat(6,minmax(0,1fr)); gap: clamp(10px,1.4vw,18px); }
+.wb-tile { grid-column: span 2; padding: clamp(16px,2vw,28px); border-radius: 18px; background: #f3f5f6; min-width: 0; }
+.wb-tile h5 { font-size: clamp(19px,2vw,25px); line-height: 1.25; letter-spacing: -.035em; }
+.wb-tile p { font-size: .92rem; line-height: 1.65; margin: .5rem 0 1rem; }
+.wb-tile.wb-overview, .wb-tile.wb-directions { grid-column: span 3; }
+.wb-overview { background: radial-gradient(at 100% 0%,#47597a,transparent 70%), #23364a; color: #fff; }
+.wb-overview p, .wb-stats span { color: #dae4ef; }
+.wb-stats { display: flex; gap: clamp(16px,4vw,60px); margin-top: 1.3rem; }
+.wb-stats strong { display: block; font: 550 clamp(32px,4vw,57px)/1 var(--latin); }
+.wb-stats span { font-size: .8rem; }
+.wb-directions { background: linear-gradient(115deg,#e6efe6,#dce9f2); }
+.wb-rows, .wb-trail { list-style: none; padding: 0; margin: 0; }
+.wb-rows li { display: flex; align-items: baseline; justify-content: space-between; gap: .6rem; padding: .45rem 0; border-top: 1px solid #7b909c40; font-size: .88rem; }
+.wb-rows span { color: var(--quiet); text-align: right; font-size: .78rem; }
+.wb-trail { display: flex; flex-wrap: wrap; align-items: center; gap: .4em; font-size: .82rem; }
+.wb-trail li + li::before { content: '›'; margin-right: .4em; color: #586d83; }
+.wb-interview blockquote { margin: 0; padding-left: .8rem; border-left: 3px solid #d69273; font-size: 1rem; }
+.wb-knowledge { background: linear-gradient(140deg,#f2ebf2,#e9eef9); }
+.wb-content { background: linear-gradient(130deg,#e8eff3,#dcebe7); }
+.wb-cat { display: flex; gap: 12px; align-items: center; margin-top: 1.2rem; }
+.wb-cat img { image-rendering: pixelated; }
+.wb-cat small { display: block; color: var(--quiet); font-size: .72rem; letter-spacing: 0; }
+.wb-books { background: #f4efe7; }
+.wb-spines { display: flex; align-items: end; gap: 3px; }
+.wb-spines span { writing-mode: vertical-rl; font-size: .72rem; letter-spacing: .07em; padding: 7px 5px; border-radius: 2px; background: #c8d5e2; }
+.wb-spines span:nth-child(2) { background: #dccabd; }
+.wb-spines span:last-child { background: #c5d5c9; transform: rotate(6deg); transform-origin: bottom left; }
+@media(max-width: 800px) {
+  .wb-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .wb-grid > .wb-tile { grid-column: auto; }
+  .wb-grid > .wb-tile:last-child { grid-column: 1 / -1; }
 }
-.workbench-project > p { color: var(--quiet); margin: 10px 0; }
-.workbench-live { margin-top: 1.5rem; overflow: hidden; border: 1px solid var(--rule); border-radius: 18px; background: #f6f7fc; }
-.workbench-toolbar { display: flex; align-items: center; justify-content: space-between; gap: .7rem; padding: .7rem 1rem; color: #3a4860; background: #eef1f8; font-size: .86rem; }
-.workbench-toolbar a { color: #293f77; text-underline-offset: .2em; }
-.workbench-live iframe { display: block; width: 100%; height: clamp(520px, 74vh, 700px); border: 0; }
+@media(max-width: 560px) {
+  .wb-intro, .wb-grid { grid-template-columns: 1fr; }
+  .wb-intro { gap: .6rem; }
+  .wb-grid > .wb-tile { grid-column: 1; }
+}
+
 .heading h2::after {
   content: ''; display: inline-block; width: .16em; height: .16em;
   margin-left: .2em; border-radius: 50%; background: var(--coral);
