@@ -1,0 +1,141 @@
+:root {
+  --paper: #fff;
+  --ink: #18191b;
+  --quiet: #545862;
+  --rule: #dbdee3;
+  --accent: #304fc2;
+  --coral: #e66b48;
+  --pink: var(--accent);
+}
+body { background: var(--paper); color: var(--ink); }
+.name-hero { --page: var(--paper); }
+.bio { padding-top: clamp(24px,4vw,64px); margin-top: 0; }
+.heading, .project-logos, footer, .toolrow, main details { border-color: var(--rule); }
+.internship-date, .case p, .lab p, figcaption, .heading i { color: var(--quiet); }
+.duties { background: #f3f5f8; }
+.duties label { color: #3d413b; border-color: var(--rule); }
+.duties label:hover { background: #e9eefe; }
+.duties .duty-choice:checked + label { background: var(--accent); color: white; }
+.duty-story { background: #f1f5fb; }
+.duty-story p { color: #36423f; }
+.internship-skills li, .toolrow span { background: #f4f6fa; color: #384256; }
+main aside { background: #e2e4da; }
+main aside small { color: var(--quiet); }
+.poster { background: #f0f2ff; color: var(--ink); }
+.poster strong span { color: var(--coral); }
+.workbench-project {
+  margin-top: clamp(32px, 5vw, 72px);
+  border-top: 1px solid var(--rule);
+  padding-top: 12px;
+}
+.workbench-project > p { color: var(--quiet); margin: 10px 0; }
+.workbench-live { margin-top: 1.5rem; overflow: hidden; border: 1px solid var(--rule); border-radius: 18px; background: #f6f7fc; }
+.workbench-toolbar { display: flex; align-items: center; justify-content: space-between; gap: .7rem; padding: .7rem 1rem; color: #3a4860; background: #eef1f8; font-size: .86rem; }
+.workbench-toolbar a { color: #293f77; text-underline-offset: .2em; }
+.workbench-live iframe { display: block; width: 100%; height: clamp(520px, 74vh, 700px); border: 0; }
+.heading h2::after {
+  content: ''; display: inline-block; width: .16em; height: .16em;
+  margin-left: .2em; border-radius: 50%; background: var(--coral);
+}
+@font-face {
+  font-family: "Footer Blackletter";
+  src: url("fonts/unifraktur/UnifrakturMaguntia-Book.ttf") format("truetype");
+  font-weight: 400;
+  font-display: swap;
+}
+#contact {
+  position: sticky;
+  bottom: 0;
+  z-index: 0;
+  isolation: isolate;
+  display: block;
+  width: 100%;
+  padding: clamp(50px,7vw,94px) clamp(20px,3vw,60px) 66px;
+  background-color: #0c0c0c;
+  color: #f7f7f6;
+  border: 0;
+}
+.name-hero, body > main { position: relative; z-index: 1; }
+/* A full-width paper surface scrolls off the fixed-looking footer. */
+body > main {
+  display: flow-root;
+  background-color: var(--paper);
+  box-shadow: 0 0 0 100vmax var(--paper);
+  clip-path: inset(0 -100vmax);
+}
+@media (max-height: 620px), (max-width: 680px) {
+  #contact { position: relative; }
+}
+.footer-field { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+.footer-contacts {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto auto;
+  align-items: start;
+  gap: clamp(22px,7vw,130px);
+}
+#contact h2 {
+  position: relative;
+  margin: clamp(32px,5vw,80px) 0 0;
+  font: 400 clamp(76px,19.5vw,380px)/1.03 "Footer Blackletter", Georgia, serif;
+  letter-spacing: -.045em;
+}
+#contact-title span {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+#contact-title img { display: block; width: 100%; height: auto; image-rendering: pixelated; }
+#contact address, .footer-links { display: grid; justify-items: start; gap: 8px; }
+#contact address, .footer-links, .footer-base {
+  font: 500 clamp(12px,1.12vw,16px)/1.45 Consolas, monospace;
+}
+.footer-links { text-transform: uppercase; }
+.footer-contacts a { text-decoration: underline dotted; text-underline-offset: 4px; }
+#contact a:hover, #contact a:focus-visible { text-decoration: underline solid; text-underline-offset: 4px; }
+.footer-codes {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  width: min(27vw,330px);
+  gap: clamp(12px,2vw,32px);
+}
+.footer-codes figure { margin: 0; min-width: 0; }
+.footer-codes img {
+  display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: contain;
+  padding: 6px; background: #fff;
+}
+.footer-qr-crop {
+  position: relative;
+  aspect-ratio: 1;
+  border: 6px solid white;
+  overflow: hidden;
+  background: white;
+}
+/* Center the 802px square around the code, keeping the same quiet zone as WeChat. */
+.footer-qr-crop img {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 125.69%;
+  max-width: none;
+  min-width: 0;
+  aspect-ratio: auto;
+  padding: 0;
+}
+.footer-codes figcaption {
+  padding: 8px 0 0; color: #d5d5d5; font: 500 14px/1.5 var(--type);
+}
+.footer-base {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  margin-top: 6px; padding-top: 16px;
+  border-top: 1px solid #444; color: #c1c1c1;
+}
+@media(max-width:680px) {
+  .footer-contacts { grid-template-columns: 1fr auto; gap: 24px 12px; }
+  .footer-codes { grid-column: 1 / -1; width: min(100%,312px); }
+}
+@media(max-width:400px) {
+  .name-nav div { gap: 9px; }
+}

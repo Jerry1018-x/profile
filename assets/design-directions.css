@@ -1,0 +1,46 @@
+:root {
+  --latin: Bahnschrift, "Arial Narrow", Arial, sans-serif;
+  --sans: "Noto Sans SC", "Microsoft YaHei", "PingFang SC", sans-serif;
+  --type: Bahnschrift, "Noto Sans SC", "Microsoft YaHei", "PingFang SC", sans-serif;
+  --serif: var(--type);
+}
+body { font-family: var(--type); }
+.name-type text, .name-nav div a, .name-caption p, .name-caption small,
+.intro-playback, small, .caption, figcaption, .heading i, .poster strong { font-family: var(--type); }
+.heading h2 { font-weight: 850; letter-spacing: -.045em; }
+.heading i, .poster strong { font-style: normal; }
+.heading h2 { line-height: 1.14; }
+.heading { padding-block: 24px 32px; }
+.poster strong { font-weight: 700; }
+/* Soft colour is local to selected surfaces; the page stays white. */
+main {
+  --ink: #202f37;
+  color: var(--ink);
+  --quiet: #465a63;
+  --rule: #bccbc9;
+  --accent: #385d83;
+  --pink: var(--accent);
+  --float: 0 12px 40px -16px #435a7040;
+}
+main .heading { border-top-color: #9dadae80; }
+main .heading h2 { color: #253d49; }
+main .duties {
+  background: #ffffffa8;
+  border-radius: 20px;
+  box-shadow: var(--float);
+}
+main .duties label { color: var(--quiet); border-color: #c7d2d170; }
+main .duties .duty-choice:checked + label { background: #365468; color: white; }
+main .duty-story {
+  background: radial-gradient(ellipse at 90% 110%, #d2cfe9 0, transparent 60%),
+              linear-gradient(125deg, #e1ece3, #d8e5ef);
+}
+main .duty-story p { color: #253944; }
+main :is(.activity-strip img,.internship-photos img,.notes img) { border-radius: 16px; }
+main .poster {
+  background: radial-gradient(at 15% 65%, #e9d2e4, transparent 65%),
+              linear-gradient(115deg, #e5eee1, #c4d9ed);
+  border-radius: 24px;
+  box-shadow: var(--float);
+}
+main .internship-skills li, main .toolrow span { background: #ffffffa6; }

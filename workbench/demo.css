@@ -1,0 +1,23 @@
+body { margin: 0; }
+#sidebar { width: clamp(160px, 20vw, 220px); }
+#main { padding: clamp(18px, 3vw, 36px); }
+.section-head { margin: 20px 0 8px; }
+#main section[hidden] { display: none; }
+#main section { margin: 0; padding: 0; }
+.demo-form-row, #industry-options { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.demo-form-row input { flex: 1; min-width: 120px; }
+.card h3, .card p { margin: 0 0 8px; }
+#notes, #jobs { padding: 0; list-style: none; }
+#notes li { margin-top: 8px; overflow-wrap: anywhere; }
+#industry-options button[aria-pressed="true"] { background: #343e65; color: white; }
+#metrics p { margin-top: 16px; }
+.wb-bar { display: grid; grid-template-columns: minmax(0,1fr) 4em; margin-top: 12px; }
+.wb-bar meter { grid-column: 1 / -1; width: 100%; height: 15px; }
+@media (max-width: 960px) {
+  #app { display: block; }
+  #sidebar { position: static; display: block; width: 100%; height: auto; }
+  .logo { padding: 11px 16px; }
+  #sidebar nav { display: flex; gap: 4px; padding: 0 9px 7px; }
+  #sidebar nav a { font-size: 13px; padding: 8px; }
+  #main { padding: 16px 12px 24px; }
+}

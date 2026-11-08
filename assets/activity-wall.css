@@ -1,0 +1,27 @@
+.activity-wall {
+  display: grid;
+  gap: clamp(6px, 1vw, 14px);
+}
+.activity-strip {
+  display: flex;
+  align-items: flex-start;
+  gap: inherit;
+}
+.activity-strip img {
+  display: block;
+  flex: var(--ratio) 1 0%;
+  min-width: 0;
+  width: 0;
+  height: auto;
+  border-radius: 8px;
+}
+@media (max-width: 640px) {
+  .activity-wall { display: block; columns: 2; column-gap: 8px; }
+  .activity-strip { display: contents; }
+  .activity-strip img {
+    width: 100%;
+    margin-bottom: 8px;
+    break-inside: avoid;
+    border-radius: 5px;
+  }
+}
