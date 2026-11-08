@@ -1,5 +1,7 @@
 const sections = [...document.querySelectorAll('#main section')];
 const routes = document.querySelectorAll('#sidebar nav a');
+const main = document.querySelector('#main');
+
 function showSection() {
   const active = sections.find(section => '#/' + section.id === location.hash) || sections[0];
   for (const section of sections) section.hidden = section !== active;
@@ -11,5 +13,15 @@ function showSection() {
   }
   document.title = active.querySelector('h1').textContent + ' · 个人 AI 工作台';
 }
-window.addEventListener('hashchange', showSection);
+document.querySelector('.skip-link').addEventListener('click', event => {
+  event.preventDefault();
+  main.focus();
+});
+window.addEventListener('hashchange', () => {
+  showSection();
+  if (matchMedia('(max-width: 960px)').matches) {
+    main.focus({ preventScroll: true });
+  }
+  window.scrollTo(0, 0);
+});
 showSection();

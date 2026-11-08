@@ -1,20 +1,35 @@
-.internship-date {
-  margin: 8px 0 24px;
-  color: #476075;
+.internship-byline {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 1rem 2rem;
 }
+.internship-byline h3 { margin: 0; }
+.internship-company, .internship-role { display: block; }
+.internship-company { font-size: clamp(24px, 3.15vw, 42px); line-height: 1.22; letter-spacing: -.045em; }
+.internship-role { margin-top: .45rem; font-size: clamp(15px, 1.5vw, 20px); font-weight: 550; color: var(--quiet); }
+.role-divider { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.internship-date { margin: 0; display: flex; flex-direction: column; align-items: end; gap: .05rem; font-size: .9rem; }
+.internship-period { font-size: 1.08rem; font-weight: 650; font-variant-numeric: tabular-nums; }
+.internship-period::before { content: ''; display: inline-block; width: .45em; height: .45em; border-radius: 50%; background: #4b8a75; margin: 0 .55em .12em 0; }
 .project-logos {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
 
-  gap: 20px 28px;
-  padding: 22px;
+  gap: clamp(14px, 2vw, 28px) clamp(18px, 3vw, 42px);
+  padding: clamp(19px, 3vw, 36px);
+  margin-top: clamp(18px, 2.4vw, 30px);
+  background: linear-gradient(120deg,#f6f8f7,#fff 50%,#f5f7fa);
+  border-radius: 18px;
 }
 .project-logos img {
   width: 100%;
   height: 52px;
   object-fit: contain;
+  mix-blend-mode: multiply;
 }
-.internship-layout { margin: clamp(22px, 3vw, 40px) 0 16px; }
+.internship-layout { margin: clamp(16px, 2vw, 28px) 0 16px; }
 .duties {
   border-radius: 16px;
   overflow: hidden;
@@ -45,18 +60,41 @@
 }
 .duties label:hover { color: #193aa1; background: #e7ecf4; }
 .duty-choice:checked + label { color: #fff; background: #203b90; }
-.duty-choice:checked + label::after { content: '→'; }
+.duties label::after {
+  content: '';
+  flex: 0 0 auto;
+  width: .45rem;
+  height: .45rem;
+  margin-right: .1rem;
+  border-top: 1.5px solid currentColor;
+  border-right: 1.5px solid currentColor;
+  transform: rotate(45deg);
+  opacity: .38;
+}
+.duty-choice:checked + label::after { opacity: 1; }
 .duty-choice:focus-visible + label { outline: 3px solid #6599ef; outline-offset: -3px; }
 .duty-story {
   display: none;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   grid-area: 1 / 2 / 7 / 3;
   align-content: center;
-  padding: clamp(24px, 4vw, 60px);
+  padding: clamp(24px, 4.8vw, 70px);
   background: #15294d;
   color: #fff;
 }
+.duty-story::before {
+  content: '';
+  pointer-events: none;
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: repeating-radial-gradient(ellipse at 102% 112%, transparent 0 19px, #53647d18 20px, transparent 21px 36px);
+  mask-image: linear-gradient(135deg,transparent 58%,#000);
+}
 .duty-choice:checked + label + .duty-story { display: grid; }
-.duty-story p { line-height: 1.9; color: #e0e7f3; max-width: 39em; }
+.duty-story p { line-height: 1.92; color: #253944; max-width: 36em; font-size: clamp(15px, 1.35vw, 18px); }
 @media (prefers-reduced-motion: no-preference) {
   .duty-story > * { animation: duty-reveal .3s ease-out; }
   @keyframes duty-reveal {
@@ -77,6 +115,13 @@
   height: auto;
   aspect-ratio: 4 / 3;
 }
+.internship-photos figure { min-width: 0; margin: 0; }
+.internship-photos figcaption {
+  margin-top: .42rem;
+  font: 500 clamp(11px, 1.03vw, 14px)/1.45 var(--type);
+  letter-spacing: .01em;
+  color: var(--quiet);
+}
 .internship-skills ul {
   display: flex;
   flex-wrap: wrap;
@@ -94,11 +139,20 @@
   font-size: 13px;
 }
 @media (max-width: 700px) {
+  .internship-date { flex-direction: row; align-items: baseline; gap: .85rem; }
   .duties { display: block; }
   .duties label { min-height: 45px; }
+  .duties label::after { transform: rotate(135deg); }
+  .duty-choice:checked + label::after { transform: rotate(-45deg); }
   .duty-story { padding: 16px; }
 }
 @media (max-width: 720px) {
   .project-logos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .project-logos img { height: 42px; }
+}
+@media (max-width: 460px) {
+  .project-logos { gap: 10px 22px; }
+  .project-logos img { height: 36px; }
+  #fractal .internship-photos img { border-radius: 8px; }
+  .internship-skills li { font-size: 12px; padding: 3px 8px; }
 }

@@ -1,0 +1,110 @@
+#contact {
+  --footer-line: #ffffff35;
+  --footer-muted: #b7c0ca;
+  padding: clamp(40px, 5vw, 76px) max(6vw, calc((100% - 1180px) / 2)) clamp(24px, 3vw, 42px);
+  background-color: #101214;
+}
+
+#contact .footer-contacts {
+  grid-template-columns: minmax(225px, 1.1fr) minmax(100px, .55fr) auto;
+  gap: clamp(24px, 5vw, 78px);
+}
+
+#contact address {
+  width: 100%;
+  max-width: 340px;
+  gap: 0;
+  font-style: normal;
+}
+
+#contact address a {
+  width: 100%;
+  min-height: 44px;
+  display: grid;
+  grid-template-columns: 2.8em 1fr auto;
+  align-items: center;
+  gap: .5em;
+  border-bottom: 1px solid var(--footer-line);
+  color: #f1f4f7;
+  font: 550 clamp(14px, 1.2vw, 18px)/1.4 var(--type);
+  text-decoration: none;
+}
+
+#contact address a::after {
+  content: '↗';
+  color: var(--footer-muted);
+  font-size: 1rem;
+}
+
+#contact .contact-method {
+  color: var(--footer-muted);
+  font-weight: 400;
+  font-size: .78em;
+}
+
+#contact .footer-links {
+  gap: 0;
+  margin-top: -.15rem;
+}
+
+#contact .footer-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  text-decoration: none;
+  font: 600 .83rem/1.25 var(--latin);
+  letter-spacing: .035em;
+}
+
+#contact a:focus-visible {
+  outline: 2px solid #b4ded4;
+  outline-offset: 3px;
+}
+
+#contact .footer-contacts a:hover { color: #cdf1e8; }
+
+#contact .footer-codes {
+  width: clamp(210px, 23.5vw, 300px);
+  gap: clamp(10px, 1.3vw, 20px);
+}
+
+#contact .footer-codes figcaption {
+  margin: 0;
+  padding-top: .48rem;
+  color: #dce2e8;
+  font-size: .8rem;
+  letter-spacing: .01em;
+}
+
+#contact h2 {
+  margin: clamp(30px, 4vw, 64px) 0 clamp(20px, 2.5vw, 36px);
+}
+
+#contact .footer-base {
+  margin: 0;
+  padding: 12px 0 0;
+  border-top-color: var(--footer-line);
+  color: var(--footer-muted);
+  font: 500 .85rem/1.5 var(--type);
+}
+
+#contact .footer-base a { padding: .65rem 0 .65rem .65rem; }
+
+@media (max-width: 760px) {
+  #contact { position: relative; }
+  #contact .footer-contacts {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 22px 18px;
+  }
+  #contact .footer-codes {
+    grid-column: 1 / -1;
+    width: min(100%, 276px);
+  }
+}
+
+@media (max-width: 390px) {
+  #contact { padding-inline: 5vw; }
+  #contact .footer-contacts { gap: 20px 10px; }
+  #contact address a { column-gap: .35em; grid-template-columns: 2.3em 1fr auto; }
+  #contact .footer-links a { font-size: .74rem; }
+}
