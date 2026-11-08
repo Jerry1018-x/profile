@@ -63,7 +63,7 @@
 .name-nav div a:is(:hover,:focus-visible)::after { transform: scaleX(1); }
 .name-visual {
   position: absolute;
-  inset: var(--image-top, 31%) var(--image-right, 3.6%) var(--image-bottom, 8.5%) var(--image-left, 33%);
+  inset: var(--image-top, 30%) var(--image-right, 3.1%) var(--image-bottom, 7%) var(--image-left, 33.3%);
   overflow: hidden;
   background: #7899ba;
 }
@@ -110,19 +110,19 @@
 .name-type svg { display: block; flex: none; width: 100%; height: 100%; fill: currentColor; }
 .name-first {
   width: 65%;
-  height: min(21svh, 14vw);
+  height: 20%;
   right: var(--edge);
-  top: 9.3%;
-  transform-origin: right center;
+  top: 10%;
+  transform-origin: right top;
   transform: translateY(var(--first-y,0px)) scale(var(--word-scale,1));
 }
 .name-first svg + svg { display: none; }
 .name-last {
   left: var(--edge);
-  top: 31.5%;
+  top: 33%;
   width: 30%;
-  height: min(21svh, 14vw);
-  transform-origin: left center;
+  height: 20%;
+  transform-origin: left top;
   transform: translateY(var(--last-y,0px)) scale(var(--word-scale,1));
 }
 .name-caption {
@@ -188,24 +188,22 @@
   .name-nav div { gap: clamp(9px,2.6vw,18px); }
   .name-nav div a { font-size: clamp(11px,2.9vw,15px); }
   .name-first {
-    left: var(--edge);
+    left: 0;
     right: auto;
-    width: calc(100% - 2 * var(--edge));
-    height: clamp(60px, 23vw, 155px);
-    top: 13.5%;
+    width: 128vw;
+    height: clamp(96px, 28vw, 180px);
+    top: 11%;
     transform: translateX(var(--ticker-x,0px));
-    gap: var(--edge);
+    gap: 5vw;
   }
-  .name-first svg + svg { display: block; opacity: var(--repeat-opacity,0); }
+  .name-first svg + svg { display: block; }
   .name-last {
-    top: 27.5%;
-    width: 49%;
-    height: clamp(60px,19vw,120px);
-    transform: translateX(calc(-64% * var(--last-exit,0))) scale(var(--word-scale,1));
-    opacity: calc(1 - var(--last-exit,0));
+    top: 30%;
+    width: 55vw;
+    height: clamp(78px,21vw,145px);
   }
   .name-visual {
-    inset: var(--image-top,35%) var(--image-right,4.7%) var(--image-bottom,18%) var(--image-left,10%);
+    inset: var(--image-top,36%) var(--image-right,4%) var(--image-bottom,14%) var(--image-left,12%);
   }
   .hero-still { object-position: 55% 50%; }
   .name-caption { bottom: 8.4%; width: auto; max-width: 92%; }
@@ -223,7 +221,10 @@
   .name-caption::before { margin-bottom: 5px; }
 }
 @media(prefers-reduced-motion:reduce) {
-  .name-hero.is-playing-stage { height: 100svh; }
   .hero-still { transform: none; }
   .name-stage::after { display: none; }
+}
+@media(max-width:768px) {
+  .name-hero:not(.is-playing-stage) .name-first { left:var(--edge); width:calc(100% - 2 * var(--edge)); transform:none; }
+  .name-hero:not(.is-playing-stage) .name-first svg + svg { display:none; }
 }

@@ -14,6 +14,7 @@
 .internship-period { font-size: 1.08rem; font-weight: 650; font-variant-numeric: tabular-nums; }
 .internship-period::before { content: ''; display: inline-block; width: .45em; height: .45em; border-radius: 50%; background: #4b8a75; margin: 0 .55em .12em 0; }
 .project-logos {
+  --logo-height: 52px;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
 
@@ -25,10 +26,22 @@
 }
 .project-logos img {
   width: 100%;
-  height: 52px;
+  height: var(--logo-height);
   object-fit: contain;
   mix-blend-mode: multiply;
 }
+.hospital-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(5px, .7vw, 10px);
+  min-width: 0;
+  height: var(--logo-height);
+  color: #202930;
+  font: 700 clamp(16px, 1.95vw, 25px)/1.1 var(--type);
+  white-space: nowrap;
+}
+.hospital-logo img { width: min(29%, var(--logo-height)); }
 .internship-layout { margin: clamp(16px, 2vw, 28px) 0 16px; }
 .duties {
   border-radius: 16px;
@@ -147,12 +160,10 @@
   .duty-story { padding: 16px; }
 }
 @media (max-width: 720px) {
-  .project-logos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .project-logos img { height: 42px; }
+  .project-logos { --logo-height: 42px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 460px) {
-  .project-logos { gap: 10px 22px; }
-  .project-logos img { height: 36px; }
+  .project-logos { --logo-height: 36px; gap: 10px 22px; }
   #fractal .internship-photos img { border-radius: 8px; }
   .internship-skills li { font-size: 12px; padding: 3px 8px; }
 }

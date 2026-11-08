@@ -10,10 +10,12 @@
   const narrowLayout = matchMedia('(max-width: 768px)');
   const finePointer = matchMedia('(hover:hover) and (pointer:fine)');
   const clamp = n => Math.min(1, Math.max(0, n));
-  const ease = n => n * n * (3 - 2 * n);
+  let manualMotion = false;
+  const motionEnabled = () => manualMotion || !reducedMotion.matches;
   let playing = false;
   let frame = 0;
   let previousTime = 0;
+  let playedTime = 0;
   let position = 0;
   let startAfter = 0;
   let lastIssuedY = null;
@@ -30,35 +32,36 @@
   }
 
   function paint() {
-    playback.hidden = reducedMotion.matches || window.scrollY >= endY - 2;
+    playback.hidden = window.scrollY >= endY - 2;
     if (window.scrollY > heroY + height * 2) return;
-    const p = reducedMotion.matches ? 0 : clamp((window.scrollY - heroY) / Math.max(1,height));
-    const convergence = ease(clamp(p / .48));
-    const pan = ease(clamp((p - .26) / .74));
-    const opening = ease(p);
+    const p = motionEnabled() ? clamp((window.scrollY - heroY) / Math.max(1,height)) : 0;
+    const convergence = clamp(p / .32);
+    const panY = -Math.max(0, p - .32) * height * .42;
     const mobile = narrowLayout.matches;
     const style = stage.style;
-    style.setProperty('--first-y', (-height * .16 * pan) + 'px');
-    style.setProperty('--last-y', (-height * ((mobile ? .12 : .21) * convergence + .16 * pan)) + 'px');
-    style.setProperty('--word-scale', 1 - .13 * convergence);
-    style.setProperty('--last-exit', convergence);
-    style.setProperty('--caption-opacity', 1 - ease(clamp(p / .30)));
-    style.setProperty('--image-top', (mobile ? 35 : 31) * (1 - opening) + '%');
-    style.setProperty('--image-left', (mobile ? 10 : 33) * (1 - opening) + '%');
-    style.setProperty('--image-right', (mobile ? 4.7 : 3.6) * (1 - opening) + '%');
-    style.setProperty('--image-bottom', (mobile ? 18 : 8.5) * (1 - opening) + '%');
-    style.setProperty('--finder-opacity', 1 - ease(clamp((p - .12) / .62)));
-    style.setProperty('--hero-zoom', 1.045 + .055 * opening);
+    style.setProperty('--first-y', panY + 'px');
+    style.setProperty('--last-y', (-height * .23 * convergence + panY) + 'px');
+    style.setProperty('--word-scale', 1 - .115 * convergence);
+    style.setProperty('--caption-opacity', 1 - clamp(p / .17));
+    style.setProperty('--image-top', (mobile ? 36 : 30) * (1 - p) + '%');
+    style.setProperty('--image-left', (mobile ? 12 : 33.3) * (1 - p) + '%');
+    style.setProperty('--image-right', (mobile ? 4 : 3.1) * (1 - p) + '%');
+    style.setProperty('--image-bottom', (mobile ? 14 : 7) * (1 - p) + '%');
+    style.setProperty('--finder-opacity', 1 - clamp((p - .12) / .62));
+    style.setProperty('--hero-zoom', 1.045 + .055 * p);
     style.setProperty('--film-progress', (p * 100).toFixed(2) + '%');
-    style.setProperty('--ticker-x', (-innerWidth * p * .88) + 'px');
-    style.setProperty('--repeat-opacity', ease(clamp(p / .2)));
+    if (mobile) {
+      // One repeat is the 128vw wordmark plus its 5vw gap.
+      const travel = innerWidth * .04 + playedTime * .024 + p * innerWidth * .6;
+      style.setProperty('--ticker-x', -(travel % (innerWidth * 1.33)) + 'px');
+    }
   }
 
   function setPlaying(enabled) {
-    playing = enabled && !reducedMotion.matches;
+    playing = enabled && motionEnabled();
     playback.lastElementChild.textContent = playing ? 'Pause' : 'Play';
     playback.firstElementChild.textContent = playing ? 'Ⅱ' : '▶';
-    const label = playing ? '暂停自动滚动' : '继续自动滚动';
+    const label = playing ? '暂停首屏动效' : '播放首屏动效';
     playback.setAttribute('aria-label', label);
     playback.title = label;
     cancelAnimationFrame(frame);
@@ -73,11 +76,14 @@
     if (!playing) return;
     const elapsed = Math.max(0, Math.min(50, now - previousTime));
     previousTime = now;
-    if (!document.hidden && now >= startAfter) {
-      const speed = Math.max(70, Math.min(190, height / 6.6));
-      position = Math.min(endY, position + elapsed * speed / 1000);
-      window.scrollTo({ top: position, behavior: 'instant' });
-      lastIssuedY = window.scrollY;
+    if (!document.hidden) {
+      playedTime += elapsed;
+      if (now >= startAfter) {
+        const speed = Math.max(70, Math.min(190, height / 5.8));
+        position = Math.min(endY, position + elapsed * speed / 1000);
+        window.scrollTo({ top: position, behavior: 'instant' });
+        lastIssuedY = window.scrollY;
+      }
       paint();
       if (position >= endY - 1) return setPlaying(false);
     }
@@ -97,6 +103,11 @@
   }, true);
   window.addEventListener('hashchange', stop);
   playback.addEventListener('click', () => {
+    if (!motionEnabled()) {
+      manualMotion = true;
+      hero.classList.add('is-playing-stage');
+      measure();
+    }
     startAfter = 0;
     setPlaying(!playing);
   });
@@ -115,6 +126,7 @@
     photo.style.removeProperty('--lens-y');
   });
   function syncMotionPreference() {
+    manualMotion = false;
     setPlaying(false);
     hero.classList.toggle('is-playing-stage', !reducedMotion.matches);
     measure();
@@ -127,7 +139,7 @@
   window.addEventListener('pageshow', event => {
     measure();
     if (!event.persisted && !reducedMotion.matches && !interrupted && (!location.hash || location.hash === '#top') && window.scrollY < 4) {
-      startAfter = performance.now() + 1000;
+      startAfter = performance.now() + 650;
       setPlaying(true);
     }
   });
