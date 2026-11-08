@@ -2,18 +2,18 @@
   const hero = document.querySelector('.name-hero');
   const stage = hero?.querySelector('.name-stage');
   const photo = stage?.querySelector('.name-visual');
+  const firstWord = stage?.querySelector('.name-first');
+  const lastWord = stage?.querySelector('.name-last');
   const playback = document.querySelector('.intro-playback');
   const profile = document.querySelector('#profile');
-  if (!stage || !photo || !playback || !profile) return;
+  if (!stage || !photo || !firstWord || !lastWord || !playback || !profile) return;
 
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   const narrowLayout = matchMedia('(max-width: 768px)');
   const finePointer = matchMedia('(hover:hover) and (pointer:fine)');
   const clamp = n => Math.min(1, Math.max(0, n));
-  const blend = (from, to, progress) => from + (to - from) * progress;
   const ease = t => t * t * (3 - 2 * t);
-  const liftTime = 800;
-  const openingTime = liftTime + 800;
+  const openingTime = 950;
   let openingElapsed = openingTime;
   let manualMotion = false;
   const motionEnabled = () => manualMotion || !reducedMotion.matches;
@@ -25,6 +25,7 @@
   let lastIssuedY = null;
   let endY = 0;
   let height = 1;
+  let baselineTravel = 0;
   let heroY = 0;
   let ready = false;
   let replayArmed = false;
@@ -34,6 +35,8 @@
 
   function measure() {
     height = stage.offsetHeight;
+    const baselineGap = lastWord.offsetTop - firstWord.offsetTop;
+    baselineTravel = narrowLayout.matches ? Math.max(0, baselineGap - firstWord.offsetHeight) : baselineGap;
     heroY = hero.getBoundingClientRect().top + window.scrollY;
     endY = profile.getBoundingClientRect().top + window.scrollY - 20;
     paint();
@@ -43,36 +46,28 @@
     playback.hidden = window.scrollY >= endY - 2;
     if (window.scrollY > heroY + height * 2) return;
     const p = motionEnabled() ? clamp((window.scrollY - heroY) / Math.max(1,height)) : 0;
-    const convergence = clamp(p / .32);
-    const panY = -Math.max(0, p - .32) * height * .42;
+    const convergence = ease(clamp(p / .38));
+    const panY = -Math.max(0, p - .38) * height * .44;
     const mobile = narrowLayout.matches;
     const style = stage.style;
-    const lift = ease(clamp(openingElapsed / liftTime));
-    const spread = ease(clamp((openingElapsed - liftTime) / (openingTime - liftTime)));
-    const cardSize = mobile ? 50 : 100 / 3;
-    const centerEdge = (100 - cardSize) / 2;
-    const top = blend(100, centerEdge, lift);
-    const photoTop = blend(top, mobile ? 36 : 30, spread);
-    const photoBottom = blend(100 - top - cardSize, mobile ? 14 : 7, spread);
-    const photoLeft = blend(centerEdge, mobile ? 12 : 33.3, spread);
-    const photoRight = blend(centerEdge, mobile ? 4 : 3.1, spread);
-    const letters = ease(clamp((openingElapsed - liftTime - 40) / 590));
-    const pixel = mobile ? 1 - ease(clamp((openingElapsed - liftTime * .8) / 460)) : 0;
+    const first = ease(clamp(openingElapsed / 730));
+    const last = ease(clamp((openingElapsed - 110) / (openingTime - 110)));
+    const uncovered = 1 - ease(p);
+    // Bring the two lines onto one baseline before the photo fills the viewport.
     style.setProperty('--first-y', panY + 'px');
-    style.setProperty('--last-y', (-height * .23 * convergence + panY) + 'px');
-    style.setProperty('--word-scale', 1 - .115 * convergence);
-    style.setProperty('--letters-inset', ((1 - letters) * 100) + '%');
-    style.setProperty('--letters-rise', ((1 - letters) * 14) + '%');
-    style.setProperty('--caption-opacity', letters * (1 - clamp(p / .17)));
-    style.setProperty('--image-top', photoTop * (1 - p) + '%');
-    style.setProperty('--image-left', photoLeft * (1 - p) + '%');
-    style.setProperty('--image-right', photoRight * (1 - p) + '%');
-    style.setProperty('--image-bottom', photoBottom * (1 - p) + '%');
-    style.setProperty('--photo-radius', ((1 - spread) * (mobile ? 8 : 16)) + 'px');
-    style.setProperty('--finder-opacity', spread * (1 - clamp((p - .12) / .62)));
-    style.setProperty('--hero-zoom', blend(mobile ? 1 : 2, 1.045, spread) + .055 * p);
-    style.setProperty('--intro-pixel', pixel.toFixed(3));
-    stage.toggleAttribute('data-opening-pixels', pixel > 0);
+    style.setProperty('--last-y', (-baselineTravel * convergence + panY) + 'px');
+    style.setProperty('--first-x', (9 * (1 - first) - 5 * convergence) + 'vw');
+    style.setProperty('--last-x', (-9 * (1 - last) + 4 * convergence) + 'vw');
+    style.setProperty('--word-scale', mobile ? 1 : 1 - .115 * convergence);
+    style.setProperty('--first-mask', ((1 - first) * 100) + '%');
+    style.setProperty('--last-mask', ((1 - last) * 100) + '%');
+    style.setProperty('--caption-opacity', last * (1 - clamp(p / .2)));
+    style.setProperty('--image-top', (mobile ? 36 : 30) * uncovered + '%');
+    style.setProperty('--image-left', (mobile ? 12 : 33.3) * uncovered + '%');
+    style.setProperty('--image-right', (mobile ? 4 : 3.1) * uncovered + '%');
+    style.setProperty('--image-bottom', (mobile ? 14 : 7) * uncovered + '%');
+    style.setProperty('--finder-opacity', 1 - clamp((p - .12) / .62));
+    style.setProperty('--hero-zoom', 1.045 + .055 * p);
     style.setProperty('--film-progress', (p * 100).toFixed(2) + '%');
     if (mobile) {
       // One repeat is the 128vw wordmark plus its 5vw gap.
@@ -165,7 +160,6 @@
   });
   playback.addEventListener('click', () => {
     explicitlyPaused = playing;
-    stage.toggleAttribute('data-motion-paused', explicitlyPaused);
     clearTimeout(openingTimer);
     openingTimer = 0;
     if (!motionEnabled()) {
@@ -182,15 +176,17 @@
     if (!playing) paint();
     considerOpening();
   }, { passive: true });
-  photo.addEventListener('pointermove', event => {
-    if (reducedMotion.matches || !finePointer.matches || event.pointerType === 'touch') return;
-    const box = photo.getBoundingClientRect();
-    photo.style.setProperty('--lens-x', (4 * ((event.clientX - box.left) / box.width - .5)) + 'px');
-    photo.style.setProperty('--lens-y', (4 * ((event.clientY - box.top) / box.height - .5)) + 'px');
+  stage.addEventListener('pointermove', event => {
+    if (explicitlyPaused || reducedMotion.matches || !finePointer.matches || event.pointerType === 'touch') return;
+    const box = stage.getBoundingClientRect();
+    const x = (event.clientX - box.left) / box.width - .5;
+    const y = (event.clientY - box.top) / box.height - .5;
+    stage.style.setProperty('--pointer-x', (x * 14) + 'px');
+    stage.style.setProperty('--pointer-y', (y * 8) + 'px');
   }, { passive: true });
-  photo.addEventListener('pointerleave', () => {
-    photo.style.removeProperty('--lens-x');
-    photo.style.removeProperty('--lens-y');
+  stage.addEventListener('pointerleave', () => {
+    stage.style.removeProperty('--pointer-x');
+    stage.style.removeProperty('--pointer-y');
   });
   function syncMotionPreference() {
     manualMotion = false;
