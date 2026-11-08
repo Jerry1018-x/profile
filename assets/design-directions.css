@@ -6,7 +6,7 @@
 }
 body { font-family: var(--type); }
 .name-type text, .name-nav div a, .name-caption p, .name-caption small,
-.intro-playback, small, .caption, figcaption, .heading i, .poster strong { font-family: var(--type); }
+small, .caption, figcaption, .heading i, .poster strong { font-family: var(--type); }
 .heading h2 { font-weight: 850; letter-spacing: -.045em; }
 .heading i, .poster strong { font-style: normal; }
 .heading h2 { line-height: 1.14; }
