@@ -125,6 +125,15 @@
   transform-origin: left top;
   transform: translateY(var(--last-y,0px)) scale(var(--word-scale,1));
 }
+/* Reveal the two lines separately; their outer spans keep following scroll. */
+@media (prefers-reduced-motion:no-preference) {
+  .opening-wordmark .name-type svg { animation:hero-letter-entry .85s cubic-bezier(.2,.72,.2,1) both; }
+  .opening-wordmark .name-last svg { animation-delay:.1s; }
+  @keyframes hero-letter-entry {
+    from { clip-path:inset(0 0 86% 0); translate:0 .13em; }
+    to { clip-path:inset(0); translate:0 0; }
+  }
+}
 .name-caption {
   position: absolute;
   left: var(--edge);

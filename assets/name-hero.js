@@ -22,7 +22,11 @@
   let endY = 0;
   let height = 1;
   let heroY = 0;
-  let interrupted = false;
+  let ready = false;
+  let replayArmed = false;
+  let explicitlyPaused = false;
+  let openingTimer = 0;
+  const atTop = () => window.scrollY <= heroY + 4;
 
   function measure() {
     height = stage.offsetHeight;
@@ -64,6 +68,7 @@
     const label = playing ? '暂停首屏动效' : '播放首屏动效';
     playback.setAttribute('aria-label', label);
     playback.title = label;
+    stage.classList.toggle('opening-wordmark', playing && atTop());
     cancelAnimationFrame(frame);
     if (!playing) return;
     previousTime = performance.now();
@@ -91,18 +96,50 @@
   }
 
   function stop() {
-    interrupted = true;
+    clearTimeout(openingTimer);
+    openingTimer = 0;
     if (playing) setPlaying(false);
   }
-  window.addEventListener('wheel', stop, { passive: true, capture: true });
+  // Entering the hero is a viewport event, even when the URL still says #activities.
+  // Arm another run only after leaving the opening, never while a visitor is reading below it.
+  function considerOpening() {
+    if (window.scrollY > heroY + height * .5) replayArmed = true;
+    if (!ready || !replayArmed || playing || explicitlyPaused || reducedMotion.matches || document.hidden || !atTop() || openingTimer) return;
+    openingTimer = window.setTimeout(() => {
+      openingTimer = 0;
+      if (!atTop() || playing || explicitlyPaused || reducedMotion.matches || document.hidden) return;
+      replayArmed = false;
+      startAfter = performance.now() + 320;
+      setPlaying(true);
+    }, 280);
+  }
+  function yieldToReading() {
+    stop();
+    if (atTop()) replayArmed = false;
+  }
+  function yieldToGesture(event) {
+    // A trackpad often emits a few more upward ticks after it reaches the top.
+    const settlingAtTop = replayArmed && atTop() && (event.type === 'touchmove' || event.deltaY <= 0);
+    yieldToReading();
+    if (settlingAtTop) { replayArmed = true; considerOpening(); }
+  }
+  window.addEventListener('wheel', yieldToGesture, { passive: true, capture: true });
+  window.addEventListener('touchmove', yieldToGesture, { passive: true, capture: true });
   window.addEventListener('pointerdown', event => {
-    if (!playback.contains(event.target)) stop();
+    if (event.target.closest?.('a,button') && !playback.contains(event.target)) yieldToReading();
   }, { passive: true, capture: true });
   window.addEventListener('keydown', event => {
-    if (!playback.contains(event.target) || !['Enter',' '].includes(event.key)) stop();
+    if (!playback.contains(event.target) && ['Tab',' ','PageDown','PageUp','Home','End','ArrowDown','ArrowUp'].includes(event.key)) yieldToReading();
   }, true);
-  window.addEventListener('hashchange', stop);
+  window.addEventListener('hashchange', () => {
+    stop();
+    if (location.hash === '#top') replayArmed = true;
+    considerOpening();
+  });
   playback.addEventListener('click', () => {
+    explicitlyPaused = playing;
+    clearTimeout(openingTimer);
+    openingTimer = 0;
     if (!motionEnabled()) {
       manualMotion = true;
       hero.classList.add('is-playing-stage');
@@ -114,6 +151,7 @@
   window.addEventListener('scroll', () => {
     if (playing && lastIssuedY !== null && Math.abs(window.scrollY - lastIssuedY) > 8) stop();
     if (!playing) paint();
+    considerOpening();
   }, { passive: true });
   photo.addEventListener('pointermove', event => {
     if (reducedMotion.matches || !finePointer.matches || event.pointerType === 'touch') return;
@@ -127,22 +165,27 @@
   });
   function syncMotionPreference() {
     manualMotion = false;
+    stop();
     setPlaying(false);
     hero.classList.toggle('is-playing-stage', !reducedMotion.matches);
     measure();
+    replayArmed = true;
+    considerOpening();
   }
   reducedMotion.addEventListener('change', syncMotionPreference);
   window.addEventListener('resize', measure);
   const resize = new ResizeObserver(measure);
   resize.observe(hero);
   resize.observe(profile);
-  window.addEventListener('pageshow', event => {
+  function onReady() {
+    ready = true;
     measure();
-    if (!event.persisted && !reducedMotion.matches && !interrupted && (!location.hash || location.hash === '#top') && window.scrollY < 4) {
-      startAfter = performance.now() + 650;
-      setPlaying(true);
-    }
-  });
+    considerOpening();
+  }
+  // A direct chapter link gets its native anchor position before autoplay is considered.
+  if (!location.hash || location.hash === '#top') requestAnimationFrame(onReady);
+  window.addEventListener('pageshow', () => requestAnimationFrame(onReady));
+  document.addEventListener('visibilitychange', considerOpening);
 
   if ('IntersectionObserver' in window && !reducedMotion.matches) {
     const reveal = new IntersectionObserver(entries => {

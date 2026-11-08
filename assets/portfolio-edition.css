@@ -21,16 +21,16 @@ main a:focus-visible, #journal-viewer button:focus-visible, .build-notes summary
 .chapter-index {
   position:sticky; top:max(8px,env(safe-area-inset-top)); z-index:4;
   display:grid; width:100%; height:auto; align-items:stretch; grid-template-columns:repeat(6,minmax(0,1fr)); gap:3px; padding:5px;
-  margin-bottom:clamp(36px,5vw,70px); border:1px solid #d9e4e7; border-radius:18px;
-  background:linear-gradient(108deg,#eef5f1f5,#f4f7faf5 54%,#f1f0f8f5);
-  backdrop-filter:blur(14px); box-shadow:0 5px 18px -9px #24475d38,inset 0 1px #fff;
+  margin-bottom:clamp(36px,5vw,70px); border:1px solid #e2e9ea; border-radius:18px;
+  background:linear-gradient(108deg,#f9fcfaf5,#fffffffa 54%,#fafafdf5);
+  backdrop-filter:blur(14px); box-shadow:0 4px 14px -10px #24475d2b,inset 0 1px #fff;
 }
 .chapter-index a { display:flex; align-items:center; justify-content:center; gap:clamp(5px,.8vw,12px); min-width:0; min-height:44px; padding:8px 3px; color:#304655; border-radius:12px; font-size:clamp(12px,1.35vw,15px); line-height:1.25; font-weight:650; text-decoration:none; white-space:nowrap; }
-.chapter-index a span { color:#546878; font-size:10px; letter-spacing:.04em; }
-.chapter-index a:is(:hover,:focus-visible) { background:#fff; color:#1e3a48; }
+.chapter-index a span { color:#a34d33; font-size:10px; font-weight:650; letter-spacing:.04em; }
+.chapter-index a:is(:hover,:focus-visible) { background:#f0f5f6; color:#1e3a48; }
 .chapter-index a:focus-visible { outline-offset:-3px; }
-.chapter-index a[aria-current="location"] { background:#263f50; color:#fff; box-shadow:0 2px 6px #27415322; }
-.chapter-index a[aria-current="location"] span { color:#ffbd9e; }
+.chapter-index a[aria-current="location"] { background:#e8f1f2; color:#243f4d; box-shadow:inset 0 0 0 1px #cbdede; }
+.chapter-index a[aria-current="location"] span { color:#904128; }
 @media(prefers-reduced-motion:no-preference) { .chapter-index a { transition:background-color .18s,color .18s; } }
 main > section:not(.profile-spread) { scroll-margin-top:calc(72px + env(safe-area-inset-top)); }
 /* The case opens on the people-sized units of this tool: three small assistants. */
