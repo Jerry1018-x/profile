@@ -5,18 +5,16 @@
 body > main { width:min(1180px,89%); }
 main > section:not(.profile-spread) { margin-block-end:clamp(66px,8vw,124px); scroll-margin-top:26px; }
 main .heading { display:grid; gap:6px; padding-block:clamp(20px,2.7vw,36px) clamp(24px,3.5vw,48px); }
-main .heading small, .profile-identity small, .wb-cover-copy > small, .map-legend small, .chapter-index span, .viewer-bar small { font:600 10px/1.45 Consolas,"SFMono-Regular",monospace; letter-spacing:.12em; }
+main .heading small, .profile-identity small, .wb-cover-copy > small, .chapter-index span, .viewer-bar small { font:600 10px/1.45 Consolas,"SFMono-Regular",monospace; letter-spacing:.12em; }
 main .heading h2 { margin:0; font-size:clamp(32px,4.25vw,62px); letter-spacing:-.048em; }
 main .heading h2::after { width:.13em; height:.13em; margin-left:.16em; }
-main a:focus-visible, #journal-viewer button:focus-visible, .build-notes summary:focus-visible { outline:2px solid #37658b; outline-offset:4px; }
-.profile-spread { display:grid; grid-template-columns:minmax(180px,.78fr) minmax(0,1.62fr); align-items:start; gap:clamp(28px,5vw,78px); margin:0; padding:clamp(48px,7vw,98px) 0 clamp(32px,4vw,58px); scroll-margin-top:20px; }
+main a:focus-visible, #journal-viewer button:focus-visible { outline:2px solid #37658b; outline-offset:4px; }
+.profile-spread { display:grid; grid-template-columns:minmax(180px,.78fr) minmax(0,1.62fr); align-items:center; gap:clamp(28px,5vw,78px); margin:0; padding:clamp(48px,7vw,98px) 0 clamp(32px,4vw,58px); scroll-margin-top:20px; }
 .profile-identity { display:flex; align-items:center; gap:16px; }
 .profile-identity img { width:clamp(56px,6vw,82px); height:auto; aspect-ratio:1; object-fit:cover; border:1px solid #dce4e8; border-radius:50%; }
 .profile-identity small { color:var(--folio-muted); letter-spacing:.06em; }
 .profile-identity h2 { font-size:clamp(24px,2.8vw,36px); margin:3px 0 0; line-height:1.15; }
-.profile-intro p { max-width:21em; font:720 clamp(24px,3.2vw,45px)/1.28 var(--type); letter-spacing:-.035em; text-wrap:balance; }
-.profile-intro > div { max-width:41em; color:var(--folio-muted); margin-top:18px; line-height:1.85; }
-.profile-intro p span { display:block; }
+.profile-intro { max-width:41em; margin:0; color:var(--folio-muted); line-height:1.85; }
 .chapter-index b { font-weight:inherit; }.chapter-index i { display:none; font-style:normal; }
 .chapter-index {
   position:sticky; top:max(8px,env(safe-area-inset-top)); z-index:4;
@@ -42,8 +40,8 @@ main > section:not(.profile-spread) { scroll-margin-top:calc(72px + env(safe-are
 .wb-cover-copy .wb-enter { margin-top:24px; background:#f5f8f9; color:#1d3546; border-radius:99px; padding:10px 18px; font-size:14px; }
 .wb-cover-copy .wb-enter:is(:hover,:focus-visible) { background:#ffcfb8; color:#233744; }
 .assistant-map { padding:15px 17px 6px; border:1px solid #ffffff40; border-radius:15px; background:#ecf3fa0c; }
-.map-legend, .assistant-map a { display:flex; align-items:center; gap:12px; }
-.map-legend { justify-content:space-between; padding:0 0 10px; color:#dce8ec; font-size:12px; }
+.assistant-map a { display:flex; align-items:center; gap:12px; }
+.map-legend { margin:0; padding:0 0 10px; color:#eaf1f5; font-size:14px; font-weight:600; }
 .assistant-map a { padding:9px 0; border-top:1px solid #ffffff29; }
 .assistant-map img { object-fit:contain; image-rendering:pixelated; width:39px; height:39px; }
 .assistant-map a span { flex:1; }.assistant-map strong,.assistant-map a small { display:block; }
@@ -51,11 +49,6 @@ main > section:not(.profile-spread) { scroll-margin-top:calc(72px + env(safe-are
 .assistant-map b { font:500 19px/1 var(--latin); color:#ccdde5; }
 .assistant-map a:hover b, .assistant-map a:focus-visible b { color:#ffbb96; }
 @media(prefers-reduced-motion:no-preference) { .assistant-map img,.wb-enter span,.note-cover>span { transition:transform .22s ease; }.assistant-map a:is(:hover,:focus-visible) img { transform:translateY(-3px) rotate(-4deg); }.wb-enter:hover span { transform:translate(2px,-2px); } }
-.wb-project .build-notes { margin:14px 0 0; padding:0; border:1px solid var(--folio-line); border-radius:12px; background:#f7f9fa; }
-.build-notes summary { list-style:none; display:flex; justify-content:space-between; align-items:center; padding:14px 20px; color:#304b5b; line-height:1.5; }
-.build-notes summary::-webkit-details-marker { display:none; }.build-notes summary span { font:500 20px/1 var(--latin); }
-.build-notes[open] summary span { transform:rotate(45deg); }.build-notes dl { display:grid; grid-template-columns:repeat(3,1fr); gap:22px; margin:0; padding:8px 20px 22px; }
-.build-notes dt { color:#29475a; font-weight:650; font-size:14px; }.build-notes dd { margin:6px 0 0; color:var(--folio-muted); font-size:14px; line-height:1.75; }
 .wb-group { margin-top:clamp(24px,3vw,42px); }
 .wb-group h4 { font-size:18px; }.wb-group > span { text-align:right; }
 .wb-tile { position:relative; }.wb-tile h5 a { display:flex; justify-content:space-between; align-items:baseline; gap:12px; }.wb-tile h5 a::after { content:"↗"; font:500 .72em/1 var(--latin); opacity:.65; }
@@ -97,10 +90,10 @@ main .note-cover img { display:block; width:100%; aspect-ratio:4/5; object-fit:c
   .wb-project .wb-intro { gap:20px; }
 }
 @media(max-width:640px) {
-  .profile-spread { grid-template-columns:1fr; gap:22px; }.profile-intro > div { font-size:14px; margin-top:12px; }
+  .profile-spread { grid-template-columns:1fr; gap:22px; }.profile-intro { font-size:14px; }
   .chapter-index { gap:1px; padding:3px; border-radius:15px; }.chapter-index a { flex-direction:column; justify-content:center; gap:4px; padding:5px 0; font-size:12px; border-radius:11px; }.chapter-index i { display:inline; }.chapter-index b { position:absolute; clip-path:inset(50%); width:1px; height:1px; overflow:hidden; }.chapter-index a span { font-size:9px; line-height:1.15; }
   #activities .activity-strip:first-child > a:first-child { grid-column:1/-1; }#activities .activity-strip:first-child > a:not(:first-child) img { aspect-ratio:4/3; }
-  .wb-project .wb-intro { grid-template-columns:1fr; border-radius:17px; }.build-notes dl { grid-template-columns:1fr; gap:12px; }
+  .wb-project .wb-intro { grid-template-columns:1fr; border-radius:17px; }
   .tool-index { grid-template-columns:1fr; }.tool-index .toolrow:first-child { grid-column:auto; }.tool-index .toolrow p { margin-bottom:12px; }
   #media .notes { grid-template-columns:1fr 1fr; }.note-cover>span { width:24px; height:24px; top:6px; right:6px; }
 }

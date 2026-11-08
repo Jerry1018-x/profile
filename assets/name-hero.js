@@ -10,6 +10,11 @@
   const narrowLayout = matchMedia('(max-width: 768px)');
   const finePointer = matchMedia('(hover:hover) and (pointer:fine)');
   const clamp = n => Math.min(1, Math.max(0, n));
+  const blend = (from, to, progress) => from + (to - from) * progress;
+  const ease = t => t * t * (3 - 2 * t);
+  const liftTime = 800;
+  const openingTime = liftTime + 800;
+  let openingElapsed = openingTime;
   let manualMotion = false;
   const motionEnabled = () => manualMotion || !reducedMotion.matches;
   let playing = false;
@@ -17,7 +22,6 @@
   let previousTime = 0;
   let playedTime = 0;
   let position = 0;
-  let startAfter = 0;
   let lastIssuedY = null;
   let endY = 0;
   let height = 1;
@@ -43,16 +47,32 @@
     const panY = -Math.max(0, p - .32) * height * .42;
     const mobile = narrowLayout.matches;
     const style = stage.style;
+    const lift = ease(clamp(openingElapsed / liftTime));
+    const spread = ease(clamp((openingElapsed - liftTime) / (openingTime - liftTime)));
+    const cardSize = mobile ? 50 : 100 / 3;
+    const centerEdge = (100 - cardSize) / 2;
+    const top = blend(100, centerEdge, lift);
+    const photoTop = blend(top, mobile ? 36 : 30, spread);
+    const photoBottom = blend(100 - top - cardSize, mobile ? 14 : 7, spread);
+    const photoLeft = blend(centerEdge, mobile ? 12 : 33.3, spread);
+    const photoRight = blend(centerEdge, mobile ? 4 : 3.1, spread);
+    const letters = ease(clamp((openingElapsed - liftTime - 40) / 590));
+    const pixel = mobile ? 1 - ease(clamp((openingElapsed - liftTime * .8) / 460)) : 0;
     style.setProperty('--first-y', panY + 'px');
     style.setProperty('--last-y', (-height * .23 * convergence + panY) + 'px');
     style.setProperty('--word-scale', 1 - .115 * convergence);
-    style.setProperty('--caption-opacity', 1 - clamp(p / .17));
-    style.setProperty('--image-top', (mobile ? 36 : 30) * (1 - p) + '%');
-    style.setProperty('--image-left', (mobile ? 12 : 33.3) * (1 - p) + '%');
-    style.setProperty('--image-right', (mobile ? 4 : 3.1) * (1 - p) + '%');
-    style.setProperty('--image-bottom', (mobile ? 14 : 7) * (1 - p) + '%');
-    style.setProperty('--finder-opacity', 1 - clamp((p - .12) / .62));
-    style.setProperty('--hero-zoom', 1.045 + .055 * p);
+    style.setProperty('--letters-inset', ((1 - letters) * 100) + '%');
+    style.setProperty('--letters-rise', ((1 - letters) * 14) + '%');
+    style.setProperty('--caption-opacity', letters * (1 - clamp(p / .17)));
+    style.setProperty('--image-top', photoTop * (1 - p) + '%');
+    style.setProperty('--image-left', photoLeft * (1 - p) + '%');
+    style.setProperty('--image-right', photoRight * (1 - p) + '%');
+    style.setProperty('--image-bottom', photoBottom * (1 - p) + '%');
+    style.setProperty('--photo-radius', ((1 - spread) * (mobile ? 8 : 16)) + 'px');
+    style.setProperty('--finder-opacity', spread * (1 - clamp((p - .12) / .62)));
+    style.setProperty('--hero-zoom', blend(mobile ? 1 : 2, 1.045, spread) + .055 * p);
+    style.setProperty('--intro-pixel', pixel.toFixed(3));
+    stage.toggleAttribute('data-opening-pixels', pixel > 0);
     style.setProperty('--film-progress', (p * 100).toFixed(2) + '%');
     if (mobile) {
       // One repeat is the 128vw wordmark plus its 5vw gap.
@@ -68,7 +88,6 @@
     const label = playing ? '暂停首屏动效' : '播放首屏动效';
     playback.setAttribute('aria-label', label);
     playback.title = label;
-    stage.classList.toggle('opening-wordmark', playing && atTop());
     cancelAnimationFrame(frame);
     if (!playing) return;
     previousTime = performance.now();
@@ -83,7 +102,9 @@
     previousTime = now;
     if (!document.hidden) {
       playedTime += elapsed;
-      if (now >= startAfter) {
+      if (openingElapsed < openingTime) {
+        openingElapsed = Math.min(openingTime, openingElapsed + elapsed);
+      } else {
         const speed = Math.max(70, Math.min(190, height / 5.8));
         position = Math.min(endY, position + elapsed * speed / 1000);
         window.scrollTo({ top: position, behavior: 'instant' });
@@ -105,16 +126,22 @@
   function considerOpening() {
     if (window.scrollY > heroY + height * .5) replayArmed = true;
     if (!ready || !replayArmed || playing || explicitlyPaused || reducedMotion.matches || document.hidden || !atTop() || openingTimer) return;
+    openingElapsed = 0;
+    playedTime = 0;
+    paint();
     openingTimer = window.setTimeout(() => {
       openingTimer = 0;
       if (!atTop() || playing || explicitlyPaused || reducedMotion.matches || document.hidden) return;
       replayArmed = false;
-      startAfter = performance.now() + 320;
       setPlaying(true);
-    }, 280);
+    }, 100);
   }
   function yieldToReading() {
     stop();
+    if (!explicitlyPaused && openingElapsed < openingTime) {
+      openingElapsed = openingTime;
+      paint();
+    }
     if (atTop()) replayArmed = false;
   }
   function yieldToGesture(event) {
@@ -138,17 +165,19 @@
   });
   playback.addEventListener('click', () => {
     explicitlyPaused = playing;
+    stage.toggleAttribute('data-motion-paused', explicitlyPaused);
     clearTimeout(openingTimer);
     openingTimer = 0;
     if (!motionEnabled()) {
       manualMotion = true;
       hero.classList.add('is-playing-stage');
+      if (atTop()) openingElapsed = 0;
       measure();
     }
-    startAfter = 0;
     setPlaying(!playing);
   });
   window.addEventListener('scroll', () => {
+    if (!atTop() && openingElapsed < openingTime) openingElapsed = openingTime;
     if (playing && lastIssuedY !== null && Math.abs(window.scrollY - lastIssuedY) > 8) stop();
     if (!playing) paint();
     considerOpening();
@@ -165,6 +194,7 @@
   });
   function syncMotionPreference() {
     manualMotion = false;
+    openingElapsed = openingTime;
     stop();
     setPlaying(false);
     hero.classList.toggle('is-playing-stage', !reducedMotion.matches);
@@ -183,7 +213,7 @@
     considerOpening();
   }
   // A direct chapter link gets its native anchor position before autoplay is considered.
-  if (!location.hash || location.hash === '#top') requestAnimationFrame(onReady);
+  if (!location.hash || location.hash === '#top') onReady();
   window.addEventListener('pageshow', () => requestAnimationFrame(onReady));
   document.addEventListener('visibilitychange', considerOpening);
 
