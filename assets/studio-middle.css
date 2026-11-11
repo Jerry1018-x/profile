@@ -1,0 +1,106 @@
+/* Editorial structure, technical details, and a shared sky-blue palette. */
+body > main { --studio-line:#dce7ed; --studio-blue:#329dd2; --studio-ink:#173647; }
+main > section { position:relative; }
+main .heading { position:relative; border-top:1px solid var(--studio-line); padding-top:30px; }
+main .heading::before { content:""; position:absolute; top:-1px; left:0; width:64px; height:3px; background:var(--studio-blue); }
+main .heading::after { content:"+"; position:absolute; right:0; top:25px; color:#70b8dc; font:300 28px/1 monospace; }
+main .heading small { color:#46768c; letter-spacing:.16em; }
+main .heading h2 { color:var(--studio-ink); letter-spacing:-.035em; }
+.profile-spread { position:relative; grid-template-columns:1fr 1.65fr; gap:6%; padding-block:70px; }
+.profile-identity { align-self:start; }
+.profile-identity img { border-radius:16px; padding:5px; border:1px solid var(--studio-line); }
+.profile-intro { border-left:2px solid #a8d9f0; padding:2px 0 2px 28px; font-size:clamp(15px,1.4vw,18px); }
+.chapter-index { border-radius:10px; background:#fffffff2; box-shadow:0 8px 24px #163b4c08; border-color:var(--studio-line); }
+.chapter-index a { border-radius:6px; }
+.chapter-index a[aria-current="location"] { color:#17668d; background:#edf7fc; box-shadow:inset 0 -2px #48a9d8; }
+.internship-byline { padding-bottom:8px; }
+.internship-company { letter-spacing:-.025em; }
+.project-logos { gap:1px; padding:1px; border:1px solid var(--studio-line); border-radius:8px; background:var(--studio-line); overflow:hidden; }
+.project-logos > img,.project-logos > .hospital-logo { height:100px; padding:24px 20px; background:white; box-sizing:border-box; }
+.project-logos > img { mix-blend-mode:normal; }
+.project-logos .hospital-logo { display:block; }
+.project-logos .hospital-logo img { width:100%; height:100%; object-fit:contain; mix-blend-mode:normal; }
+.project-logos .hospital-huaxi { padding:5px 20px; }
+.project-logos .hospital-ruijin { display:flex; align-items:center; }
+.ruijin-wordmark { display:block; position:relative; width:100%; height:auto; aspect-ratio:580/215; overflow:hidden; }
+.project-logos .ruijin-wordmark img { position:absolute; width:186.21%; height:auto; max-width:none; left:0; top:-111.63%; object-fit:initial; }
+main .duties { border-radius:8px; border:1px solid var(--studio-line); box-shadow:0 16px 36px -28px #194b69; background:#fff; counter-reset:duty; }
+main .duties label { counter-increment:duty; justify-content:start; font-size:15px; font-weight:550; border-color:#e6edf1; padding-block:16px; }
+main .duties label::before { content:"0" counter(duty); color:#6095af; font:11px/1.2 Consolas,monospace; margin-right:7px; }
+main .duties label::after { margin-left:auto; }
+main .duties .duty-choice:checked + label { color:#175878; background:#eaf6fc; box-shadow:inset 3px 0 #3cace3; }
+main .duty-story { background:linear-gradient(125deg,#f4faff,#fff); }
+main .duty-story::before { background-image:linear-gradient(#87b8d015 1px,transparent 1px),linear-gradient(90deg,#87b8d015 1px,transparent 1px); background-size:24px 24px; mask-image:linear-gradient(130deg,transparent 20%,#000); }
+main .duty-story::after { content:""; position:absolute; bottom:20px; right:20px; width:24px; height:24px; border-right:1px solid #70b8dc; border-bottom:1px solid #70b8dc; }
+main .internship-photos { gap:18px; margin-top:24px; }
+main .internship-photos img { border-radius:5px; }
+main .internship-photos figcaption { border-bottom:1px solid var(--studio-line); padding:10px 0; color:#567483; font-size:12px; }
+main .internship-skills ul { gap:8px; }
+main .internship-skills li { border:1px solid #dce8ef; border-radius:4px; background:#f9fcfe; font-size:12px; }
+.activity-byline { display:grid; grid-template-columns:1fr 1.2fr; gap:6%; align-items:start; margin-bottom:30px; }
+.activity-byline h3 { font-size:clamp(24px,2.6vw,34px); line-height:1.35; margin:0; }
+.activity-byline p { margin:0; padding-left:24px; border-left:1px solid #b7d9eb; }
+.activity-byline strong { color:#14769e; font-size:1.4em; font-weight:700; }
+main .activity-wall { padding:12px; border:1px solid var(--studio-line); border-radius:8px; background:#f7fafc; }
+main .activity-strip img { border-radius:4px; }
+.wb-project .wb-intro { border-radius:10px; border:1px solid #3b6279; background:radial-gradient(ellipse at 100% 100%,#245c7e,transparent 60%),#102c3d; padding:clamp(26px,4vw,56px); }
+.wb-intro::before { background-size:28px 28px; opacity:.8; }
+.wb-cover-copy > small { letter-spacing:.15em; }
+.wb-cover-copy .wb-enter { border-radius:5px; padding:12px 20px; }
+.assistant-map { border-radius:6px; border-color:#7fbad338; background:#abd9ed09; }
+.assistant-map a { padding:13px 0; }
+.wb-group { position:relative; padding:12px 0; border-bottom:1px solid var(--studio-line); margin-bottom:18px; }
+.wb-group h4 { display:flex; align-items:center; gap:10px; font-size:16px; }
+.wb-group h4::before { content:""; width:7px; height:7px; border:1px solid #39a3d7; background:#c5eafb; }
+.wb-grid { gap:14px; }
+.wb-tile { border-radius:7px; border:1px solid #dce8f0; background:linear-gradient(140deg,#fff,#f6fafd); padding:26px; }
+.wb-tile h5 { font-size:21px; }.wb-tile p { font-size:14px; }
+.wb-tile h5 a::after { color:#2183b1; }
+.wb-tile.wb-overview { background:#edf7fc; color:#173c51; border-color:#c7e3f2; }
+.wb-overview p,.wb-stats span { color:#4f7183; }
+.wb-stats { justify-content:space-between; gap:10px; }
+.wb-stats > div { flex:1; border-left:1px solid #bedbec; padding-left:16px; }
+.wb-stats strong { color:#167caf; font-weight:500; }
+.wb-tile.wb-directions { background:#f7fbfd; }
+.wb-tile.wb-knowledge,.wb-tile.wb-books,.wb-tile.wb-content { background:linear-gradient(140deg,#f4f9fc,#fff); }
+.wb-cat { padding-top:12px; border-top:1px solid #dce8ef; }
+.wb-rows li { padding-block:9px; }
+.journal-byline { padding:0 0 18px; border-bottom:1px solid var(--studio-line); }
+main .note-cover { border-radius:5px; }
+.notes figure { margin:0; }.notes figcaption { padding-top:16px; border-bottom:1px solid var(--studio-line); padding-bottom:16px; }
+.notes figcaption b { color:#278dbb; }
+/* Tools form three readable shelves, with a consistent icon grid. */
+.tool-index { display:flex; flex-direction:column; gap:0; border-top:1px solid var(--studio-line); }
+.tool-index .toolrow { display:grid; grid-template-columns:minmax(180px,.8fr) minmax(0,2fr); column-gap:32px; row-gap:6px; padding:30px 0; background:none; border-bottom:1px solid var(--studio-line); border-radius:0; }
+.tool-index .toolrow h3 { grid-column:1; grid-row:1; font-size:20px; gap:12px; margin:0; align-self:end; }
+.tool-index h3 small { color:#2389b8; }
+.tool-index .toolrow p { grid-column:1; grid-row:2; max-width:21em; margin:0; padding-left:27px; font-size:12px; line-height:1.8; }
+.tool-index .toolrow > div { grid-column:2; grid-row:1/3; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+.tool-index .toolrow span { display:flex; gap:10px; align-items:center; justify-content:start; min-height:58px; padding:10px 14px; border:1px solid #e1ebf1; border-radius:6px; background:#f7fafc; font-size:13px; color:#24465b; }
+.tool-index .toolrow img { width:25px; height:25px; object-fit:contain; }
+@media(prefers-reduced-motion:no-preference) {
+  .wb-tile,.tool-index .toolrow span { transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease; }
+  .wb-tile:focus-within,.wb-tile:hover { border-color:#79bcdc; box-shadow:0 8px 24px #1a64800c; transform:translateY(-3px); }
+  .tool-index .toolrow span:hover { border-color:#9bcee7; transform:translateY(-2px); }
+}
+@media(min-width:900px) { #media .notes { align-items:start; } #media .notes figure:nth-child(even) { margin-top:30px; } }
+@media(max-width:760px) {
+  .project-logos { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .project-logos > img,.project-logos > .hospital-logo { height:90px; padding:20px; }
+  .profile-spread { grid-template-columns:1fr; gap:24px; padding-block:42px; }
+  .profile-intro { padding-left:20px; }
+  .activity-byline { grid-template-columns:1fr; gap:18px; }
+  .activity-byline p { padding-left:16px; }
+  .tool-index .toolrow { grid-template-columns:1fr; row-gap:10px; padding-block:24px; }
+  .tool-index .toolrow > div { grid-column:1; grid-row:3; margin-top:8px; }
+  .tool-index .toolrow p { max-width:none; }
+}
+@media(max-width:460px) {
+  .tool-index .toolrow > div { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .tool-index .toolrow span { padding:10px; font-size:12px; }
+  .project-logos > img,.project-logos > .hospital-logo { height:78px; padding:16px 12px; }
+  main .duties label { font-size:13px; }
+  .wb-tile { padding:22px; }
+}
+.project-logos .hospital-huaxi { padding:2px 12px; }
+.project-logos .hospital-pumch { padding:10px 16px; }

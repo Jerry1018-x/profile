@@ -1,0 +1,18 @@
+{
+  "checked": "2026-11-11",
+  "pumch-lockup.png": {
+    "page": "https://www.pumch.cn/en/new_index.html",
+    "asset": "https://www.pumch.cn/Uploads/Picture/2025/10/14/s68ee0ce8c160a.png",
+    "note": "Complete hospital emblem including original lettering, from the hospital's English homepage."
+  },
+  "huaxi-hospital.jpg": {
+    "page": "https://biomedbdc.wchscu.cn/docs/datalist/esophagus/esophagus/",
+    "asset": "https://biomedbdc.wchscu.cn/docs/hx.jpg",
+    "note": "Hospital emblem from its biomedical big data center; replaces the medical school emblem."
+  },
+  "ruijin-official-banner.jpg": {
+    "page": "https://sghexport.shobserver.com/html/baijiahao/2022/11/11/899659.html",
+    "asset": "https://sghimages.shobserver.com/img/catch/2022/11/11/1271dbb2-b22c-468c-9e4d-c6d3ea56c68b.jpg",
+    "note": "Hospital recruitment announcement banner. CSS displays the original hospital wordmark, excluding the anniversary graphic. Main hospital website returned HTTP 403 during verification."
+  }
+}
