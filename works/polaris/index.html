@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Polaris — 项目管理工作台</title>
+<link rel="icon" href="polaris-256.png" type="image/png">
+<link rel="stylesheet" href="./assets/app.css">
+<style>
+  .polaris-back { position: fixed; right: 16px; bottom: 16px; z-index: 30; padding: 7px 11px; border: 1px solid #d7dce5; border-radius: 999px; background: #fff; color: #3a4a5e; font: 500 11px/1.4 -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif; text-decoration: none; box-shadow: 0 5px 18px rgba(20, 35, 60, .09); }
+  .polaris-back:hover { color: #1b41c2; border-color: #b9c6d8; }
+  @media (max-width: 640px) { .polaris-back { right: 12px; bottom: 12px; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="app__topbar">
+    <div class="app__brand"><svg class="brand-icon" viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="bg-g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3E6FE9"/><stop offset="1" stop-color="#1B41C2"/></linearGradient><linearGradient id="star-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFE37A"/><stop offset="1" stop-color="#C9A227"/></linearGradient></defs><rect x="1" y="1" width="22" height="22" rx="6" fill="url(#bg-g)"/><path d="M12 2.5 L14.2 9.8 L21.5 12 L14.2 14.2 L12 21.5 L9.8 14.2 L2.5 12 L9.8 9.8 Z" fill="url(#star-g)" stroke="#8A6A12" stroke-width=".5"/><circle cx="12" cy="12" r="2" fill="#FFFBEC"/></svg><b>Polaris</b><span class="app__tag">v0.1 MVP</span></div>
+    <div class="app__actions">
+      <div class="search" id="search-box">
+        <svg viewBox="0 0 16 16" class="search__icon"><circle cx="6.8" cy="6.8" r="4.6" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="10.4" y1="10.4" x2="14" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <input id="search-input" type="text" placeholder="搜索任务、项目" autocomplete="off" spellcheck="false">
+        <kbd id="search-kbd">⌘K</kbd>
+        <div class="search__pop" id="search-pop" hidden></div>
+      </div>
+      <button class="btn btn--pri" id="btn-create">
+        <svg viewBox="0 0 14 14"><line x1="7" y1="2" x2="7" y2="12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><line x1="2" y1="7" x2="12" y2="7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>新建任务
+      </button>
+    </div>
+  </div>
+  <div class="app__body">
+    <aside class="side">
+      <nav class="nav">
+        <a href="#/dash" data-nav="dash">
+          <svg viewBox="0 0 16 16"><rect x="2" y="2" width="5" height="5" rx="1.2" fill="currentColor" opacity=".9"/><rect x="9" y="2" width="5" height="5" rx="1.2" fill="currentColor" opacity=".55"/><rect x="2" y="9" width="5" height="5" rx="1.2" fill="currentColor" opacity=".55"/><rect x="9" y="9" width="5" height="5" rx="1.2" fill="currentColor" opacity=".9"/></svg>工作台
+        </a>
+        <a href="#/mine" data-nav="mine">
+          <svg viewBox="0 0 16 16"><rect x="2" y="2.5" width="12" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M4.6 8.2l2.2 2.2 4.4-4.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>我的任务
+        </a>
+      </nav>
+      <div class="side__label">项目</div>
+      <nav class="nav nav--proj" id="side-projects"></nav>
+      <button class="side__addproj" id="btn-addproj">
+        <svg viewBox="0 0 14 14"><line x1="7" y1="2" x2="7" y2="12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="2" y1="7" x2="12" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>新建项目
+      </button>
+      <div class="side__foot">
+        <button id="btn-settings">
+          <svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M8 1.8v1.6M8 12.6v1.6M14.2 8h-1.6M3.4 8H1.8M12.4 3.6l-1.1 1.1M4.7 11.3l-1.1 1.1M12.4 12.4l-1.1-1.1M4.7 4.7L3.6 3.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>设置
+        </button>
+      </div>
+    </aside>
+    <main class="main" id="view"></main>
+  </div>
+</div>
+
+<div class="modal" id="modal-create" hidden>
+  <div class="modal__mask" data-close></div>
+  <div class="modal__card">
+    <header><b>新建任务</b><button class="modal__x" data-close>×</button></header>
+    <div class="modal__body">
+      <label class="field"><span>标题</span><input id="nc-title" type="text" placeholder="要做什么？" maxlength="60"></label>
+      <div class="field__row">
+        <label class="field"><span>项目</span><select id="nc-proj"></select></label>
+        <label class="field"><span>负责人</span><select id="nc-owner"></select></label>
+      </div>
+      <div class="field__row">
+        <label class="field"><span>开始日期</span><input id="nc-start" type="date"></label>
+        <label class="field"><span>截止日期</span><input id="nc-end" type="date"></label>
+      </div>
+    </div>
+    <footer>
+      <span class="field__hint">创建后可在看板详情中补充描述与子任务</span>
+      <button class="btn" data-close>取消</button>
+      <button class="btn btn--pri" id="nc-submit">创建任务</button>
+    </footer>
+  </div>
+</div>
+
+<div class="modal" id="modal-proj" hidden>
+  <div class="modal__mask" data-close></div>
+  <div class="modal__card">
+    <header><b>新建项目</b><button class="modal__x" data-close>×</button></header>
+    <div class="modal__body">
+      <label class="field"><span>项目名称</span><input id="np-name" type="text" placeholder="例如：官网改版" maxlength="24"></label>
+      <div class="field__row">
+        <label class="field"><span>截止日期</span><input id="np-end" type="date"></label>
+        <label class="field"><span>标识颜色</span>
+          <div class="swatches" id="np-colors"></div>
+        </label>
+      </div>
+    </div>
+    <footer>
+      <span class="field__hint"></span>
+      <button class="btn" data-close>取消</button>
+      <button class="btn btn--pri" id="np-submit">创建项目</button>
+    </footer>
+  </div>
+</div>
+
+<div class="modal" id="modal-settings" hidden>
+  <div class="modal__mask" data-close></div>
+  <div class="modal__card modal__card--sm">
+    <header><b>设置</b><button class="modal__x" data-close>×</button></header>
+    <div class="modal__body">
+      <div class="set-row">
+        <div><b>本地数据层</b><span>所有数据保存在浏览器 localStorage，随时可导出备份。</span></div>
+        <span class="chip" id="set-store-state">已启用</span>
+      </div>
+      <div class="set-row">
+        <div><b>导出数据</b><span>下载 JSON 备份文件</span></div>
+        <button class="btn btn--sm" id="set-export">导出</button>
+      </div>
+      <div class="set-row">
+        <div><b>重置演示数据</b><span>清除本地修改，恢复初始示例项目</span></div>
+        <button class="btn btn--sm btn--danger" id="set-reset">重置</button>
+      </div>
+      <p class="set-ver">Polaris v0.1 MVP · Mac 风格原型</p>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+
+<script src="./assets/store.js"></script>
+<script src="./assets/board.js"></script>
+<script src="./assets/gantt.js"></script>
+<script src="./assets/app.js"></script>
+<a class="polaris-back" href="../polaris.html">← 返回作品集</a>
+</body>
+</html>
