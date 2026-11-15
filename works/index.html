@@ -29,14 +29,18 @@
   }
 }
 </script>
-<link rel="stylesheet" href="assets/works.css?v=20261114g">
+<link rel="stylesheet" href="assets/works.css?v=20261114h">
 <script defer src="assets/works.js?v=20261114g"></script>
+<script defer src="../assets/site-scroll.js?v=20261115a"></script>
 </head>
 <body>
 <a class="skip" href="#works">跳到作品</a>
 
 <header class="site-head works-head">
-  <a class="works-back" href="../index.html#lab"><span aria-hidden="true">←</span> 返回个人网站</a>
+  <div class="works-head-left">
+    <a class="works-back" href="../index.html#lab" data-return="1"><span aria-hidden="true">←</span> 个人网站</a>
+    <a class="works-jump" href="#works">其他作品 ↓</a>
+  </div>
   <span class="works-label">薛绍祎 · Selected works / 2026</span>
   <a class="head-link" href="mailto:xue_shaoyi@qq.com">联系我 ↗</a>
 </header>
@@ -57,8 +61,9 @@
 
   <section class="index-section" id="works" aria-labelledby="work-title">
     <div class="section-label"><span>01</span> Selected work</div>
+    <p class="works-howto">下面两个窗口都可以直接操作：点窗口或「试用 Demo」会打开真实前端演示；想看设计过程，点「查看完整案例」。</p>
 
-    <a class="feature-work" href="workbench.html" data-reveal>
+    <article class="feature-work" data-reveal>
       <div class="feature-copy">
         <p class="case-no">Case 01 <span aria-hidden="true">/</span> Personal software</p>
         <h2 id="work-title">我的 AI 工作台</h2>
@@ -69,15 +74,18 @@
           <li>界面设计</li>
           <li>全栈实现</li>
         </ul>
-        <span class="enter-link">查看完整案例 <span aria-hidden="true">↗</span></span>
+        <div class="work-actions">
+          <a class="enter-link" href="workbench-demo/index.html" target="_blank" rel="noopener">试用 Demo <span aria-hidden="true">↗</span></a>
+          <a class="work-case-link" href="workbench.html">查看完整案例 →</a>
+        </div>
       </div>
-      <div class="feature-visual" aria-hidden="true">
-        <img class="feature-main" src="assets/shots/workbench-dashboard.png" alt="" width="1440" height="1000" loading="eager" decoding="async">
+      <a class="feature-visual" href="workbench-demo/index.html" target="_blank" rel="noopener" aria-label="打开我的 AI 工作台 Demo">
+        <img class="feature-main" src="assets/shots/workbench-dashboard.png" alt="我的 AI 工作台界面预览" width="1440" height="1000" loading="eager" decoding="async">
         <img class="feature-mobile" src="assets/shots/workbench-mobile.png" alt="" width="390" height="844" loading="lazy" decoding="async">
-      </div>
-    </a>
+      </a>
+    </article>
 
-    <a class="feature-work feature-work--light" href="polaris.html" data-reveal>
+    <article class="feature-work feature-work--light" data-reveal>
       <div class="feature-copy">
         <p class="case-no">Case 02 <span aria-hidden="true">/</span> Workflow tool</p>
         <h2>Polaris · 项目管理工作台</h2>
@@ -88,13 +96,16 @@
           <li>前端实现</li>
           <li>本地数据</li>
         </ul>
-        <span class="enter-link">查看完整案例 <span aria-hidden="true">↗</span></span>
+        <div class="work-actions">
+          <a class="enter-link" href="polaris/index.html" target="_blank" rel="noopener">试用 Demo <span aria-hidden="true">↗</span></a>
+          <a class="work-case-link" href="polaris.html">查看完整案例 →</a>
+        </div>
       </div>
-      <div class="feature-visual" aria-hidden="true">
-        <img class="feature-main" src="assets/shots/polaris-dashboard.png" alt="" width="1440" height="1000" loading="lazy" decoding="async">
+      <a class="feature-visual" href="polaris/index.html" target="_blank" rel="noopener" aria-label="打开 Polaris 项目管理工作台 Demo">
+        <img class="feature-main" src="assets/shots/polaris-dashboard.png" alt="Polaris 项目管理工作台界面预览" width="1440" height="1000" loading="lazy" decoding="async">
         <img class="feature-mobile" src="assets/shots/polaris-mobile.png" alt="" width="390" height="844" loading="lazy" decoding="async">
-      </div>
-    </a>
+      </a>
+    </article>
 
     <div class="next-work" data-reveal>
       <div class="next-no" aria-hidden="true">03</div>
