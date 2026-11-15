@@ -10,7 +10,9 @@
   .polaris-back { position: fixed; right: 16px; bottom: 16px; z-index: 30; padding: 7px 11px; border: 1px solid #d7dce5; border-radius: 999px; background: #fff; color: #3a4a5e; font: 500 11px/1.4 -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif; text-decoration: none; box-shadow: 0 5px 18px rgba(20, 35, 60, .09); }
   .polaris-back:hover { color: #1b41c2; border-color: #b9c6d8; }
   @media (max-width: 640px) { .polaris-back { right: 12px; bottom: 12px; } }
+  html.embedded .polaris-back { display: none; }
 </style>
+<script>if (new URLSearchParams(location.search).get('embed') === '1') document.documentElement.classList.add('embedded');</script>
 </head>
 <body>
 <div class="app">
