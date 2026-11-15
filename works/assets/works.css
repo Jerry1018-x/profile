@@ -575,6 +575,47 @@ figcaption {
   font: 500 10px/1.6 var(--mono);
   letter-spacing: .02em;
 }
+.live-frame {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #eef3f5;
+  box-shadow: 0 18px 50px rgba(20, 35, 40, .07);
+}
+.live-frame-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--line);
+  background: #f3f5f5;
+  color: var(--muted);
+  font: 500 10px/1.5 var(--mono);
+}
+.live-dots { display: flex; gap: 4px; }
+.live-dots i { width: 6px; height: 6px; border-radius: 50%; background: #c5ced2; }
+.live-frame-bar b { color: var(--text); font-weight: 600; }
+.live-frame-bar a { margin-left: auto; color: var(--accent); white-space: nowrap; }
+.live-frame iframe {
+  display: block;
+  width: 100%;
+  height: min(72vh, 760px);
+  min-height: 520px;
+  border: 0;
+  background: #fff;
+}
+.live-frame-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 9px;
+  color: var(--muted);
+  font: 500 10px/1.6 var(--mono);
+}
+@media (max-width: 760px) {
+  .live-frame iframe { height: 640px; min-height: 560px; }
+  .live-frame-foot { flex-direction: column; gap: 3px; }
+}
 .case-block {
   display: grid;
   grid-template-columns: minmax(150px, 210px) minmax(0, 1fr);
