@@ -26,13 +26,19 @@
   line-height: 1.8;
 }
 .portfolio-all {
+  display: inline-flex;
   flex: none;
-  padding-bottom: 3px;
-  border-bottom: 1px solid #18191b;
-  font: 600 11px/1.4 Consolas, "SFMono-Regular", monospace;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 16px;
+  border-radius: 8px;
+  background: #304fc2;
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(48, 79, 194, .18);
+  font: 650 11px/1.4 Consolas, "SFMono-Regular", monospace;
   white-space: nowrap;
 }
-.portfolio-all:hover { color: #304fc2; border-color: #304fc2; }
+.portfolio-all:hover { background: #233da6; color: #fff; }
 .portfolio-cases {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
