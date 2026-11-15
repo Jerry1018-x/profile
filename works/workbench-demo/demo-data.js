@@ -183,6 +183,523 @@
     return null;
   }
 
+  /* ============================================================
+     浏览器内可操作数据层
+     公开演示用；数据只保存在当前浏览器的 localStorage。
+     ============================================================ */
+  const DEMO_KEY = 'workbench-public-demo-v1';
+  const clone = (value) => JSON.parse(JSON.stringify(value));
+
+  function demoSeed() {
+    return {
+      positions: clone(positions),
+      openings: clone(openings),
+      applications: clone(applications),
+      directions: clone(directions),
+      questions: clone(questions),
+      questionTypes: ['项目经历', '行为面', '产品思考'],
+      jds: [{ id: 1, position_id: 1, company: '云帆科技', title: '项目助理', requirements: '负责项目资料整理、会议纪要、进度跟进与交付节点协调；能够把客户需求整理成可评审的文档。', skills: '项目跟进, 需求分析, 文档, 沟通', source: '' }],
+      bloggers: clone(bloggers),
+      notes: clone(kbNotes),
+      accounts: clone(accounts),
+      metrics: clone(metrics),
+      books: clone(books),
+      bookNotes: clone(bookNotes),
+      settings: { daily: { enabled: false, hour: 8, lastDate: '' }, blocked: [], autoSync: false },
+    };
+  }
+
+  function loadDemoState() {
+    try {
+      const raw = localStorage.getItem(DEMO_KEY);
+      if (raw) {
+        const s = JSON.parse(raw);
+        if (s && Array.isArray(s.positions) && Array.isArray(s.books) && Array.isArray(s.questions)) return s;
+      }
+    } catch (e) { /* 忽略 */ }
+    return demoSeed();
+  }
+
+  let DS = loadDemoState();
+  function saveDemo() {
+    try { localStorage.setItem(DEMO_KEY, JSON.stringify(DS)); } catch (e) { /* 隐私模式静默降级 */ }
+  }
+  window.__demoReset = function () {
+    try { localStorage.removeItem(DEMO_KEY); } catch (e) { /* 忽略 */ }
+    location.reload();
+  };
+
+  const stamp = () => {
+    const d = new Date();
+    const p = (n) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
+  };
+  const nextId = (arr) => arr.reduce((m, x) => Math.max(m, Number(x.id) || 0), 0) + 1;
+  const byId = (arr, id) => arr.find((x) => Number(x.id) === Number(id));
+
+  function positionsOut() {
+    return DS.positions.map((p) => ({
+      ...p,
+      opening_count: DS.openings.filter((o) => Number(o.position_id) === Number(p.id)).length,
+      app_count: DS.applications.filter((a) => Number(a.position_id) === Number(p.id)).length,
+      active_count: DS.openings.filter((o) => Number(o.position_id) === Number(p.id)).length,
+      jd_count: DS.jds.filter((j) => Number(j.position_id) === Number(p.id)).length,
+    }));
+  }
+  function openingsOut() {
+    return DS.openings.map((o) => {
+      const p = byId(DS.positions, o.position_id);
+      return { ...o, position_name: p ? p.name : '', category: p ? p.category : '', genmai_new: Number(o.genmai_new) || 0 };
+    });
+  }
+  function applicationsOut() {
+    return DS.applications.map((a) => {
+      const p = byId(DS.positions, a.position_id);
+      const o = byId(DS.openings, a.opening_id);
+      return { ...a, position_name: p ? p.name : (a.position_name || null), opening_url: o ? (o.url || null) : (a.opening_url || null) };
+    });
+  }
+  function directionsOut() {
+    return DS.directions.map((d) => ({
+      ...d,
+      resumes: d.resumes || [],
+      pending_candidates: 0,
+      synced_candidates: DS.openings.filter((o) => Number(o.direction_id) === Number(d.id)).length,
+      last_run: null,
+      category_blocked: false,
+    }));
+  }
+  function questionsTypesOut() {
+    const counts = new Map();
+    DS.questions.forEach((q) => counts.set(q.type || '未分类', (counts.get(q.type || '未分类') || 0) + 1));
+    const names = [...new Set([...(DS.questionTypes || []), ...counts.keys()])];
+    return {
+      types: names.map((type) => ({ type, count: counts.get(type) || 0 })),
+      customs: [...(DS.questionTypes || [])],
+    };
+  }
+  function booksOut() {
+    return DS.books.map((b) => ({
+      ...b,
+      note_count: (DS.bookNotes[b.id] || []).length,
+      chapter_count: Number(b.id) === 1 ? (chapters[1] || []).length : 0,
+    }));
+  }
+  function bookDetail(id) {
+    const book = byId(DS.books, id);
+    if (!book) return null;
+    return { book: booksOut().find((b) => Number(b.id) === Number(id)), chapters: Number(id) === 1 ? (chapters[1] || []) : [], notes: DS.bookNotes[id] || [] };
+  }
+  function accountsOut() {
+    return DS.accounts.map((a) => {
+      const rows = DS.metrics.filter((m) => Number(m.account_id) === Number(a.id));
+      const dates = [...new Set(rows.map((m) => m.metric_date).filter(Boolean))];
+      return {
+        ...a,
+        metric_count: rows.length,
+        metric_days: dates.length,
+        total_views: rows.reduce((n, m) => n + (Number(m.views) || 0), 0),
+        total_likes: rows.reduce((n, m) => n + (Number(m.likes) || 0), 0),
+        latest_date: dates.sort().slice(-1)[0] || null,
+      };
+    });
+  }
+  function mediaMetrics(id) {
+    const account = byId(DS.accounts, id);
+    if (!account) return null;
+    const rows = DS.metrics.filter((m) => Number(m.account_id) === Number(id));
+    const dailyMap = new Map();
+    rows.forEach((m) => {
+      const key = m.metric_date || '';
+      const cur = dailyMap.get(key) || { metric_date: key, views: 0, likes: 0, comments: 0, shares: 0, fans: 0 };
+      cur.views += Number(m.views) || 0;
+      cur.likes += Number(m.likes) || 0;
+      cur.comments += Number(m.comments) || 0;
+      cur.shares += Number(m.shares) || 0;
+      cur.fans = Math.max(cur.fans, Number(m.fans) || 0);
+      dailyMap.set(key, cur);
+    });
+    return {
+      account,
+      metrics: rows,
+      totals: {
+        count: rows.length,
+        views: rows.reduce((n, m) => n + (Number(m.views) || 0), 0),
+        likes: rows.reduce((n, m) => n + (Number(m.likes) || 0), 0),
+        comments: rows.reduce((n, m) => n + (Number(m.comments) || 0), 0),
+        shares: rows.reduce((n, m) => n + (Number(m.shares) || 0), 0),
+        fans: rows.reduce((n, m) => Math.max(n, Number(m.fans) || 0), 0),
+      },
+      daily: [...dailyMap.values()].sort((a, b) => String(a.metric_date).localeCompare(String(b.metric_date))),
+    };
+  }
+
+  function readBody(init) {
+    if (!init || !init.body) return {};
+    if (typeof init.body === 'string') {
+      try { return JSON.parse(init.body); } catch (e) { return {}; }
+    }
+    if (typeof FormData !== 'undefined' && init.body instanceof FormData) {
+      const out = {};
+      init.body.forEach((value, key) => { if (typeof value === 'string') out[key] = value; });
+      return out;
+    }
+    return {};
+  }
+
+  function parseImportData(text) {
+    const raw = String(text || '').trim();
+    if (!raw) return [];
+    if (raw.startsWith('[')) {
+      try {
+        const arr = JSON.parse(raw);
+        return Array.isArray(arr) ? arr : [];
+      } catch (e) { return []; }
+    }
+    const lines = raw.split(/\r?\n/).filter(Boolean);
+    if (lines.length < 2) return [];
+    const head = lines[0].split(',').map((x) => x.trim());
+    return lines.slice(1).map((line) => {
+      const cells = line.split(',').map((x) => x.trim());
+      const item = {};
+      head.forEach((h, i) => { item[h] = cells[i] || ''; });
+      return item;
+    });
+  }
+
+  function addApplicationFromOpening(opening) {
+    const exists = DS.applications.find((a) => Number(a.opening_id) === Number(opening.id));
+    if (exists) return { already: true, id: exists.id };
+    const p = byId(DS.positions, opening.position_id);
+    const id = nextId(DS.applications);
+    const now = stamp();
+    DS.applications.push({
+      id, position_id: opening.position_id || null, company: opening.company || '', city: opening.city || '',
+      channel: opening.channel || '', applied_at: '', deadline: opening.deadline || '', status: '未投递', note: opening.note || '',
+      created_at: now, updated_at: now, title: opening.title || '', opening_id: opening.id, url: opening.url || '',
+      source: opening.source || '', position_name: p ? p.name : null, opening_url: opening.url || null,
+    });
+    saveDemo();
+    return { already: false, id };
+  }
+
+  function demoRoute(path, method, url, init) {
+    const body = readBody(init);
+    const isGet = method === 'GET' || method === 'HEAD';
+
+    if (path === '/api/meta') return { meta: META };
+    if (path === '/api/ai/config') return { config: { configured: false, model: '', keySource: 'none' } };
+    if (path === '/api/agents/state') return { agents: [{ id: 'genmai', name: '玄米', role: '求职搭子', configured: false, model: '', keySource: 'none' }, { id: 'mango', name: '芒果', role: '知识库管家', configured: false, model: '', keySource: 'none' }, { id: 'shanzhu', name: '山竹', role: '媒体数据分析师', configured: false, model: '', keySource: 'none' }], localModel: '' };
+    if ((path === '/api/agent/notifications' || path === '/api/notifications') && isGet) return { notifications: [], unread: 0 };
+    if (path === '/api/agent/preferences' && isGet) return { blocked: DS.settings.blocked || [] };
+    if (path === '/api/agent/industries') return { recommended: ['互联网', '企业服务', '教育'], collected: [], groups: [], blocked: DS.settings.blocked || [] };
+    if (path === '/api/ai/candidates' && isGet) return { candidates: [], counts: { 待确认: 0, 已导入: 0, 已忽略: 0 } };
+    if (path === '/api/attachments' && isGet) return { attachments: [] };
+    if (path === '/api/kb/recommended') return { recommended, generatedAt: '', canGenerate: false };
+
+    if (path === '/api/dashboard') return { positions: positionsOut(), openings: openingsOut(), applications: applicationsOut() };
+    if (path === '/api/positions' && isGet) return { positions: positionsOut() };
+    if (path === '/api/openings' && isGet) return { openings: openingsOut() };
+    if (path === '/api/applications' && isGet) {
+      const q = String(url.searchParams.get('q') || '').trim();
+      let list = applicationsOut();
+      if (q) list = list.filter((a) => ((a.company || '') + (a.title || '') + (a.position_name || '')).includes(q));
+      return { applications: list };
+    }
+    if (path === '/api/agent/directions' && isGet) return { directions: directionsOut(), daily: DS.settings.daily, configured: false, blocked: DS.settings.blocked || [], autoSync: !!DS.settings.autoSync };
+    if (path === '/api/questions/types' && isGet) return questionsTypesOut();
+    if (path === '/api/questions' && isGet) {
+      const pid = url.searchParams.get('position_id');
+      return { questions: pid ? DS.questions.filter((q) => Number(q.position_id) === Number(pid)) : DS.questions };
+    }
+    if (path === '/api/jds' && isGet) {
+      const pid = url.searchParams.get('position_id');
+      return { jds: pid ? DS.jds.filter((j) => Number(j.position_id) === Number(pid)) : DS.jds };
+    }
+    if (path === '/api/kb/state') return { lastCheckAt: '', todayNew: 0, bloggerCount: DS.bloggers.length, itemCount: 0, favCount: 0, noteCount: DS.notes.length, localModel: '' };
+    if (path === '/api/kb/bloggers' && isGet) return { bloggers: DS.bloggers, platforms: ['B站', 'YouTube', '其他'] };
+    if (path === '/api/kb/notes' && isGet) return { notes: DS.notes };
+    if (path === '/api/media/accounts' && isGet) return { accounts: accountsOut(), platforms: ['小红书', '抖音', 'B站', '公众号', '视频号'], statuses: ['规划中', '已导入'] };
+    if (path === '/api/books/state') {
+      const bs = booksOut();
+      return { total: bs.length, want: bs.filter((b) => b.status === '想读').length, reading: bs.filter((b) => b.status === '在读').length, finished: bs.filter((b) => b.status === '读完').length, notes: Object.values(DS.bookNotes).reduce((n, x) => n + x.length, 0), summaryCount: bs.filter((b) => b.summary).length };
+    }
+    if (path === '/api/books' && isGet) {
+      const q = String(url.searchParams.get('q') || '').trim();
+      const st = String(url.searchParams.get('status') || '');
+      let list = booksOut();
+      if (q) list = list.filter((b) => ((b.title || '') + (b.author || '') + (b.note || '')).includes(q));
+      if (st) list = list.filter((b) => b.status === st);
+      return { books: list, statuses: META.bookStatus };
+    }
+    if (path === '/api/books/smart-search') return { results: [], source: 'demo' };
+    if (path === '/api/books/1/search') return { results: [] };
+
+    let m = path.match(/^\/api\/media\/accounts\/(\d+)\/metrics$/);
+    if (m) return mediaMetrics(Number(m[1])) || {};
+    m = path.match(/^\/api\/books\/(\d+)\/chapters\/(\d+)$/);
+    if (m) return { html: '<h1>示例章节</h1><p>这是一段用于演示的示例正文。</p>' };
+    m = path.match(/^\/api\/books\/(\d+)$/);
+    if (m && isGet) return bookDetail(Number(m[1])) || {};
+    m = path.match(/^\/api\/(positions|openings|applications|jds)\/(\d+)$/);
+    if (m && isGet) {
+      const list = m[1] === 'positions' ? DS.positions : m[1] === 'openings' ? DS.openings : m[1] === 'applications' ? DS.applications : DS.jds;
+      const item = byId(list, m[2]);
+      return item ? { [m[1].slice(0, -1)]: item } : {};
+    }
+    m = path.match(/^\/api\/agent\/resumes\/(\d+)$/);
+    if (m && isGet) {
+      const r = DS.directions.flatMap((d) => d.resumes || []).find((x) => Number(x.id) === Number(m[1]));
+      return r ? { resume: r } : {};
+    }
+    if (!isGet) {
+      // 写操作：保持真实前端行为，并把结果写进浏览器本地数据
+      m = path.match(/^\/api\/applications\/(\d+)$/);
+      if (m) {
+        const id = Number(m[1]);
+        if (method === 'DELETE') {
+          DS.applications = DS.applications.filter((a) => Number(a.id) !== id);
+          saveDemo(); return {};
+        }
+        const a = byId(DS.applications, id);
+        if (a) Object.assign(a, body, { updated_at: stamp() });
+        saveDemo(); return { application: a || {} };
+      }
+      if (path === '/api/applications' && method === 'POST') {
+        const id = nextId(DS.applications);
+        const p = byId(DS.positions, body.position_id);
+        const now = stamp();
+        DS.applications.push({ id, ...body, position_id: body.position_id || null, status: body.status || '未投递', created_at: now, updated_at: now, position_name: p ? p.name : null, opening_url: null });
+        saveDemo(); return { id };
+      }
+      m = path.match(/^\/api\/openings\/(\d+)\/to-application$/);
+      if (m) {
+        const opening = byId(DS.openings, m[1]);
+        return opening ? addApplicationFromOpening(opening) : { already: false };
+      }
+      if (path === '/api/openings/mark-seen') return {};
+      m = path.match(/^\/api\/openings\/(\d+)$/);
+      if (m) {
+        const id = Number(m[1]);
+        if (method === 'DELETE') { DS.openings = DS.openings.filter((o) => Number(o.id) !== id); saveDemo(); return {}; }
+        const o = byId(DS.openings, id);
+        if (o) Object.assign(o, body);
+        saveDemo(); return { opening: o || {} };
+      }
+      if (path === '/api/openings' && method === 'POST') {
+        const id = nextId(DS.openings);
+        DS.openings.push({ id, ...body, position_id: body.position_id || null, created_at: stamp(), genmai_new: 0 });
+        saveDemo(); return { id };
+      }
+      m = path.match(/^\/api\/positions\/(\d+)$/);
+      if (m) {
+        const id = Number(m[1]);
+        if (method === 'DELETE') {
+          DS.positions = DS.positions.filter((p) => Number(p.id) !== id);
+          DS.openings = DS.openings.filter((o) => Number(o.position_id) !== id);
+          DS.jds = DS.jds.filter((j) => Number(j.position_id) !== id);
+          DS.applications.forEach((a) => { if (Number(a.position_id) === id) a.position_id = null; });
+          saveDemo(); return {};
+        }
+        const p = byId(DS.positions, id);
+        if (p) Object.assign(p, body);
+        saveDemo(); return { position: p || {} };
+      }
+      if (path === '/api/positions' && method === 'POST') {
+        const id = nextId(DS.positions);
+        DS.positions.push({ id, ...body, created_at: stamp() });
+        saveDemo(); return { id };
+      }
+      m = path.match(/^\/api\/jds\/(\d+)$/);
+      if (m) {
+        const id = Number(m[1]);
+        if (method === 'DELETE') { DS.jds = DS.jds.filter((j) => Number(j.id) !== id); saveDemo(); return {}; }
+        const j = byId(DS.jds, id);
+        if (j) Object.assign(j, body);
+        saveDemo(); return { jd: j || {} };
+      }
+      if (path === '/api/jds' && method === 'POST') {
+        const id = nextId(DS.jds);
+        DS.jds.push({ id, ...body, position_id: body.position_id || null, created_at: stamp() });
+        saveDemo(); return { id };
+      }
+      m = path.match(/^\/api\/questions\/types\/(.+)$/);
+      if (m) {
+        const name = decodeURIComponent(m[1]);
+        if (method === 'DELETE') {
+          DS.questionTypes = (DS.questionTypes || []).filter((x) => x !== name);
+          DS.questions.forEach((q) => { if (q.type === name) q.type = '未分类'; });
+          saveDemo(); return {};
+        }
+        const newName = String(body.name || '').trim();
+        if (newName && newName !== name) {
+          DS.questionTypes = (DS.questionTypes || []).map((x) => x === name ? newName : x);
+          DS.questions.forEach((q) => { if (q.type === name) q.type = newName; });
+        }
+        saveDemo(); return {};
+      }
+      if (path === '/api/questions/types' && method === 'POST') {
+        const name = String(body.name || '').trim();
+        if (name && !(DS.questionTypes || []).includes(name)) DS.questionTypes.push(name);
+        saveDemo(); return {};
+      }
+      m = path.match(/^\/api\/questions\/(\d+)$/);
+      if (m) {
+        const id = Number(m[1]);
+        if (method === 'DELETE') { DS.questions = DS.questions.filter((q) => Number(q.id) !== id); saveDemo(); return {}; }
+        const q = byId(DS.questions, id);
+        if (q) Object.assign(q, body, { updated_at: stamp() });
+        saveDemo(); return { question: q || {} };
+      }
+      if (path === '/api/questions' && method === 'POST') {
+        const id = nextId(DS.questions);
+        DS.questions.push({ id, ...body, type: body.type || '未分类', mastery: body.mastery || '未复习', created_at: stamp(), updated_at: stamp() });
+        saveDemo(); return { id };
+      }
+      if (path === '/api/agent/preferences' && method === 'PUT') { DS.settings.blocked = body.blocked || []; saveDemo(); return {}; }
+      if (path === '/api/agent/daily' && method === 'PUT') { Object.assign(DS.settings.daily, body); saveDemo(); return {}; }
+      if (path === '/api/agent/auto-sync' && method === 'PUT') { DS.settings.autoSync = !!body.enabled; saveDemo(); return {}; }
+      m = path.match(/^\/api\/agent\/directions\/(\d+)\/collect$/);
+      if (m) return { found: 0, inserted: 0, candidates: [] };
+      m = path.match(/^\/api\/agent\/directions\/(\d+)$/);
+      if (m) {
+        const id = Number(m[1]);
+        if (method === 'DELETE') { DS.directions = DS.directions.filter((d) => Number(d.id) !== id); saveDemo(); return {}; }
+        const d = byId(DS.directions, id);
+        if (d) Object.assign(d, body, { updated_at: stamp() });
+        saveDemo(); return { direction: d || {} };
+      }
+      if (path === '/api/agent/directions' && method === 'POST') {
+        const id = nextId(DS.directions);
+        DS.directions.push({ id, ...body, resumes: [], pending_candidates: 0, synced_candidates: 0, last_run: null, category_blocked: false, created_at: stamp(), updated_at: stamp() });
+        saveDemo(); return { id };
+      }
+      if (path === '/api/agent/resumes' && method === 'POST') {
+        const directionId = Number(body.direction_id);
+        const d = byId(DS.directions, directionId);
+        if (!d) return { ok: false, error: '演示方向不存在' };
+        d.resumes = d.resumes || [];
+        const rid = nextId(d.resumes);
+        const name = body.name || `简历 ${d.resumes.length + 1}`;
+        d.resumes.push({ id: rid, direction_id: directionId, name, file_name: name + '.pdf', content_len: String(body.content || '').length, analysis: null, analyzed_at: '', created_at: stamp(), has_profile: 0 });
+        saveDemo(); return { id: rid, method: 'text' };
+      }
+      m = path.match(/^\/api\/agent\/resumes\/(\d+)\/analyze$/);
+      if (m) {
+        const r = DS.directions.flatMap((d) => d.resumes || []).find((x) => Number(x.id) === Number(m[1]));
+        if (r) { r.analysis = resumeAnalysis; r.analyzed_at = stamp(); saveDemo(); }
+        return {};
+      }
+      m = path.match(/^\/api\/agent\/resumes\/(\d+)\/profile$/);
+      if (m) { const r = DS.directions.flatMap((d) => d.resumes || []).find((x) => Number(x.id) === Number(m[1])); if (r) { r.has_profile = 1; saveDemo(); } return {}; }
+      m = path.match(/^\/api\/agent\/resumes\/(\d+)$/);
+      if (m && method === 'DELETE') { DS.directions.forEach((d) => { d.resumes = (d.resumes || []).filter((r) => Number(r.id) !== Number(m[1])); }); saveDemo(); return {}; }
+      m = path.match(/^\/api\/kb\/bloggers\/(\d+)$/);
+      if (m) {
+        const id = Number(m[1]);
+        if (method === 'DELETE') { DS.bloggers = DS.bloggers.filter((b) => Number(b.id) !== id); saveDemo(); return {}; }
+        const b = byId(DS.bloggers, id); if (b) Object.assign(b, body); saveDemo(); return { blogger: b || {} };
+      }
+      if (path === '/api/kb/bloggers' && method === 'POST') {
+        const id = nextId(DS.bloggers);
+        DS.bloggers.push({ id, ...body, active: body.active === undefined ? 1 : body.active, created_at: stamp(), home_url: body.url || '', item_count: 0 });
+        saveDemo(); return { id };
+      }
+      m = path.match(/^\/api\/kb\/notes\/(\d+)$/);
+      if (m) {
+        const id = Number(m[1]);
+        if (method === 'DELETE') { DS.notes = DS.notes.filter((n) => Number(n.id) !== id); saveDemo(); return {}; }
+        const n = byId(DS.notes, id); if (n) Object.assign(n, body, { updated_at: stamp() }); saveDemo(); return { note: n || {} };
+      }
+      if (path === '/api/kb/notes' && method === 'POST') {
+        const id = nextId(DS.notes);
+        DS.notes.push({ id, ...body, created_at: stamp(), updated_at: stamp() });
+        saveDemo(); return { id };
+      }
+      m = path.match(/^\/api\/media\/accounts\/(\d+)\/import$/);
+      if (m) {
+        const account = byId(DS.accounts, Number(m[1]));
+        if (!account) return { ok: false, error: '账号不存在' };
+        const rows = parseImportData(body.data);
+        if (!rows.length) return { ok: false, error: '演示版请粘贴 CSV/JSON 数据（Excel 文件暂不支持）' };
+        let inserted = 0, duplicates = 0;
+        const seen = new Set(DS.metrics.filter((x) => Number(x.account_id) === Number(account.id)).map((x) => `${x.metric_date}|${x.title}`));
+        rows.forEach((row) => {
+          const date = row['日期'] || row.date || row.metric_date || '';
+          const title = row['标题'] || row.title || '';
+          const key = `${date}|${title}`;
+          if (!date || !title || seen.has(key)) { duplicates++; return; }
+          seen.add(key);
+          DS.metrics.push({ id: nextId(DS.metrics), account_id: account.id, metric_date: date, title, views: Number(row['播放'] || row['浏览量'] || row.views) || 0, likes: Number(row['点赞'] || row.likes) || 0, comments: Number(row['评论'] || row.comments) || 0, shares: Number(row['转发'] || row['收藏'] || row.shares) || 0, fans: Number(row['粉丝'] || row.fans) || 0, url: row.url || '' });
+          inserted++;
+        });
+        if (inserted) account.status = '已导入';
+        saveDemo(); return { inserted, duplicates, alreadyImported: !inserted && !!duplicates };
+      }
+      if (path === '/api/media/accounts' && method === 'POST') {
+        const id = nextId(DS.accounts);
+        DS.accounts.push({ id, ...body, status: body.status || '规划中', created_at: stamp() });
+        saveDemo(); return { id };
+      }
+      m = path.match(/^\/api\/media\/accounts\/(\d+)$/);
+      if (m) {
+        const id = Number(m[1]);
+        if (method === 'DELETE') { DS.accounts = DS.accounts.filter((a) => Number(a.id) !== id); DS.metrics = DS.metrics.filter((x) => Number(x.account_id) !== id); saveDemo(); return {}; }
+        const a = byId(DS.accounts, id); if (a) Object.assign(a, body); saveDemo(); return { account: a || {} };
+      }
+      m = path.match(/^\/api\/media\/metrics\/(\d+)$/);
+      if (m && method === 'DELETE') { DS.metrics = DS.metrics.filter((x) => Number(x.id) !== Number(m[1])); saveDemo(); return {}; }
+      if (path === '/api/books/smart-import') return { already: true };
+      m = path.match(/^\/api\/books\/(\d+)\/summarize$/);
+      if (m) {
+        const book = byId(DS.books, Number(m[1]));
+        if (book) { book.summary = '这是示例总结，用于展示阅读器的 AI 总结区域。'; book.summary_source = body.mode === 'web' ? 'web' : 'text'; book.summary_at = stamp(); book.key_points = book.key_points || []; saveDemo(); }
+        return { mode: 'text', summary: book ? book.summary : '' };
+      }
+      m = path.match(/^\/api\/books\/(\d+)\/progress$/);
+      if (m) { const b = byId(DS.books, Number(m[1])); if (b) { b.reading_position = JSON.stringify(body.position || {}); b.last_read_at = stamp(); saveDemo(); } return {}; }
+      m = path.match(/^\/api\/books\/notes\/(\d+)$/);
+      if (m) {
+        const id = Number(m[1]);
+        Object.keys(DS.bookNotes).forEach((bid) => { DS.bookNotes[bid] = (DS.bookNotes[bid] || []).filter((n) => Number(n.id) !== id); });
+        saveDemo(); return {};
+      }
+      m = path.match(/^\/api\/books\/(\d+)\/notes$/);
+      if (m) {
+        const bid = Number(m[1]);
+        const list = DS.bookNotes[bid] || (DS.bookNotes[bid] = []);
+        if (method === 'POST') {
+          const id = list.reduce((mx, n) => Math.max(mx, Number(n.id) || 0), 0) + 1;
+          list.push({ id, book_id: bid, created_at: stamp(), ...body });
+          saveDemo(); return { id, note: list[list.length - 1] };
+        }
+      }
+      m = path.match(/^\/api\/books\/(\d+)$/);
+      if (m) {
+        const id = Number(m[1]);
+        if (method === 'DELETE') { DS.books = DS.books.filter((b) => Number(b.id) !== id); delete DS.bookNotes[id]; saveDemo(); return {}; }
+        const b = byId(DS.books, id);
+        if (b) Object.assign(b, body); saveDemo(); return { book: b || {} };
+      }
+      if (path === '/api/books' && method === 'POST') {
+        const id = nextId(DS.books);
+        DS.books.push({ id, ...body, status: body.status || '想读', rating: Number(body.rating) || 0, summary: '', key_points: [], created_at: stamp(), note_count: 0, chapter_count: 0, cover_url: '', file_url: '', pdf_url: '' });
+        DS.bookNotes[id] = [];
+        saveDemo(); return { id };
+      }
+      if (path === '/api/books/smart-import') return { already: true };
+      if (path === '/api/agents/mango/ask') return { reply: '这是公开示例演示。数据保存在当前浏览器，不会上传。完整版的芒果会结合笔记回答。' };
+      if (path === '/api/agents/shanzhu/ask') return { reply: '这是公开示例演示。完整版的山竹会分析账号数据并给出内容复盘。' };
+      if (path === '/api/agents/genmai/ask') return { reply: '这是公开示例演示。完整版的玄米会按方向筛选岗位。' };
+      if (/^\/api\/agents\/(?:genmai|mango|shanzhu)\/chat$/.test(path)) return { reply: '这是公开示例演示，数据只保存在当前浏览器。' };
+      if (path === '/api/media/analyze') return { answer: '**示例分析**\n\n这是示例数据，完整版会由山竹结合账号数据输出复盘和选题建议。' };
+      if (path === '/api/ai/search') return { target: 'openings', query: '', filters: {}, rows: [] };
+      if (path === '/api/open-url') return {};
+      return { demo: true };
+    }
+    return null;
+  }
+
   function isWrite(method) { return method !== 'GET' && method !== 'HEAD'; }
 
   const originalFetch = window.fetch.bind(window);
@@ -192,7 +709,7 @@
     try { url = new URL(raw, location.href); } catch (e) { return originalFetch(input, init); }
     if (!url.pathname.startsWith('/api/')) return originalFetch(input, init);
     const method = String((init && init.method) || (input && input.method) || 'GET').toUpperCase();
-    const data = route(url.pathname, method);
+    const data = demoRoute(url.pathname, method, url, init);
     if (data) {
       return Promise.resolve(new Response(JSON.stringify(Object.assign({ ok: true }, data)), { status: 200, headers: { 'Content-Type': 'application/json' } }));
     }
