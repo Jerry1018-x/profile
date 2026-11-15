@@ -8,9 +8,12 @@
 
 - `index.html`：作品索引 / 作品集首页
 - `workbench.html`：案例 01「我的 AI 工作台」
-- `assets/works.css`：两个页面共用的视觉样式
+- `polaris.html`：案例 02「Polaris · 项目管理工作台」
+- `polaris/`：Polaris 的静态可操作演示（原生 HTML/CSS/JS，localStorage 示例数据）
+- `assets/works.css`：所有页面共用的视觉样式
 - `assets/works.js`：滚动显现与案例截图查看器
-- `assets/shots/`：从公开静态工作台截取的示例界面（不含真实数据）
+- `assets/shots/`：从公开静态演示截取的示例界面（不含真实数据）
+- `assets/polaris-star.jpg`：Polaris 案例标识
 
 ## 添加下一个作品
 
@@ -29,12 +32,13 @@
 
 ## 发布
 
-线上仓库：`https://github.com/Jerry1018-x/profile`（GitHub Pages，main 分支）。
+线上仓库：`https://github.com/Jerry1018-x/profile`（GitHub Pages，main 分支）。作品集已于 2026-11-15 发布，当前线上结构：
 
-本次需要同步的三处：
+- `works/index.html`：作品索引
+- `works/workbench.html`：案例 01
+- `works/polaris.html` + `works/polaris/`：案例 02 与静态演示
+- `works/assets/`：共用样式、脚本、截图与 Polaris 标识
+- 根目录 `index.html`：首页导航 `Works`
+- `workbench/index.html`：演示页返回作品集
 
-- 新增整个 `works/` 目录
-- 修改根目录 `index.html`（顶部导航增加 Works）
-- 修改 `workbench/index.html`（「返回作品集」指向 `../works/workbench.html`）
-
-不要只上传 `works/` 而漏掉后两个文件，否则首页导航和演示页返回链接不会更新。发布后在无痕窗口打开 `https://jerry1018-x.github.io/profile/works/` 检查 CSS、图片和案例链接。
+后续更新时，用 GitHub 网页的 **Add file → Upload files** 上传对应目录；新增演示目录时先建好目录，再上传文件。发布后在无痕窗口打开 `https://jerry1018-x.github.io/profile/works/` 检查 CSS、图片、案例链接和静态演示。

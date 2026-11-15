@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f7f6f2">
+<title>Polaris · 项目管理工作台｜薛绍祎作品集</title>
+<meta name="description" content="Polaris 项目管理工作台案例：把项目、任务、看板、排期和依赖关系放进一个本地优先的工作台。">
+<link rel="canonical" href="https://jerry1018-x.github.io/profile/works/polaris.html">
+<link rel="icon" href="../assets/folio-mark.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Polaris · 项目管理工作台｜薛绍祎作品集">
+<meta property="og:description" content="一个本地优先的项目管理工作台原型：项目、任务、看板、排期和依赖关系在同一份数据上联动。">
+<meta property="og:image" content="https://jerry1018-x.github.io/profile/works/assets/shots/polaris-dashboard.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://jerry1018-x.github.io/profile/works/assets/shots/polaris-dashboard.png">
+<meta name="author" content="薛绍祎">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  "name": "Polaris · 项目管理工作台",
+  "description": "一个本地优先的项目管理工作台原型：项目、任务、看板、排期和依赖关系在同一份数据上联动。",
+  "url": "https://jerry1018-x.github.io/profile/works/polaris.html",
+  "dateCreated": "2026-11",
+  "genre": "Workflow tool",
+  "author": {
+    "@type": "Person",
+    "name": "薛绍祎",
+    "url": "https://jerry1018-x.github.io/profile/"
+  }
+}
+</script>
+<link rel="stylesheet" href="assets/works.css?v=20261114e">
+<script defer src="assets/works.js?v=20261114e"></script>
+</head>
+<body>
+<a class="skip" href="#case">跳到案例正文</a>
+
+<header class="case-head">
+  <a class="case-back" href="./"><span aria-hidden="true">←</span> 全部作品</a>
+  <span class="case-label">Case 02 / Workflow tool</span>
+  <a class="demo-link" href="polaris/index.html" target="_blank" rel="noopener">打开静态演示 ↗</a>
+</header>
+
+<main id="case">
+  <div class="case-wrap">
+    <section class="case-hero">
+      <p class="eyebrow">Case 02 / 2026</p>
+      <div class="case-brand">
+        <img src="assets/polaris-star.jpg" alt="" width="64" height="64">
+        <span>Polaris · v0.1 MVP / Mac-inspired prototype</span>
+      </div>
+      <h1>Polaris</h1>
+      <p class="case-lede">一个本地优先的项目管理工作台原型：项目、任务、看板、排期和依赖关系，在同一份数据上联动。</p>
+      <dl class="case-meta">
+        <div><dt>角色</dt><dd>产品定义 / 交互设计 / 前端实现</dd></div>
+        <div><dt>时间</dt><dd>2026.11</dd></div>
+        <div><dt>类型</dt><dd>个人项目 · 静态原型</dd></div>
+        <div><dt>范围</dt><dd>4 个示例项目 · 看板 / 排期 / 详情</dd></div>
+      </dl>
+      <figure class="hero-shot">
+        <img src="assets/shots/polaris-dashboard.png" alt="Polaris 工作台：进行中项目、本周到期、延期任务、项目健康与今日动态" width="1440" height="1000" loading="eager" decoding="async">
+        <figcaption>公开原型 · 内置示例项目与任务</figcaption>
+      </figure>
+    </section>
+
+    <section class="case-block" aria-labelledby="context-title">
+      <aside class="case-aside">
+        <span class="num">01</span>
+        <h2 id="context-title">Context</h2>
+        <p>为什么再做一个项目管理工具。</p>
+      </aside>
+      <div class="case-content">
+        <p class="lead">任务管理工具很容易变成更多列表。Polaris 从另一个问题开始：当多个人同时推进多个项目时，怎样让状态在一个屏幕里被读懂？</p>
+        <p>常见的项目管理界面会把任务、时间线和项目风险分在不同页面。对项目负责人来说，真正需要先看到的是：哪个项目有风险、哪件事今天必须做、哪些依赖正在挡住进度。Polaris 把这些信号放回工作台第一屏，再用看板和排期承接细节。</p>
+        <p class="note-line">非目标：不做即时通讯，不做文档协作，也不在这个原型里实现权限系统。它们会稀释当前要验证的核心：项目状态的读取效率。</p>
+        <div class="problem-grid">
+          <div class="problem-card"><b>任务散</b><span>待办、看板和排期各自成表，跨项目时很难知道今天先做什么。</span></div>
+          <div class="problem-card"><b>风险晚</b><span>延期和依赖冲突通常要等打开具体项目才被发现。</span></div>
+          <div class="problem-card"><b>上下文断</b><span>任务详情、负责人和子任务状态分散，切换视图后需要重新找回上下文。</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-block" aria-labelledby="product-title">
+      <aside class="case-aside">
+        <span class="num">02</span>
+        <h2 id="product-title">Product</h2>
+        <p>从今天做什么，到项目为什么延迟。</p>
+      </aside>
+      <div class="case-content">
+        <p class="lead">六个模块，共享同一份本地数据。</p>
+        <div class="module-grid">
+          <article class="module"><small>01 / 工作台</small><h3>今日视图</h3><p>今天、本周、稍后三组任务，配合项目健康条与今日动态，先看风险再看细节。</p></article>
+          <article class="module"><small>02 / 我的任务</small><h3>跨项目聚合</h3><p>把所有项目的待办收在一处，勾选即完成，不用先进入具体项目。</p></article>
+          <article class="module"><small>03 / 项目看板</small><h3>待处理 / 进行中 / 已完成</h3><p>卡片可拖拽换列，显示优先级、负责人、截止日、子任务进度与里程碑。</p></article>
+          <article class="module"><small>04 / 排期</small><h3>甘特与依赖</h3><p>按阶段分组显示任务条、进度、依赖线和冲突提示，支持日 / 周 / 月切换。</p></article>
+          <article class="module"><small>05 / 任务详情</small><h3>任务侧栏</h3><p>负责人、日期、优先级、描述、子任务和进度在同一处编辑，改完立即反馈到看板与排期。</p></article>
+          <article class="module"><small>06 / 本地数据</small><h3>零后端原型</h3><p>数据存 localStorage，首次打开自动写入示例项目；设置里可导出 JSON 或重置演示数据。</p></article>
+        </div>
+
+        <div class="shot-grid">
+          <button class="shot wide" type="button" data-shot="assets/shots/polaris-board.png" data-alt="Polaris 项目看板：待处理、进行中、已完成三列任务卡" data-caption="项目看板 · 拖拽换列，卡片承载任务上下文">
+            <img src="assets/shots/polaris-board.png" alt="Polaris 项目看板：待处理、进行中、已完成三列任务卡" width="1440" height="1000" loading="lazy" decoding="async">
+            <span class="shot-cap">项目看板 <i>↗ 点击查看大图</i></span>
+          </button>
+          <button class="shot wide" type="button" data-shot="assets/shots/polaris-gantt.png" data-alt="Polaris 排期页：任务条、进度、依赖线、里程碑与冲突提示" data-caption="排期 · 任务条、进度、依赖与里程碑在一条时间线上">
+            <img src="assets/shots/polaris-gantt.png" alt="Polaris 排期页：任务条、进度、依赖线、里程碑与冲突提示" width="1440" height="1000" loading="lazy" decoding="async">
+            <span class="shot-cap">项目排期 <i>↗</i></span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-block" aria-labelledby="design-title">
+      <aside class="case-aside">
+        <span class="num">03</span>
+        <h2 id="design-title">Design</h2>
+        <p>像桌面软件一样工作，而不是像一张网页表格。</p>
+      </aside>
+      <div class="case-content">
+        <p class="lead">Polaris 的界面刻意保留了桌面软件的密度：顶栏放全局动作，侧栏放项目，工作区只放当前决策所需的信息。</p>
+        <p>颜色只承担语义：蓝色表示进行中与主操作，金色表示风险或提醒，红色表示延期与 P0，灰色表示已完成。卡片的圆角、间距和字号保持克制，让用户先读到内容和状态，而不是装饰。</p>
+        <div class="design-grid">
+          <div class="principle-list">
+            <div class="principle"><b>01</b><div><h3>一个屏幕一个焦点</h3><p>工作台先回答“今天做什么”和“哪个项目有风险”，不把完成任务的操作分散到多个页面。</p></div></div>
+            <div class="principle"><b>02</b><div><h3>状态必须可回看</h3><p>看板、排期和任务详情共享同一份任务数据；改一处，三个视图同步，不用重复录入。</p></div></div>
+            <div class="principle"><b>03</b><div><h3>让风险先出现</h3><p>项目健康条、延期标记和依赖冲突线优先于普通任务，先暴露需要协调的部分。</p></div></div>
+          </div>
+          <aside class="system-card" aria-label="项目概况">
+            <h3>Prototype notes</h3>
+            <div class="swatches">
+              <div class="swatch" style="background:#2E5CE6;color:#fff">BLUE<br>#2E5CE6</div>
+              <div class="swatch" style="background:#C9A227;color:#fff">GOLD<br>#C9A227</div>
+              <div class="swatch" style="background:#C0392B;color:#fff">RED<br>#C0392B</div>
+              <div class="swatch" style="background:#EEF1F5;color:#3a4a5e;border:1px solid #d7dce5">GREY<br>#EEF1F5</div>
+            </div>
+            <ul class="spec-list">
+              <li><span>示例项目</span><b>4</b></li>
+              <li><span>主视图</span><b>3 + 详情</b></li>
+              <li><span>后端依赖</span><b>0</b></li>
+              <li><span>运行方式</span><b>本地静态</b></li>
+            </ul>
+          </aside>
+        </div>
+        <div class="shot-pair">
+          <button class="shot" type="button" data-shot="assets/shots/polaris-inspector.png" data-alt="Polaris 任务详情侧栏：描述、子任务和进度" data-caption="任务详情 · 侧栏编辑，回到看板与排期仍然同步">
+            <img src="assets/shots/polaris-inspector.png" alt="Polaris 任务详情侧栏：描述、子任务和进度" width="1440" height="1000" loading="lazy" decoding="async">
+            <span class="shot-cap">任务详情 <i>↗</i></span>
+          </button>
+          <button class="shot" type="button" data-shot="assets/shots/polaris-mobile.png" data-alt="Polaris 移动端工作台：指标、任务与项目健康纵向排列" data-caption="移动端 · 桌面密度收成单列">
+            <img src="assets/shots/polaris-mobile.png" alt="Polaris 移动端工作台：指标、任务与项目健康纵向排列" width="390" height="844" loading="lazy" decoding="async">
+            <span class="shot-cap">移动端 <i>↗</i></span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-block" aria-labelledby="build-title">
+      <aside class="case-aside">
+        <span class="num">04</span>
+        <h2 id="build-title">Build</h2>
+        <p>纯静态、零依赖、本地优先。</p>
+      </aside>
+      <div class="case-content">
+        <p class="lead">前端是原生 HTML / CSS / JS，没有构建步骤；状态存在 localStorage，首次打开自动写入示例数据。</p>
+        <p>界面用 hash 路由在 工作台 / 我的任务 / 看板 / 排期 之间切换。所有视图从同一个 Store 读写，拖拽、勾选、编辑详情和排期条共享派生状态。设置面板提供 JSON 导出和重置演示数据，让原型可以被反复演示。</p>
+        <div class="build-grid">
+          <ul class="stack-list" aria-label="技术栈">
+            <li>界面 <span>原生 HTML / CSS / JS</span></li>
+            <li>路由 <span>hash-based · 无构建</span></li>
+            <li>数据 <span>localStorage · seed demo</span></li>
+            <li>交互 <span>拖拽看板 · 甘特条 · 详情侧栏</span></li>
+            <li>运行 <span>静态文件 · 无后端</span></li>
+          </ul>
+          <div class="arch" role="group" aria-label="系统结构">
+            <div class="arch-row accent"><b>Browser</b><span>原生 JS · hash 路由 · 看板 / 排期 / 详情</span></div>
+            <div class="arch-plus" aria-hidden="true">↓</div>
+            <div class="arch-row"><b>Store</b><span>任务 / 项目 / 成员 / 派生健康状态</span></div>
+            <div class="arch-plus" aria-hidden="true">↓</div>
+            <div class="arch-row"><b>Local data</b><span>localStorage · JSON 导出 · 重置演示</span></div>
+          </div>
+        </div>
+        <p class="note-line">演示数据只存在当前浏览器，不会上传到任何服务器。案例中的项目名、成员和任务均为内置示例。</p>
+      </div>
+    </section>
+
+    <section class="case-block" aria-labelledby="outcome-title">
+      <aside class="case-aside">
+        <span class="num">05</span>
+        <h2 id="outcome-title">Outcome</h2>
+        <p>原型验证了什么。</p>
+      </aside>
+      <div class="case-content">
+        <p class="lead">Polaris 让我验证了三件事：项目健康比任务数量更值得先看；排期需要把依赖冲突画出来；本地优先让一个原型可以零成本运行和演示。</p>
+        <div class="stats" aria-label="项目概况">
+          <div class="stat"><b>4</b><span>个示例项目</span></div>
+          <div class="stat"><b>3</b><span>个主视图 + 详情</span></div>
+          <div class="stat"><b>0</b><span>个后端依赖</span></div>
+        </div>
+        <blockquote class="quote">“先把信息架构和交互状态做对，再考虑把数据放到云端。这个原型刻意没有提前做权限、同步和多人协作，因为那会把问题从‘状态是否可读’变成‘系统是否复杂’。”</blockquote>
+        <p>下一阶段如果继续做，会先补真实数据导入和多人协作所需的权限、冲突处理与同步策略；在这之前，它更适合作为一个可打开、可操作的产品原型，而不是生产系统。</p>
+      </div>
+    </section>
+
+    <div class="next-case">
+      <div><small>Next / 03 · In progress</small><b>下一个作品，正在做。</b></div>
+      <a href="./">返回全部作品 ↗</a>
+    </div>
+  </div>
+</main>
+
+<footer class="site-foot">
+  <span>© 2026 薛绍祎 · Case 02</span>
+  <span><a href="./">作品集</a> <span aria-hidden="true">/</span> <a href="workbench.html">上一个案例</a> <span aria-hidden="true">/</span> <a href="../index.html">个人网站</a></span>
+</footer>
+
+<dialog class="shot-viewer" id="shot-viewer" aria-label="查看案例截图">
+  <div class="viewer-bar"><span id="viewer-caption">案例截图</span><button type="button" data-close aria-label="关闭大图">×</button></div>
+  <img id="viewer-image" alt="">
+</dialog>
+</body>
+</html>
