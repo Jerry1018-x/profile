@@ -8,7 +8,7 @@
 
 - `index.html`：作品索引 / 作品集首页
 - `workbench.html`：案例 01「我的 AI 工作台」
-- `workbench-demo/`：工作台的公开交互演示（真实前端代码 + `js/demo-data.js` 示例数据；只读，不连接真实数据库）
+- `workbench-demo/`：工作台的公开交互演示（真实前端代码 + `js/demo-data.js` 浏览器本地数据层；可增删改，数据存当前浏览器 localStorage，可重置，不连接真实数据库；AI 为示例回复）
 - `polaris.html`：案例 02「Polaris · 项目管理工作台」
 - `polaris/`：Polaris 的静态可操作演示（原生 HTML/CSS/JS，localStorage 示例数据）
 - `assets/works.css`：所有页面共用的视觉样式
