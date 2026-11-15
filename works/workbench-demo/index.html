@@ -17,12 +17,14 @@
   .demo-back:hover { color: #fff; text-decoration: underline; }
   .demo-reset { width: max-content; padding: 1px 0; border: 0; background: none; color: #8aa3ac; font: inherit; font-size: 10.5px; cursor: pointer; }
   .demo-reset:hover { color: #fff; text-decoration: underline; }
+  body.demo.embedded .demo-back, body.demo.embedded .demo-float { display: none; }
   .demo-float { display: none; position: fixed; left: 10px; bottom: 10px; z-index: 60; padding: 6px 9px; border: 1px solid #dbe4e6; border-radius: 999px; background: #fff; color: #536973; font: 500 9px/1.4 "Segoe UI", "Microsoft YaHei", sans-serif; box-shadow: 0 5px 18px rgba(20, 35, 60, .09); }
   .demo-float a { color: #335975; font-weight: 700; }
   @media (max-width: 760px) { .demo-float { display: block; } }
 </style>
 </head>
 <body class="demo">
+<script>if (new URLSearchParams(location.search).get('embed') === '1') document.body.classList.add('embedded');</script>
 <div id="app">
   <aside id="sidebar">
     <a class="logo" href="#/dashboard">
