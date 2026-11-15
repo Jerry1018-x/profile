@@ -14,8 +14,24 @@
 <meta property="og:image" content="https://jerry1018-x.github.io/profile/works/assets/shots/workbench-dashboard.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://jerry1018-x.github.io/profile/works/assets/shots/workbench-dashboard.png">
-<link rel="stylesheet" href="assets/works.css?v=20261114b">
-<script defer src="assets/works.js?v=20261114b"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  "name": "我的 AI 工作台",
+  "description": "把求职、面试、学习、阅读和内容创作收进一个本地优先的个人系统。",
+  "url": "https://jerry1018-x.github.io/profile/works/workbench.html",
+  "dateCreated": "2026-10",
+  "genre": "Personal software",
+  "author": {
+    "@type": "Person",
+    "name": "薛绍祎",
+    "url": "https://jerry1018-x.github.io/profile/"
+  }
+}
+</script>
+<link rel="stylesheet" href="assets/works.css?v=20261114c">
+<script defer src="assets/works.js?v=20261114c"></script>
 </head>
 <body>
 <a class="skip" href="#case">跳到案例正文</a>
@@ -39,7 +55,7 @@
         <div><dt>范围</dt><dd>8 个模块 · 桌面 + 移动</dd></div>
       </dl>
       <figure class="hero-shot">
-        <img src="assets/shots/workbench-dashboard.png" alt="个人工作台的数据分析页：已投递、笔试、面试总量与近四周投递节奏" loading="eager">
+        <img src="assets/shots/workbench-dashboard.png" alt="个人工作台的数据分析页：已投递、笔试、面试总量与近四周投递节奏" width="1440" height="1000" loading="eager" decoding="async">
         <figcaption>公开演示界面 · 所有数字与内容均为示例数据</figcaption>
       </figure>
     </section>
@@ -54,6 +70,7 @@
         <p class="lead">问题不是工具不够，而是工具之间没有关系。</p>
         <p>求职进度、面试题、学习笔记、阅读批注和内容数据散在不同应用里。每换一个环节，就要重新整理上下文；信息在重复录入，也很难回看自己是怎么走到这一步的。</p>
         <p>我想做的不是又一个效率工具，而是一个围绕自己真实工作流的系统：所有东西在一个入口里发生，数据留在自己的电脑上，AI 在需要的时候出现。</p>
+        <p class="note-line">非目标：不做多人协作，不做公开社区，也不把 AI 做成一个需要时时出现的聊天入口。</p>
         <div class="problem-grid">
           <div class="problem-card"><b>入口分散</b><span>招聘、题库、笔记、书和内容数据各有一套工具，每天都在切换。</span></div>
           <div class="problem-card"><b>流程断裂</b><span>岗位、投递、面试准备之间没有关联，进度只能靠记忆和临时表格。</span></div>
@@ -70,6 +87,13 @@
       </aside>
       <div class="case-content">
         <p class="lead">8 个模块，围绕三件事：找到机会、持续学习、把学到的东西做出来。</p>
+        <div class="flow" role="list" aria-label="从发现机会到输出内容的工作流">
+          <div class="flow-step" role="listitem"><small>01</small><b>发现机会</b><span>岗位汇总 · 求职方向</span></div>
+          <div class="flow-step" role="listitem"><small>02</small><b>决定投递</b><span>我的投递 · 方向匹配</span></div>
+          <div class="flow-step" role="listitem"><small>03</small><b>准备面试</b><span>面试题库 · 复盘</span></div>
+          <div class="flow-step" role="listitem"><small>04</small><b>持续输入</b><span>知识库 · 书架</span></div>
+          <div class="flow-step" role="listitem"><small>05</small><b>输出内容</b><span>媒体规划 · 数据复盘</span></div>
+        </div>
         <div class="module-grid">
           <article class="module"><small>01 / 招聘管理</small><h3>数据分析</h3><p>看投递总量、笔试与面试进展，也看近四周的投递节奏。</p></article>
           <article class="module"><small>02 / 招聘管理</small><h3>求职方向</h3><p>一个方向对应一版简历、关键词和匹配分析，不让所有岗位共用一份简历。</p></article>
@@ -88,15 +112,15 @@
 
         <div class="shot-grid">
           <button class="shot wide" type="button" data-shot="assets/shots/workbench-directions.png" data-alt="求职方向页：不同方向对应不同简历与匹配说明" data-caption="求职方向 · 一个方向对应一版简历">
-            <img src="assets/shots/workbench-directions.png" alt="求职方向页：不同方向对应不同简历与匹配说明" loading="lazy">
+            <img src="assets/shots/workbench-directions.png" alt="求职方向页：不同方向对应不同简历与匹配说明" width="1440" height="1000" loading="lazy" decoding="async">
             <span class="shot-cap">求职方向 <i>↗ 点击查看大图</i></span>
           </button>
           <button class="shot" type="button" data-shot="assets/shots/workbench-questions.png" data-alt="面试题库页：问题、答题提示与展开状态" data-caption="面试题库 · 提示与自己的答案分开">
-            <img src="assets/shots/workbench-questions.png" alt="面试题库页：问题、答题提示与展开状态" loading="lazy">
+            <img src="assets/shots/workbench-questions.png" alt="面试题库页：问题、答题提示与展开状态" width="1440" height="1000" loading="lazy" decoding="async">
             <span class="shot-cap">面试题库 <i>↗</i></span>
           </button>
           <button class="shot" type="button" data-shot="assets/shots/workbench-books.png" data-alt="我的书架页：阅读进度、读书笔记与主题书单" data-caption="我的书架 · 阅读、批注与笔记放在一起">
-            <img src="assets/shots/workbench-books.png" alt="我的书架页：阅读进度、读书笔记与主题书单" loading="lazy">
+            <img src="assets/shots/workbench-books.png" alt="我的书架页：阅读进度、读书笔记与主题书单" width="1440" height="1000" loading="lazy" decoding="async">
             <span class="shot-cap">我的书架 <i>↗</i></span>
           </button>
         </div>
@@ -134,13 +158,39 @@
             </ul>
           </aside>
         </div>
-        <div class="shot-grid">
+        <div class="decision-grid" aria-label="几个具体的设计减法">
+          <article class="decision">
+            <small>Subtract 01</small>
+            <h3>状态按钮 → 一个下拉</h3>
+            <p>「我的投递」原来有四个状态按钮和一个管理模式。现在每一行只有一个状态下拉，改状态不再需要先进入管理模式。</p>
+            <div class="compare"><span class="before">4 个按钮 + 管理态</span><i aria-hidden="true">→</i><span class="after">1 个下拉</span></div>
+          </article>
+          <article class="decision">
+            <small>Subtract 02</small>
+            <h3>删除键 → 编辑流程</h3>
+            <p>删除是低频、危险的操作。把它从每个卡片和列表行里拿掉，收进「编辑」弹窗，界面更安静，也降低了误删。</p>
+            <div class="compare"><span class="before">每行一个 ×</span><i aria-hidden="true">→</i><span class="after">编辑 → 删除</span></div>
+          </article>
+          <article class="decision">
+            <small>Subtract 03</small>
+            <h3>彩色标签 → 灰色元信息</h3>
+            <p>平台、领域、时间这类不需要争抢注意力的信息改成灰字；强调色只留给当前动作和关键数字。</p>
+            <div class="compare"><span class="before">多种彩色 chip</span><i aria-hidden="true">→</i><span class="after">灰字 + 一个强调色</span></div>
+          </article>
+          <article class="decision">
+            <small>Subtract 04</small>
+            <h3>五个操作 → 两个入口</h3>
+            <p>媒体账号卡原来有导入、分析、编辑、删除等多个并列操作。现在只保留「导入 / 查看数据」和「编辑」，页面级只留一个分析按钮。</p>
+            <div class="compare"><span class="before">5 个并列操作</span><i aria-hidden="true">→</i><span class="after">主操作 + 编辑</span></div>
+          </article>
+        </div>
+        <div class="shot-pair">
           <button class="shot" type="button" data-shot="assets/shots/workbench-media.png" data-alt="媒体规划页：账号卡片与山竹数据分析面板" data-caption="媒体规划 · 同样的卡片语言延续到内容复盘">
-            <img src="assets/shots/workbench-media.png" alt="媒体规划页：账号卡片与山竹数据分析面板" loading="lazy">
+            <img src="assets/shots/workbench-media.png" alt="媒体规划页：账号卡片与山竹数据分析面板" width="1440" height="1000" loading="lazy" decoding="async">
             <span class="shot-cap">媒体规划 <i>↗</i></span>
           </button>
           <button class="shot" type="button" data-shot="assets/shots/workbench-mobile.png" data-alt="工作台移动端：数据分析页在手机宽度下的布局" data-caption="移动端 · 栏目与数据在 390px 宽度下重新排布">
-            <img src="assets/shots/workbench-mobile.png" alt="工作台移动端：数据分析页在手机宽度下的布局" loading="lazy">
+            <img src="assets/shots/workbench-mobile.png" alt="工作台移动端：数据分析页在手机宽度下的布局" width="390" height="844" loading="lazy" decoding="async">
             <span class="shot-cap">移动端 <i>↗</i></span>
           </button>
         </div>
